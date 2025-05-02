@@ -1,0 +1,54 @@
+<!-- Uso de Producción-->
+<!-- {% load static %} -->
+
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO -->
+    <title>MotusCar</title>
+    <meta name="description" content="Lo mejor para tu Auto, lo mejor para tu Tiempo">
+
+    <!-- ESTILOS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!--Usar en Producción: -->
+    <!-- <link rel="stylesheet" href="{% static 'landingpage/css/landing.css' %}"> -->
+
+    <!-- Usar en desarrollo: -->
+    <link rel="stylesheet" href="/Application/MotusSystem/landingpage/static/landingpage/css/landing.css">
+</head>
+<body>
+    <header class="header">
+        <nav class ="navbar" id ="navbar" aria-label="Navegación del Sitio">
+            <div class="navbar-logo">
+                <a href="#">
+                    <img src="/Application/MotusSystem/landingpage/static/images/Motuscar-logo.webp" alt="MotusCar Logo" aria-label="Volver a la página de Inicio">
+                </a>
+            </div>
+            <button class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-label="Menú" aria-controls="nav-menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-menu" id="nav-menu" role="menubar">
+                <li><a href="#" class="nav-link">Inicio</a></li>
+                <li><a href="http://">Nosotros</a></li>
+                <li><a href="http://">Visión</a></li>
+                <li><a href="http://">Misión</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="Nosotros" class="section">
+            
+        </section>
+        <section id="Visión" class="section">
+
+        </section>
+        <section id="Misión" class="secton">
+
+        </section>
+    </main>
+</body>
+</html>
