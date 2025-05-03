@@ -1,0 +1,249 @@
+CREATE TABLE usuario
+(
+  nombre VARCHAR(100) NOT NULL,
+  contraseña VARCHAR(255) NOT NULL,
+  rol_usuario VARCHAR(20) NOT NULL,
+  telefono VARCHAR(15) NOT NULL,
+  fecha_registro DATE NOT NULL,
+  rut_usuario VARCHAR(12) NOT NULL,
+  valoracion DECIMAL(3,1) NOT NULL,
+  direccion TEXT,
+  correo VARCHAR(100) NOT NULL,
+  PRIMARY KEY (rut_usuario),
+  UNIQUE (correo)
+);
+
+CREATE TABLE reseña
+(
+  id_reseña SERIAL PRIMARY KEY,
+  puntuacion INT NOT NULL CHECK (puntuacion BETWEEN 1 AND 5),
+  comentario TEXT NOT NULL,
+  fecha_reseña DATE NOT NULL,
+  hora_reseña TIME NOT NULL,
+  rut_usuario VARCHAR(12) NOT NULL,
+  FOREIGN KEY (rut_usuario) REFERENCES usuario(rut_usuario)
+);
+
+CREATE TABLE chatbox
+(
+  id_chat SERIAL PRIMARY KEY,
+  mensaje TEXT NOT NULL,
+  respuesta TEXT,
+  fecha_chatbox DATE NOT NULL,
+  hora_chatbox TIME NOT NULL
+);
+
+CREATE TABLE mecanico
+(
+  certificados TEXT NOT NULL,
+  apellido VARCHAR(100) NOT NULL,
+  especialidad VARCHAR(50) NOT NULL,
+  disposicion_taller BOOLEAN NOT NULL,
+  tipo_atencion VARCHAR(20) NOT NULL,
+  rut_usuario VARCHAR(12) NOT NULL,
+  PRIMARY KEY (rut_usuario),
+  FOREIGN KEY (rut_usuario) REFERENCES usuario(rut_usuario)
+);
+
+CREATE TABLE usuario_comun
+(
+  apellido VARCHAR(100) NOT NULL,
+  rut_usuario VARCHAR(12) NOT NULL,
+  id_chat INT,
+  PRIMARY KEY (rut_usuario),
+  FOREIGN KEY (rut_usuario) REFERENCES usuario(rut_usuario),
+  FOREIGN KEY (id_chat) REFERENCES chatbox(id_chat)
+);
+
+CREATE TABLE empresa
+(
+  razon_social VARCHAR(100) NOT NULL,
+  fecha_inicio_actividades DATE NOT NULL,
+  tipo_empresa VARCHAR(50) NOT NULL,
+  giro_comercial VARCHAR(100) NOT NULL,
+  representante_legal VARCHAR(100) NOT NULL,
+  rut_usuario VARCHAR(12) NOT NULL,
+  PRIMARY KEY (rut_usuario),
+  FOREIGN KEY (rut_usuario) REFERENCES usuario(rut_usuario)
+);
+
+CREATE TABLE taller
+(
+  especialidad VARCHAR(50) NOT NULL,
+  cantidad_mecanicos INT NOT NULL,
+  rut_usuario VARCHAR(12) NOT NULL,
+  PRIMARY KEY (rut_usuario),
+  FOREIGN KEY (rut_usuario) REFERENCES empresa(rut_usuario)
+);
+
+CREATE TABLE proveedor
+(
+  envios_domicilio BOOLEAN NOT NULL,
+  modo_pago VARCHAR(50) NOT NULL,
+  regiones_distribucion VARCHAR(100) NOT NULL,
+  rut_usuario VARCHAR(12) NOT NULL,
+  PRIMARY KEY (rut_usuario),
+  FOREIGN KEY (rut_usuario) REFERENCES empresa(rut_usuario)
+);
+
+CREATE TABLE empresa_transporte
+(
+  cantidad_flota INT NOT NULL,
+  rut_usuario VARCHAR(12) NOT NULL,
+  PRIMARY KEY (rut_usuario),
+  FOREIGN KEY (rut_usuario) REFERENCES empresa(rut_usuario)
+);
+
+CREATE TABLE historial_mecanico
+(
+  observaciones TEXT NOT NULL,
+  id_hist_mec SERIAL PRIMARY KEY,
+  rut_usuario VARCHAR(12) NOT NULL,
+  FOREIGN KEY (rut_usuario) REFERENCES mecanico(rut_usuario)
+);
+
+CREATE TABLE trabaja_en
+(
+  rut_usuario VARCHAR(12) NOT NULL,
+  rut_usuario VARCHAR(12) NOT NULL,
+  PRIMARY KEY (rut_usuario, rut_usuario),
+  FOREIGN KEY (rut_usuario) REFERENCES mecanico(rut_usuario),
+  FOREIGN KEY (rut_usuario) REFERENCES taller(rut_usuario)
+);
+
+CREATE TABLE local
+(
+  id_local SERIAL PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL,
+  direccion TEXT NOT NULL,
+  horario_apretura TIME NOT NULL,
+  horario_cierre TIME NOT NULL,
+  valoracion DECIMAL(3,1) NOT NULL,
+  rut_usuario VARCHAR(12) NOT NULL,
+  FOREIGN KEY (rut_usuario) REFERENCES empresa(rut_usuario)
+);
+
+CREATE TABLE producto
+(
+  id_producto SERIAL PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL,
+  marca VARCHAR(50) NOT NULL,
+  precio_producto DECIMAL(10,2) NOT NULL,
+  stock INT NOT NULL,
+  compatible_vehiculo VARCHAR(100) NOT NULL,
+  descripcion TEXT NOT NULL,
+  categoria VARCHAR(50) NOT NULL,
+  rut_usuario VARCHAR(12) NOT NULL,
+  FOREIGN KEY (rut_usuario) REFERENCES proveedor(rut_usuario)
+);
+
+CREATE TABLE servicio
+(
+  id_servicio SERIAL PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL,
+  precio_servicio DECIMAL(10,2) NOT NULL,
+  duracion_estimada INTERVAL NOT NULL,
+  descripcion TEXT NOT NULL,
+  rut_usuario VARCHAR(12) NOT NULL,
+  FOREIGN KEY (rut_usuario) REFERENCES mecanico(rut_usuario)
+);
+
+CREATE TABLE historial_vehiculo
+(
+  id_hist_vehiculo SERIAL PRIMARY KEY,
+  fecha_servicio DATE NOT NULL,
+  descripcion TEXT NOT NULL,
+  costo DECIMAL(10,2) NOT NULL,
+  repuestos TEXT NOT NULL,
+  rut_usuario VARCHAR(12) NOT NULL,
+  FOREIGN KEY (rut_usuario) REFERENCES taller(rut_usuario)
+);
+
+CREATE TABLE cita
+(
+  id_cita SERIAL PRIMARY KEY,
+  fecha_cita DATE NOT NULL,
+  hora_inicio TIME NOT NULL,
+  hora_fin TIME NOT NULL,
+  disponible BOOLEAN NOT NULL,
+  rut_usuario VARCHAR(12) NOT NULL,
+  FOREIGN KEY (rut_usuario) REFERENCES mecanico(rut_usuario)
+);
+
+CREATE TABLE pedido
+(
+  precioTotal DECIMAL(10,2) NOT NULL,
+  id_pedido SERIAL PRIMARY KEY,
+  fecha_pedido DATE NOT NULL,
+  fecha_entrega_estimada DATE NOT NULL,
+  estado_pedido VARCHAR(20) NOT NULL,
+  precioSubtotal DECIMAL(10,2) NOT NULL,
+  forma_retiro VARCHAR(20) NOT NULL,
+  rut_usuario VARCHAR(12) NOT NULL,
+  FOREIGN KEY (rut_usuario) REFERENCES usuario_comun(rut_usuario)
+);
+
+CREATE TABLE tiene
+(
+  id_pedido INT NOT NULL,
+  id_producto INT NOT NULL,
+  cantidad INT NOT NULL DEFAULT 1,
+  PRIMARY KEY (id_pedido, id_producto),
+  FOREIGN KEY (id_pedido) REFERENCES pedido(id_pedido),
+  FOREIGN KEY (id_producto) REFERENCES producto(id_producto)
+);
+
+CREATE TABLE realiza
+(
+  rut_usuario VARCHAR(12) NOT NULL,
+  id_servicio INT NOT NULL,
+  PRIMARY KEY (rut_usuario, id_servicio),
+  FOREIGN KEY (rut_usuario) REFERENCES mecanico(rut_usuario),
+  FOREIGN KEY (id_servicio) REFERENCES servicio(id_servicio)
+);
+
+CREATE TABLE vehiculo
+(
+  marca VARCHAR(50) NOT NULL,
+  modelo VARCHAR(50) NOT NULL,
+  año INT NOT NULL,
+  tipo_combustible VARCHAR(20) NOT NULL,
+  patente VARCHAR(10) PRIMARY KEY,
+  nroChasis VARCHAR(50),
+  tipo_vehiculo VARCHAR(20) NOT NULL,
+  rut_usuario VARCHAR(12) NOT NULL,
+  id_hist_vehiculo INT NOT NULL,
+  rut_usuario VARCHAR(12) NOT NULL,
+  PRIMARY KEY (patente),
+  FOREIGN KEY (rut_usuario) REFERENCES usuario_comun(rut_usuario),
+  FOREIGN KEY (id_hist_vehiculo) REFERENCES historial_vehiculo(id_hist_vehiculo),
+  FOREIGN KEY (rut_usuario) REFERENCES empresa_transporte(rut_usuario)
+);
+
+CREATE TABLE pago
+(
+  monto_pago DECIMAL(10,2) NOT NULL,
+  id_pago SERIAL PRIMARY KEY,
+  metodo_pago VARCHAR(20) NOT NULL,
+  fecha_pago DATE NOT NULL,
+  comprobante VARCHAR(100) NOT NULL,
+  hora_pago TIME NOT NULL,
+  id_pedido INT NOT NULL,
+  FOREIGN KEY (id_pedido) REFERENCES pedido(id_pedido)
+);
+
+CREATE TABLE reserva
+(
+  id_reserva SERIAL PRIMARY KEY,
+  fecha_reserva TIMESTAMP NOT NULL,
+  estado_reserva VARCHAR(20) NOT NULL,
+  detalleReserva TEXT NOT NULL,
+  rut_usuario VARCHAR(12) NOT NULL,
+  id_cita INT NOT NULL,
+  id_servicio INT NOT NULL,
+  id_pago INT NOT NULL,
+  FOREIGN KEY (rut_usuario) REFERENCES usuario_comun(rut_usuario),
+  FOREIGN KEY (id_cita) REFERENCES cita(id_cita),
+  FOREIGN KEY (id_servicio) REFERENCES servicio(id_servicio),
+  FOREIGN KEY (id_pago) REFERENCES pago(id_pago)
+);
