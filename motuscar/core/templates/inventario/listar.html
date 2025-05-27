@@ -1,0 +1,30 @@
+{% extends 'inventario/base.html' %}
+{% block title %}Lista de Productos{% endblock %}
+{% block contenido %}
+<h2>Lista de Productos</h2>
+<table>
+    <tr>
+        <th>Nombre</th>
+        <th>SKU</th>
+        <th>Proveedor</th>
+        <th>Categoría</th>
+        <th>Precio</th>
+        <th>Cantidad</th>
+        <th>Acciones</th>
+    </tr>
+    {% for producto in productos %}
+    <tr>
+        <td>{{ producto.Nombre_Producto }}</td>
+        <td>{{ producto.Código_SKU }}</td>
+        <td>{{ producto.Proveedor }}</td>
+        <td>{{ producto.Categoria }}</td>
+        <td>{{ producto.Precio_Unitario }}</td>
+        <td>{{ producto.Cantidad }}</td>
+        <td>
+            <a href="{% url 'editar_producto' producto.id_producto %}">Editar</a> |
+            <a href="{% url 'eliminar_producto' producto.id_producto %}">Eliminar</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'vehiculo/base.html' %}
+{% load static %}
+{% block content %}
+<h2>Eliminar Vehículo</h2>
+<p>¿Estás seguro que deseas eliminar el siguiente vehículo?</p>
+<p>Será movido a la papelera con opciones de restaurar o eliminar definitvamente</p>
+<p><strong>Patente:</strong> {{ vehiculo.patente }}</p>
+<p><strong>Tipo:</strong> {{ vehiculo.get_tipo_vehiculo_display }}</p>
+<p><strong>Marca:</strong> {{ vehiculo.marca }}</p>
+<p><strong>Modelo:</strong> {{ vehiculo.modelo }}</p>
+<p><strong>Año:</strong> {{ vehiculo.año }}</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Confirmar Eliminación</button>
+    <a href="{% url 'listar_vehiculos' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

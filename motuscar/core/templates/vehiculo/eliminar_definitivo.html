@@ -1,0 +1,31 @@
+{% extends 'vehiculo/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Confirmar Eliminación Definitiva</h2>
+    
+    <div class="card border-danger">
+        <div class="card-header bg-danger text-white">
+            <strong>¡Advertencia!</strong>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">¿Está seguro que desea eliminar permanentemente este vehículo?</h5>
+            <p class="card-text">
+                Patente: <strong>{{ vehiculo.patente }}</strong><br>
+                Modelo: {{ vehiculo.marca }} {{ vehiculo.modelo }}<br>
+                Año: {{ vehiculo.año }}
+            </p>
+            
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-trash-fill"></i> Eliminar Definitivamente
+                </button>
+                <a href="{% url 'vehiculos_eliminados' %}" class="btn btn-secondary">
+                    <i class="bi bi-x-circle"></i> Cancelar
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

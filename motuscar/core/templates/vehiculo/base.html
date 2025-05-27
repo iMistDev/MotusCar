@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD Vehículos - Motuscar</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{% static 'vehiculo/css/vehiculo.css' %}" rel="stylesheet">
+
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2 bg-light sidebar">
+                <div class="sidebar-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link {% if active == 'listar' %}active fw-bold{% endif %}" href="{% url 'listar_vehiculos' %}">
+                                Listar Vehículos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if active == 'crear' %}active fw-bold{% endif %}" href="{% url 'crear_vehiculo' %}">
+                                Crear Vehículo
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if active == 'eliminados' %}active fw-bold{% endif %}" href="{% url 'vehiculos_eliminados' %}">
+                                Papelera Vehículos
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-10 ms-sm-auto px-4">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} mt-3">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
