@@ -43,6 +43,9 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',  
     'safedelete',
     
+    
+    'rest_framework',
+    'django.contrib.humanize',
 ]
 
 AUTH_USER_MODEL = 'auth.User'  # Reemplaza 'usuarios' con el nombre de tu app

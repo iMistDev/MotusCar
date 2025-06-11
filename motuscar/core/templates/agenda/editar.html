@@ -1,0 +1,216 @@
+{% extends 'agenda/base.html' %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+<div class="card mx-auto" style="max-width: 600px;">
+    <div class="card-header bg-dark text-white">
+        <h4 class="mb-0"><i class="fas fa-edit me-2"></i>Editar Cita</h4>
+    </div>
+    <div class="card-body">
+        <div class="mb-4">
+            <h5>{{ agenda.mecanico.nombre }} {{ agenda.mecanico.apellido }}</h5>
+            <div class="text-muted mb-2">
+                <i class="fas fa-wrench me-1"></i>
+                {{ agenda.descripcion|cut:"Cita agendada para " }}
+            </div>
+            <div class="text-muted">
+                <i class="fas fa-map-marker-alt me-1"></i>
+                {{ agenda.mecanico.direccion }}, {{ agenda.mecanico.comuna }}, {{ agenda.mecanico.region }}
+            </div>
+            
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <strong>Fecha:</strong> {{ agenda.fecha|date:"d/m/Y" }}
+                </div>
+                <div class="col-md-6">
+                    <strong>Precio:</strong> ${{ agenda.servicio.precio|default:"0"|intcomma }} CLP
+                </div>
+                <div class="col-md-6 mt-2">
+                    <strong>Hora actual:</strong> {{ agenda.hora_inicio|time:"H:i" }}
+                </div>
+                <div class="col-md-6 mt-2">
+                    <strong>Estado:</strong>
+                    <span class="badge 
+                        {% if agenda.estado == 'pendiente' %}bg-warning text-dark
+                        {% elif agenda.estado == 'completada' %}bg-success
+                        {% elif agenda.estado == 'cancelada' %}bg-danger
+                        {% else %}bg-secondary{% endif %}">
+                        {{ agenda.get_estado_display }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="id_hora_inicio" class="form-label">Nueva Hora de Inicio</label>
+                <select name="hora_inicio" id="id_hora_inicio" class="form-select" required>
+                    <option value="">Seleccione una hora</option>
+                    <!-- opciones se llenan solas con JS -->
+                </select>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-1"></i> Guardar Cambios
+                </button>
+                <a href="{% url 'listar_agenda' %}" class="btn btn-secondary">
+                    <i class="fas fa-times me-1"></i> Cancelar
+                </a>
+            </div>
+        </form>
+
+<style>
+    /* Estilos consistentes con agendar_cita.html */
+    #id_hora_inicio option:disabled {
+        color: #6c757d !important;
+        background-color: #f8f9fa !important;
+        font-style: italic !important;
+        -webkit-text-fill-color: #6c757d !important;
+    }
+    
+    /* Estilo para texto gris */
+    .text-muted {
+        color: #6c757d !important;
+    }
+
+    
+    #id_hora_inicio option.hora-solapada {
+        color: #6c757d !important;
+        background-color: #f8f9fa !important;
+        text-decoration: line-through !important;
+        opacity: 0.7 !important;
+        -webkit-text-fill-color: #6c757d !important;
+    }
+    
+    #id_hora_inicio option.hora-ocupada {
+        color: #6c757d !important;
+        background-color: #f8f9fa !important;
+        font-weight: bold !important;
+        -webkit-text-fill-color: #6c757d !important;
+    }
+
+</style>
+
+<script>
+    // el DOM esta explicado en agendar_cita
+document.addEventListener('DOMContentLoaded', function() {
+    const horaSelect = document.getElementById('id_hora_inicio');
+    const horaActual = '{{ agenda.hora_inicio|time:"H:i" }}';
+    const fechaCita = '{{ agenda.fecha|date:"Y-m-d" }}';
+    const diaSemana = new Date(fechaCita).getDay();
+    const mecanicoId = {{ agenda.mecanico.id }};
+    
+    // obtener la disponibilidad del mecanico selecc.
+    const disponibilidad = {
+        {% for disp in agenda.mecanico.disponibilidadmecanico_set.all %}
+        {{ disp.dia_semana }}: {
+            inicio: '{{ disp.hora_inicio|time:"H:i" }}',
+            fin: '{{ disp.hora_fin|time:"H:i" }}',
+            disponible: {{ disp.disponible|yesno:"true,false" }}
+        },
+        {% endfor %}
+    };
+    
+    // verificar la disponibilidad para el dia del mecanico selecc.
+    if (!disponibilidad[diaSemana] || !disponibilidad[diaSemana].disponible) {
+        const option = document.createElement('option');
+        option.textContent = 'El mecánico no trabaja este día';
+        option.disabled = true;
+        horaSelect.appendChild(option);
+        return;
+    }
+    
+    // generar horas disponibles del mecanico
+    const [inicioH, inicioM] = disponibilidad[diaSemana].inicio.split(':').map(Number);
+    const [finH, finM] = disponibilidad[diaSemana].fin.split(':').map(Number);
+    
+    let hora = inicioH;
+    let minuto = inicioM;
+    const horasDisponibles = [];
+    
+    while (hora < finH || (hora === finH && minuto < finM)) {
+        const horaStr = `${hora.toString().padStart(2, '0')}:${minuto.toString().padStart(2, '0')}`;
+        horasDisponibles.push(horaStr);
+        
+        minuto += 30;
+        if (minuto >= 60) {
+            minuto -= 60;
+            hora += 1;
+        }
+    }
+    
+    // obtener horarios ocupados (excluye la cita actual)
+    fetch(`/agenda/horarios_ocupados/?mecanico_id=${mecanicoId}&fecha=${fechaCita}`)
+        .then(response => {
+            if (!response.ok) throw new Error('Error en la respuesta');
+            return response.json();
+        })
+        .then(horariosOcupados => {
+            console.log("Horarios ocupados recibidos:", horariosOcupados);
+            
+            const horasOcupadas = new Set();
+            
+            // procesar cada cita ocupada
+            horariosOcupados.forEach(ocupado => {
+                // excluir la cita actual
+                if (ocupado.inicio !== `{{ agenda.fecha|date:"Y-m-d" }}T{{ agenda.hora_inicio|time:"H:i:s" }}`) {
+                    const inicio = new Date(ocupado.inicio);
+                    const fin = new Date(ocupado.fin);
+                    
+                    // agregar todas las medias horas ocupadas
+                    let current = new Date(inicio);
+                    while (current < fin) {
+                        const horaStr = current.toTimeString().substring(0, 5);
+                        horasOcupadas.add(horaStr);
+                        current = new Date(current.getTime() + 30 * 60000);
+                    }
+                }
+            });
+            
+            // llenar el select con las horas disponibles
+            horasDisponibles.forEach(horaStr => {
+                const option = document.createElement('option');
+                option.value = horaStr;
+                option.textContent = horaStr;
+                
+                if (horasOcupadas.has(horaStr)) {
+                    // hora ocupada
+                    option.disabled = true;
+                    option.classList.add('text-muted');
+                    option.textContent += ' (Ocupado)';
+                }
+                
+                // marcar la hora actual como seleccionada
+                if (horaStr === horaActual) {
+                    option.selected = true;
+                }
+                
+                horaSelect.appendChild(option);
+            });
+            
+            if (horaSelect.options.length === 1) {
+                const option = document.createElement('option');
+                option.textContent = 'No hay horarios disponibles';
+                option.disabled = true;
+                horaSelect.appendChild(option);
+            }
+        })
+        .catch(error => {
+            console.error("Error al obtener horarios ocupados:", error);
+            // mostrar todas las horas como disponibles solo si hay error
+            horasDisponibles.forEach(horaStr => {
+                const option = document.createElement('option');
+                option.value = horaStr;
+                option.textContent = horaStr;
+                if (horaStr === horaActual) {
+                    option.selected = true;
+                }
+                horaSelect.appendChild(option);
+            });
+        });
+});
+</script>
+
+{% endblock %}

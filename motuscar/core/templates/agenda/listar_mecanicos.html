@@ -1,0 +1,193 @@
+{% extends 'agenda/base.html' %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+<div class="container-fluid px-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="mb-4">
+                <h2><i class="fas fa-search me-2"></i>Buscar Mecánicos</h2>
+                <p class="text-muted">Filtra los mecánicos disponibles y encuentra el mejor servicio para ti</p>
+            </div>
+
+            <form method="get" class="bg-white p-4 rounded shadow-sm mb-4">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label for="region" class="form-label">Región</label>
+                        <select name="region" id="region" class="form-select">
+                            <option value="">Todas las regiones</option>
+                            {% for code, label in regiones %}
+                                <option value="{{ code }}" {% if code == region_sel %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="comuna" class="form-label">Comuna</label>
+                        <select name="comuna" id="comuna" class="form-select">
+                            <option value="">Todas las comunas</option>
+                            {% for comu in comunas %}
+                                <option value="{{ comu }}" {% if comu == comuna_sel %}selected{% endif %}>{{ comu }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="especialidad" class="form-label">Especialidad</label>
+                        <select name="especialidad" id="especialidad" class="form-select">
+                            <option value="">Todas las especialidades</option>
+                            {% for esp in especialidades %}
+                                <option value="{{ esp }}" {% if esp == especialidad_sel %}selected{% endif %}>{{ esp|title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="servicio" class="form-label">Servicio</label>
+                        <select name="servicio" id="servicio" class="form-select">
+                            <option value="">Todos los servicios</option>
+                            {% for serv in servicios %}
+                                <option value="{{ serv.id }}" {% if serv.id == servicio_sel %}selected{% endif %}>{{ serv.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-filter me-2"></i>Filtrar
+                        </button>
+                        <a href="{% url 'listar_mecanicos' %}" class="btn btn-outline-secondary ms-2">
+                            <i class="fas fa-sync-alt me-2"></i>Limpiar
+                        </a>
+                    </div>
+                </div>
+            </form>
+
+            {% if mecanicos %}
+            <div class="row">
+                {% for mecanico in mecanicos %}
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-dark text-white">
+                            <h5 class="mb-0">{{ mecanico.nombre|title }} {{ mecanico.apellido|title }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <h6 class="text-primary"><i class="fas fa-tools me-2"></i>Especialidad</h6>
+                                <p>{{ mecanico.especialidad|title }}</p>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <h6 class="text-primary"><i class="fas fa-map-marker-alt me-2"></i>Ubicación</h6>
+                                    <p>{{ mecanico.direccion|title }}<br>
+                                    {{ mecanico.comuna|title }}, {{ mecanico.region|title }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="text-primary"><i class="fas fa-store me-2"></i>Tipo</h6>
+                                    <p>{{ mecanico.tipo|title }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <h6 class="text-primary"><i class="fas fa-list me-2"></i>Servicios</h6>
+                                <ul class="list-group">
+                                    {% for servicio in mecanico.servicio_set.all %}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>{{ servicio.nombre|title }}</strong><br>
+                                            <small class="text-muted">{{ servicio.duracion_estimada }} • ${{ servicio.precio|intcomma }} CLP</small>
+                                        </div>
+                                        <a href="{% url 'agendar_cita' mecanico.id servicio.id %}" class="btn btn-sm btn-success">
+                                            <i class="fas fa-calendar-plus me-1"></i> Agendar
+                                        </a>
+                                    </li>
+                                    {% empty %}
+                                    <li class="list-group-item text-muted">No tiene servicios registrados</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-5 bg-white rounded shadow-sm">
+                <i class="fas fa-mechanic fa-3x mb-3 text-muted"></i>
+                <h4 class="text-muted">No se encontraron mecánicos</h4>
+                <p class="text-muted">Prueba ajustando los filtros de búsqueda</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    //  región-comuna
+    const regionSelect = document.getElementById('region');
+    const comunaSelect = document.getElementById('comuna');
+    const comunasPorRegion = JSON.parse('{{ comunas_por_region_json|escapejs }}');
+    
+    //especialidad-servicio
+    const especialidadSelect = document.getElementById('especialidad');
+    const servicioSelect = document.getElementById('servicio');
+    const serviciosPorEspecialidad = JSON.parse('{{ servicios_por_especialidad_json|escapejs }}');
+
+    // actualizar comunas
+    function actualizarComunas() {
+        const regionCode = regionSelect.value;
+        const comunaActual = comunaSelect.value;
+        
+        comunaSelect.innerHTML = '<option value="">Todas las comunas</option>';
+        
+        let comunasDisponibles = [];
+        
+        if (regionCode && comunasPorRegion[regionCode]) {
+            comunasDisponibles = comunasPorRegion[regionCode];
+        } else {
+            comunasDisponibles = Array.from(new Set(
+                Object.values(comunasPorRegion).flat()
+            )).sort();
+        }
+        
+        comunasDisponibles.forEach(comuna => {
+            const option = new Option(comuna, comuna);
+            option.selected = (comuna === comunaActual);
+            comunaSelect.add(option);
+        });
+    }
+    
+    // actualizar servicios
+    function actualizarServicios() {
+        const especialidad = especialidadSelect.value.toLowerCase();
+        const servicioActual = servicioSelect.value;
+        
+        servicioSelect.innerHTML = '<option value="">Todos los servicios</option>';
+        
+        let serviciosDisponibles = [];
+        
+        if (especialidad && serviciosPorEspecialidad[especialidad]) {
+            serviciosDisponibles = serviciosPorEspecialidad[especialidad];
+        } else {
+            serviciosDisponibles = Array.from(new Set(
+                Object.values(serviciosPorEspecialidad).flat()
+            ));
+        }
+        
+        serviciosDisponibles.forEach(serv => {
+            const option = new Option(serv.nombre, serv.id);
+            option.selected = (serv.id.toString() === servicioActual);
+            servicioSelect.add(option);
+        });
+    }
+    
+    regionSelect.addEventListener('change', actualizarComunas);
+    especialidadSelect.addEventListener('change', actualizarServicios);
+    
+    actualizarComunas();
+    actualizarServicios();
+});
+</script>
+{% endblock %}

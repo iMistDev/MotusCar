@@ -1,0 +1,282 @@
+{% extends 'agenda/base.html' %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+
+<div class="card mx-auto" style="max-width: 800px;">
+    <div class="card-header bg-dark text-white">
+        <h4 class="mb-0"><i class="fas fa-calendar-plus me-2"></i>Agendar Cita</h4>
+    </div>
+    <div class="card-body">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h5 class="text-primary">{{ mecanico.nombre|title }} {{ mecanico.apellido|title }}</h5>
+                <div class="d-flex align-items-center mb-2">
+                    <span class="badge bg-dark me-2">{{ mecanico.especialidad|title }}</span>
+                    <small class="text-muted">{{ mecanico.comuna|title }}, {{ mecanico.region|title }}</small>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="bg-light p-3 rounded">
+                    <h6 class="text-success mb-1">Servicio seleccionado:</h6>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ servicio.nombre|title }}</strong>
+                            <div class="text-muted small">{{ servicio.duracion_estimada }}</div>
+                        </div>
+                        <span class="badge bg-primary">${{ servicio.precio|intcomma }} CLP</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <form method="post" id="citaForm">
+            {% csrf_token %}
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="fecha" class="form-label">Fecha</label>
+                        <input 
+                            type="text" 
+                            name="fecha" 
+                            id="fecha" 
+                            class="form-control" 
+                            placeholder="Seleccione una fecha"
+                            required
+                            readonly
+                            data-input
+                        >
+                        <input type="hidden" id="fecha_api" name="fecha_api">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="hora_inicio" class="form-label">Hora de inicio</label>
+                        <select name="hora_inicio" id="hora_inicio" class="form-select" required>
+                            <option value="">Seleccione una hora</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <h5>Horarios Disponibles</h5>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Día</th>
+                                <th>Horario</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for disp in disponibilidad %}
+                            <tr>
+                                <td>{{ disp.get_dia_semana_display }}</td>
+                                <td>{{ disp.hora_inicio|time:"H:i" }} - {{ disp.hora_fin|time:"H:i" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-calendar-check me-1"></i> Confirmar Cita
+                </button>
+                <a href="{% url 'listar_mecanicos' %}" class="btn btn-secondary">
+                    <i class="fas fa-times me-1"></i> Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    /* Estilo forzado para opciones deshabilitadas */
+    #hora_inicio option:disabled {
+        color: #6c757d !important;
+        background-color: #f8f9fa !important;
+        font-style: italic !important;
+        -webkit-text-fill-color: #6c757d !important;
+    }
+    
+    /* Estilo forzado para horas solapadas */
+    #hora_inicio option.hora-solapada {
+        color: #6c757d !important;
+        background-color: #f8f9fa !important;
+        text-decoration: line-through !important;
+        opacity: 0.7 !important;
+        -webkit-text-fill-color: #6c757d !important;
+    }
+    
+    /* Estilo forzado para horas ocupadas */
+    #hora_inicio option.hora-ocupada {
+        color: #6c757d !important;
+        background-color: #f8f9fa !important;
+        font-weight: bold !important;
+        -webkit-text-fill-color: #6c757d !important;
+    }
+</style>
+
+<script>
+// Flatpickr (picker de calendario-hora)
+document.write(`
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"><\/script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"><\/script>
+`);
+
+// actualizar horarios disp
+function updateHorarios(fechaStr) {
+    const horaSelect = document.getElementById('hora_inicio');
+    horaSelect.innerHTML = '<option value="">Seleccione una hora</option>';
+    
+    if (!fechaStr) return;
+
+    const fecha = new Date(fechaStr);
+    const diaSemana = fecha.getDay();
+    
+    // obtener disponibilidad del mec
+    const disponibilidad = {
+        {% for disp in disponibilidad %}
+        {{ disp.dia_semana }}: {
+            inicio: '{{ disp.hora_inicio|time:"H:i" }}',
+            fin: '{{ disp.hora_fin|time:"H:i" }}',
+            disponible: {{ disp.disponible|yesno:"true,false" }}
+        },
+        {% endfor %}
+    };
+
+    // verifica disponibilidad
+    if (!disponibilidad[diaSemana] || !disponibilidad[diaSemana].disponible) {
+        const option = document.createElement('option');
+        option.textContent = 'El mecánico no trabaja este día';
+        option.disabled = true;
+        horaSelect.appendChild(option);
+        return;
+    }
+
+    // generar horas disponibles
+    const [inicioH, inicioM] = disponibilidad[diaSemana].inicio.split(':').map(Number);
+    const [finH, finM] = disponibilidad[diaSemana].fin.split(':').map(Number);
+    
+    let hora = inicioH;
+    let minuto = inicioM;
+    const horasDisponibles = [];
+    
+    while (hora < finH || (hora === finH && minuto < finM)) {
+        const horaStr = `${hora.toString().padStart(2, '0')}:${minuto.toString().padStart(2, '0')}`;
+        horasDisponibles.push(horaStr);
+        
+        minuto += 30;
+        if (minuto >= 60) {
+            minuto -= 60;
+            hora += 1;
+        }
+    }
+
+    // obtener horas ocupadas con AJAX
+    fetch(`/agenda/horarios_ocupados/?mecanico_id={{ mecanico.id }}&fecha=${fechaStr}`)
+        .then(response => response.json())
+        .then(horariosOcupados => {
+            const horasOcupadas = new Set();
+            
+            // procesa citas ocupadas
+            horariosOcupados.forEach(ocupado => {
+                const inicio = new Date(ocupado.inicio);
+                const fin = new Date(ocupado.fin);
+                
+                // agrega todas las medias horas ocupadas - para que las horas no se solapen
+                let current = new Date(inicio);
+                while (current < fin) {
+                    const horaStr = current.toTimeString().substring(0, 5);
+                    horasOcupadas.add(horaStr);
+                    current = new Date(current.getTime() + 30 * 60000);
+                }
+            });
+
+            // llenar combobox - con distincion para horas ya tomadas
+            horasDisponibles.forEach(horaStr => {
+                const option = document.createElement('option');
+                option.value = horaStr;
+                option.textContent = horaStr;
+                
+                if (horasOcupadas.has(horaStr)) {
+                    option.disabled = true;
+                    option.classList.add('hora-ocupada');
+                    option.textContent += ' (Ocupado)';
+                }
+                
+                horaSelect.appendChild(option);
+            });
+
+            if (horaSelect.options.length === 1) {
+                const option = document.createElement('option');
+                option.textContent = 'No hay horarios disponibles';
+                option.disabled = true;
+                horaSelect.appendChild(option);
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            horasDisponibles.forEach(horaStr => {
+                const option = document.createElement('option');
+                option.value = horaStr;
+                option.textContent = horaStr;
+                horaSelect.appendChild(option);
+            });
+        });
+}
+
+// Inicia cuando el DOM este listo - es importante ya que el DOM verifica que la estructura básica de la página esté lista
+document.addEventListener('DOMContentLoaded', function() {
+    const fechaInput = document.getElementById('fecha');
+    
+    // configurar Flatpickr
+    const flatpickrInstance = flatpickr(fechaInput, {
+        minDate: "today",
+        locale: "es",
+        dateFormat: "d/m/Y",  // visualizacion española d/mY, sin esto se veria como y/m/d
+        altInput: true,
+        altFormat: "d/m/Y",   // mismo formato para el campo alternativo
+        disable: [
+            function(date) {
+                return (date.getDay() === 0); // bloquear domingos del calendario
+            }
+        ],
+        onChange: function(selectedDates, dateStr) {
+            if (selectedDates.length > 0) {
+                // convertir a formato y/m/d para la API
+                const fechaApi = selectedDates[0].toISOString().split('T')[0];
+                updateHorarios(fechaApi);
+            }
+        }
+    });
+
+    // envio del formulario
+    document.getElementById('citaForm').addEventListener('submit', function(e) {
+        // asegura el formato correcto
+        if (!fechaApiInput.value && fechaInput.value) {
+            e.preventDefault();
+            alert('Por favor seleccione una fecha válida');
+        }
+    });
+
+    // Si hay fecha en la url, cargarla
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('fecha')) {
+        const fechaApi = urlParams.get('fecha');
+        const fechaParts = fechaApi.split('-');
+        const fechaVisual = `${fechaParts[2]}/${fechaParts[1]}/${fechaParts[0]}`;
+        
+        flatpickrInstance.setDate(fechaVisual, false, "d/m/Y");
+        updateHorarios(fechaApi);
+    }
+});
+
+</script>
+
+{% endblock %}

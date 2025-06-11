@@ -13,6 +13,15 @@ from core.views.vehiculo import (
 #URL Usuarios
 from core.views.usuarios import user_list, user_manage, UserDeleteView
 
+#URL Mecanico
+from core.views.mecanico import listar_mecanico, crear_mecanico
+
+#URL Agenda
+from core.views.agenda import (
+    listar_mecanicos, editar_agenda, eliminar_agenda, horarios_ocupados, listar_mecanicos,
+    agendar_cita, listar_agenda
+)
+
 
 
 urlpatterns = [
@@ -36,4 +45,18 @@ urlpatterns = [
     path('productos/crear/', crear_productos, name='crear_producto'),
     path('productos/editar/<int:id>', editar_producto, name='editar_producto'),
     path('productos/eliminar/<int:id>', eliminar_producto, name='eliminar_producto'),
+    
+    #URL Mecanico
+    path('mecanico/', listar_mecanico, name='listar_mecanico'),
+    path('mecanico/crear/', crear_mecanico, name='crear_mecanico'),
+    
+    #ULR Agenda
+    path('agenda/', listar_agenda, name='listar_agenda'),
+    path('agenda/editar/<int:agenda_id>/', editar_agenda, name='editar_agenda'),
+    path('agenda/eliminar/<int:agenda_id>/', eliminar_agenda, name='eliminar_agenda'),
+    path('agenda/horarios_ocupados/', horarios_ocupados, name='horarios_ocupados'), 
+    #URL Agenda -> Buscar mecanico
+    path('agenda/mecanico/', listar_mecanicos, name='listar_mecanicos'),
+    path('agenda/mecanico/<int:mecanico_id>/servicio/<int:servicio_id>/agendar/', agendar_cita, name='agendar_cita'),
+
 ]
