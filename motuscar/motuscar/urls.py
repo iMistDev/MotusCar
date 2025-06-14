@@ -26,11 +26,10 @@ def home(request):
         return HttpResponse(f.read())
 
 urlpatterns = [
-    path('', home, name='home'),
     
-    path('', include('core.urls')),
-    
+    path('', include('homepage.urls')),
+    path('core/', include('core.urls')),
     path('admin/', admin.site.urls),
-    path('', include('Login.urls')),
+    path('login/', include('Login.urls')),
     
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

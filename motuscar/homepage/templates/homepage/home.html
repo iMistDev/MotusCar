@@ -1,0 +1,52 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motuscar Home</title>
+    <!-- Icon -->
+    <link rel="icon" href="{% static 'homepage/img/motusicon128x128.webp' %}" type="image/webp">
+    <!--CSS HOMPAGE-->
+    <link rel="stylesheet" href="{% static 'homepage/css/home.css' %}">
+
+    <!--Fuentes-->
+    <!-- Para Roboto -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Para Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+
+    <!--CDN Awesome Fonts-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="sidebar-btn-container">
+                <button class="sidebar-btn">
+                    <i class="fa-solid fa-bars" id="sidebar-icon"></i>
+                </button>
+            </div>
+            <div class="logo">
+                <a href="{% url 'homepage' %}"><img src="{% static 'homepage/img/Motuscar-logo.webp'%}" alt="" srcset=""></a>
+            </div>
+        </nav>
+    </header>
+    <aside class="sidebar" id="sidebar">
+        <ul>
+            <li><i class="fa-solid fa-user"></i><a href="{% url 'user_list' %}">Usuarios</a></li>
+            <li><i class="fa-solid fa-car-side"></i><a href="{% url 'listar_vehiculos' %}">Vehículos</a></li>
+            <li><i class="fa-solid fa-warehouse"></i><a href="{% url 'listar_productos' %}">Productos</a></li>
+        </ul>
+    </aside>
+    <main class="main-content" id="main-content">
+    </main>
+    <script src="{% static 'homepage/js/script.js'%}"></script>
+</body>
+</html>
