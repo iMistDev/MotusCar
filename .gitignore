@@ -21,10 +21,6 @@ __pycache__/
 *.sqlite3
 *.db
 
-# Archivos estáticos y medios
-/staticfiles/
-/mediafiles/
-
 # Django migrations (excepto el __init__.py)
 */migrations/*.py
 !*/migrations/__init__.py
