@@ -11,8 +11,13 @@
     - cd motuscar
     - py manage.py makemigrations
     - py manage.py migrate
+  
+3. Cargar datos
+    - py manage.py cargar_mecanicos
+    - py manage.py cargar_servicios
+    - py manage.py cargar_disponibilidad
 
-3. iniciar la aplicación
+3. Iniciar la aplicación
 
     - py manage.py runserver
 
