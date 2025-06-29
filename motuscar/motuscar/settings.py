@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'safedelete',
     'dashboard',
     'motus',
+    'landing',
     
     
     'rest_framework',
