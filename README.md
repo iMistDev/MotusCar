@@ -2,8 +2,6 @@
 
 ### >[ Instrucciones ]<
 
-#### * No copiar los "-" *
-
 1. Instalar requirements.txt
 
     - python -m pip install -r requirements.txt
