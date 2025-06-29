@@ -3,6 +3,7 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
+from .models import CustomUser  # Import directly from models
 
 User = get_user_model()
 
@@ -167,3 +168,33 @@ class PasswordResetForm(forms.Form):
             )
         
         return cleaned_data
+    
+
+#formulario perfil
+class PerfilForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ['first_name', 'last_name', 'email', 'phone', 'birth_date', 'avatar']
+        widgets = {
+            'birth_date': forms.DateInput(attrs={
+                'type': 'date',
+                'class': 'form-input'
+            }),
+            'phone': forms.TextInput(attrs={
+                'class': 'form-input',
+                'placeholder': '+56 9 1234 5678'
+            }),
+        }
+        labels = {
+            'first_name': _('Nombres'),
+            'last_name': _('Apellidos'),
+            'phone': _('Teléfono'),
+            'birth_date': _('Fecha de nacimiento'),
+            'avatar': _('Foto de perfil')
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            if 'class' not in field.widget.attrs:
+                field.widget.attrs.update({'class': 'form-input'})

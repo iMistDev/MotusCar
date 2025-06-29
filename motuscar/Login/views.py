@@ -3,11 +3,13 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import LoginForm, RegisterForm
+from .forms import PerfilForm  # Asumiendo que creas este form
+
 
 def login_view(request):
     # Si el usuario ya está autenticado, redirigir al home
     if request.user.is_authenticated:
-        return redirect('home')
+        return redirect('home')  # Opcional: puedes cambiarlo a 'landing' si prefieres
 
     if request.method == 'POST':
         form = LoginForm(request, data=request.POST)
@@ -19,7 +21,8 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, f'Bienvenido {username}!')
-                next_url = request.GET.get('next', 'home')
+                # Cambia 'home' por 'landing' en la siguiente línea
+                next_url = request.GET.get('next', 'landing')  # Redirige a 'landing' por defecto
                 return redirect(next_url)
             else:
                 messages.error(request, 'Usuario o contraseña incorrectos')
@@ -30,10 +33,12 @@ def login_view(request):
     
     return render(request, 'login.html', {'form': form})
 
+
+
 def register_view(request):
     # Si el usuario ya está autenticado, redirigir al home
     if request.user.is_authenticated:
-        return redirect('home')
+        return redirect('la')
 
     if request.method == 'POST':
         form = RegisterForm(request.POST)
@@ -53,6 +58,11 @@ def logout_view(request):
     messages.info(request, 'Has cerrado sesión correctamente')
     return redirect('login')
 
+
 @login_required
-def home_view(request):
-    return render(request, 'home.html', {'user': request.user})
+def perf_view(request):
+    return render(request, 'profile.html', {'user': request.user})
+
+@login_required
+def landing_view(request):
+    return render(request, 'landing.html', {'user': request.user})

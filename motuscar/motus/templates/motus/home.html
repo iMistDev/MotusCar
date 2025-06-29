@@ -59,15 +59,11 @@
              <div class="logo">
                 <a href="index.html"><img src="{% static 'img/Motuscar-logo.webp' %}" alt="Motuscar Logo"></a>
             </div>
-            <!-- Botones de Autenticación (Opcionales, borrar el div si no se usan)-->
+             <!-- Botones de Autenticación (Opcionales, borrar el div si no se usan)-->
              <div class="auth-buttons">
-                <button class="btn btn-login">
-                    <a></a>Iniciar Sesión</a>
-                </button>
-                <button class="btn btn-register">
-                    <a>Registrarse</a>
-                </button>
+                <button class="btn btn-login" onclick="window.location.href='{% url 'login' %}'">Iniciar Sesión</button>
              </div>
+
         </nav>
       </header>
       <!-- Contenido Principal -->

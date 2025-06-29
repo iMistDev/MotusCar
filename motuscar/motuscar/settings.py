@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'Login',
+    #'login',
     'core',
     'crispy_forms',
     'crispy_bootstrap5',  
@@ -45,13 +45,20 @@ INSTALLED_APPS = [
     'dashboard',
     'motus',
     'landing',
-    
-    
+    'login.apps.LoginConfig',
+
+
     'rest_framework',
     'django.contrib.humanize',
 ]
 
-AUTH_USER_MODEL = 'auth.User'  # Reemplaza 'usuarios' con el nombre de tu app
+LOGIN_REDIRECT_URL = 'landing'  # Reemplaza 'motus:home' con el nombre de tu vista de inicio
+LOGOUT_REDIRECT_URL = 'login'  # Reemplaza 'login' con el nombre de tu vista de inicio
+LOGIN_URL = 'login'  # Reemplaza 'login' con el nombre de tu vista de inicio de sesión
+
+
+
+AUTH_USER_MODEL = 'login.CustomUser'  # 'login' debe ser el nombre correcto de tu app
 
 
 MIDDLEWARE = [
@@ -71,7 +78,7 @@ import os
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -133,9 +140,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static')
-]
+STATICFILES_DIRS = [BASE_DIR / 'static']
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
@@ -143,13 +150,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# Configuración de login
-LOGIN_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
-
-
 
 
 # Default primary key field type
