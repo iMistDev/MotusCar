@@ -26,7 +26,7 @@ def home(request):
         return HttpResponse(f.read())
 
 urlpatterns = [
-    
+    path('', home, name='home'),
     path('dashboard/', include('dashboard.urls')),
     path('core/', include('core.urls')),
     path('admin/', admin.site.urls),
