@@ -1,11 +1,24 @@
 # MotusCar
 
+### >[ Instrucciones ]<
+
+#### * No copiar los "-" *
+
+1. Instalar requirements.txt
+
+    - python -m pip install -r requirements.txt
+
+2. Hacer las migraciones y la creación de la base de datos
+
+    - cd motuscar
+    - py manage.py makemigrations
+    - py manage.py migrate
+
+3. iniciar la aplicación
+
+    - py manage.py runserver
 
 
-### --Documentación-- 
+### [ Documentación ] 
 
 - Para toda lo documentación referente al proyecto favor subir los archivos a la carpeta "Administrativo"
-
-### --Aplicación-- 
-
-- Para el desarrollo de la App usar la carpeta "Application"
