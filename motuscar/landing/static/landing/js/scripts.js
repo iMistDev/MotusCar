@@ -95,55 +95,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Funcionalidad Formulario - Versión definitiva
-document.addEventListener('DOMContentLoaded', function() {
-    const overlay = document.getElementById('formulario-overlay');
-    const ctaButton = document.querySelector('.cta-hero');
-    const conocenosLink = document.getElementById('conocenos-link');
-    const cerrarBtn = document.getElementById('cerrar-formulario');
-    
-    // Función para abrir el formulario
-    function abrirFormulario() {
-        if (overlay) {
-            overlay.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Bloquear scroll del body
-        }
-    }
-    
-    // Función para cerrar el formulario
-    function cerrarFormulario() {
-        if (overlay) {
-            overlay.classList.remove('active');
-            document.body.style.overflow = ''; // Restaurar scroll del body
-        }
-    }
-    
-    // Event Listeners
-    if (ctaButton) {
-        ctaButton.addEventListener('click', abrirFormulario);
-    }
-    
-    if (conocenosLink) {
-        conocenosLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            abrirFormulario();
-        });
-    }
-    
-    if (cerrarBtn) {
-        cerrarBtn.addEventListener('click', cerrarFormulario);
-    }
-    
-    // Cerrar al hacer clic fuera del formulario
-    if (overlay) {
-        overlay.addEventListener('click', function(e) {
-            if (e.target === overlay) {
-                cerrarFormulario();
-            }
-        });
-    }
-});
-
 // Mockpage IA
 document.addEventListener('DOMContentLoaded', () => {
     const phrases = [

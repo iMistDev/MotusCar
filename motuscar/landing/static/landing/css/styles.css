@@ -460,15 +460,11 @@ main {
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
-.cta-hero {
-    padding: 2.5rem 6rem; /* Aumenté el padding (vertical/horizontal) */
-    border-radius: 60px; /* Bordes bien redondeados */
-    font-family: 'Montserrat', sans-serif;
-    font-size: 2rem; /* Tamaño de fuente más grande */
-    font-weight: 700;
+.cta-hero{
+    padding: 2.5rem 6rem; 
+    border-radius: 60px; 
     background-color: orangered;
-    color: white;
-    box-shadow: 0 0 25px rgba(255, 69, 0, 0.5); /* Sombra más pronunciada */
+    box-shadow: 0 0 25px rgba(255, 69, 0, 0.5); 
     cursor: pointer;
     transition: all 0.4s ease;
     position: relative;
@@ -486,6 +482,14 @@ main {
     &:active {
         transform: scale(0.98);
     }
+}
+
+.cta-text{
+    text-decoration: none;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem; /* Tamaño de fuente más grande */
+    font-weight: 700;
+    color: white;
 }
 
 .hero-buttons button {

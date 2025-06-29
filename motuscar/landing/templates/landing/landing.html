@@ -54,7 +54,7 @@
                 </div>
             </div>
             <div class="logo">
-                <a href="index.html"><img src="{% static 'img/Motuscar-logo.webp' %}" alt="MotusCar Logo"></a>
+                <a href="{% url 'landing' %}"><img src="{% static 'img/Motuscar-logo.webp' %}" alt="MotusCar Logo"></a>
             </div>
             <!-- Auth Buttons -->
             <div class="auth-buttons">
@@ -90,7 +90,9 @@
                 <p class="hero-subtitle">Lo Mejor para tú <span class="text-orange">Tiempo</span></p>
                 <!--CTA-->
                 <div class="hero-buttons">
-                    <button class="cta-hero">Descúbre Motuscar</button>
+                    <button class="cta-hero">
+                        <a class= "cta-text" href="{% url 'motus' %}">Descúbre Motuscar</a>
+                    </button>
                 </div>
             </div>
 
@@ -178,18 +180,5 @@
             </div>
         </div>
     </footer>
-    <!-- Contenedor flotante para el formulario -->
-    <div id="formulario-overlay" class="overlay-formulario">
-        <div class="form-container">
-            <button id="cerrar-formulario" class="close-btn">
-                <i class="fas fa-times"></i>
-            </button>
-            <iframe class="ms-form" 
-                    src="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=dlZiAicyCkScaLttKd5CBiHmDuD_1QxJg0kI7ASsNMhUNEtXNDM2R0lRWTNKQTZTSTRYR0lMSTZVUC4u&embed=true"
-                    frameborder="0"
-                    allowfullscreen>
-            </iframe>
-        </div>
-    </div>
 </body>
 </html>
