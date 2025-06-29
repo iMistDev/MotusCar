@@ -1,0 +1,934 @@
+:root {
+    --navbar-height: 2.5rem;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+#Servicios {
+    scroll-margin-top: 4.0rem; /* Ajusta este valor al alto de tu navbar */
+}
+
+#Quienes-Somos {
+    scroll-margin-top: 3.0rem; /* Ajusta este valor al alto de tu navbar */
+}
+/* Animación de carga */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    backdrop-filter: blur(5px);
+}
+
+.gear-loader {
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+
+.gear-background {
+    position: absolute;
+    font-size: 80px;
+    color: #333;
+    animation: rotate 1.5s linear infinite; /* Velocidad actual */
+}
+
+.gear-fill-container {
+    position: absolute;
+    width: 100%;
+    height: 0;
+    bottom: 0;
+    overflow: hidden;
+    animation: fill-vertical 2s ease-in-out forwards;
+}
+
+.gear-fill {
+    position: absolute;
+    font-size: 80px;
+    color: orangered;
+    bottom: 0;
+    animation: rotate 1.5s linear infinite; /* Velocidad actual */
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes fill-vertical {
+    0% { height: 0; }
+    100% { height: 100%; }
+}
+
+/* Fin animación */
+
+/* Personalización de la scroll bar */
+::-webkit-scrollbar {
+    width: 12px; /* Ancho de la scroll bar vertical */
+    height: 12px; /* Altura de la scroll bar horizontal */
+}
+
+::-webkit-scrollbar-track {
+    background: #1a1a1a; /* Fondo negro similar al footer */
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: orangered; /* Color naranjo principal */
+    border-radius: 10px;
+    border: 3px solid #1a1a1a; /* Borde que combina con el track */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #ff4500; /* Variación de naranjo al hover */
+}
+
+/* Para Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: orangered #1a1a1a;
+}
+
+body {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    flex-direction: column;
+    background-color: black;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+}
+
+/*estilos navbar */
+.navbar {
+    height: var(--navbar-height);
+    z-index: 1000;
+    position: fixed;
+    top:0;
+    left: 0;
+    right: 0;
+    /* efectos aero */
+    background-color: rgba(0, 0, 0, 0.9); /* Fondo blanco con 20% de opacidad */
+    backdrop-filter: blur(10px); /* Efecto de desenfoque del contenido detrás */
+    -webkit-backdrop-filter: blur(10px); /* Versión para Safari */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* Sombra sutil */
+    /* efectos aero fin */
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1rem;
+    border-bottom: 3px solid orangered;
+}
+
+.menu-hamburguesa {
+    order: 1;
+    display: flex;
+    margin-left: 0px;
+    padding: 0px;
+}
+.menu-hamburguesa button {
+    background: black;
+    border: none;
+    font-size: 1.7rem;
+    color: white;
+}
+
+.logo{
+    order: 2;
+    margin-right: auto;
+}
+.logo img {
+    width: 12rem;
+    height: 1.6rem;
+}
+
+.auth-buttons{
+
+    order: 3;
+    display: flex;
+    gap: 1rem;
+    margin-left: auto;
+    padding-left: 2rem;
+}
+
+.auth-buttons .btn {
+    border: none;
+    padding: 10px 25px;
+    border-radius: 50px;
+    cursor: pointer;          /* Cambia el cursor al pasar */
+    transition: all 0.3s;     /* Efecto de transición suave */
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+
+}
+
+.auth-buttons .btn-login {
+    background-color: orangered;
+    color: white;
+    box-shadow: 0 4px 15px rgba(255, 69, 0, 0.3);
+
+}
+
+.auth-buttons .btn-register {
+    background-color: transparent;
+    color: white;
+    border: 2px solid white;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+
+}
+
+.btn-login:hover{
+    background-color: #ff4500;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 69, 0, 0.4);
+    &:active {
+        transform: scale(0.98);
+    }
+}
+
+.btn-register:hover{
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+    &:active {
+        transform: scale(0.98);
+    }
+}
+
+/* Estilos para el menú hamburguesa */
+.menu-hamburguesa {
+    position: relative;
+    z-index: 1000;
+}
+
+.menu-hamburguesa button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: white;
+    cursor: pointer;
+    padding: 10px;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: rgba(0, 0, 0, 0.4); /* Negro con 85% de opacidad */
+    width: 250px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border-radius: 5px;
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 0.3s ease-out, opacity 0.2s ease-out;
+    transform-origin: top;
+}
+
+.dropdown-menu.active {
+    max-height: 500px;
+    opacity: 1;
+    transition: max-height 0.4s ease-in, opacity 0.3s ease-in;
+}
+
+.dropdown-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.dropdown-menu li {
+    padding: 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.dropdown-menu li:last-child {
+    border-bottom: none;
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 12px 20px;
+    color: white;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.dropdown-menu a:hover {
+    background: orangered;
+}
+
+.ham-btn-element {
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Hero Section Styles */
+.hero {
+    position: relative;
+    height: calc(100vh - var(--navbar-height));
+    overflow: hidden;
+    margin-top: var(--navbar-height);
+    /* Añade máscara de degradado en la parte inferior */
+    -webkit-mask-image: linear-gradient(to bottom, 
+        black calc(100% - 100px), 
+        transparent 100%);
+    mask-image: linear-gradient(to bottom, 
+        black calc(100% - 100px), 
+        transparent 100%);
+}
+
+/* Carrusel de fondo */
+.hero-carousel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.carousel-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.carousel-slide.active {
+    opacity: 1;
+}
+
+.carousel-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    filter: brightness(0.4);
+}
+
+/* Overlay para mejor contraste */
+.carousel-slide::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.5) 0.4); /* Opacidad más fuerte */
+}
+
+/* Controles del carrusel */
+.carousel-controls {
+    position: absolute;
+    top: 50%;
+    width: calc(100% - 40px);
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: space-between;
+    z-index: 20;
+    pointer-events: none; /* Permite clicks a través del espacio vacío */
+}
+
+.carousel-prev, .carousel-next {
+    pointer-events: all; /* Habilita clicks solo en los botones */
+    background: rgba(0, 0, 0, 0.6);
+    border: none;
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin: 0 20px; /* Asegura margen */
+
+}
+
+.carousel-prev:hover, .carousel-next:hover {
+    background: orangered;
+    transform: scale(1.1);
+    &:active {
+        transform: scale(0.98);
+    }
+}
+
+/* Indicadores */
+.carousel-indicators {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 1rem;
+    z-index: 20;
+}
+
+.indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.indicator.active {
+    background-color: orangered;
+    transform: scale(1.2);
+    box-shadow: 0 0 10px rgba(255, 69, 0, 0.7);
+}
+
+/* Hero Section */
+
+/* Contenido superpuesto */
+.hero-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+    width: 90%;
+    max-width: 1200px;
+    z-index: 10;
+    padding: 20px; /* Reducido para solo espaciado interno */
+}
+
+.hero-content .text-orange{
+    color: orangered;
+    position: relative;
+    display: inline-block;
+    text-shadow: none;
+}
+
+.hero-content .text-orange::after{
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: orangered;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease;
+}
+
+.hero-content .text-orange:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+.hero-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 700;
+    margin-bottom: 1.2rem;
+    line-height: 1.2;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+    color: #fff;
+}
+
+.hero-subtitle {
+    font-family: 'Roboto', sans-serif;
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    max-width: 700px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.cta-hero {
+    padding: 2.5rem 6rem; /* Aumenté el padding (vertical/horizontal) */
+    border-radius: 60px; /* Bordes bien redondeados */
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2rem; /* Tamaño de fuente más grande */
+    font-weight: 700;
+    background-color: orangered;
+    color: white;
+    box-shadow: 0 0 25px rgba(255, 69, 0, 0.5); /* Sombra más pronunciada */
+    cursor: pointer;
+    transition: all 0.4s ease;
+    position: relative;
+    z-index: 1;
+    border: none;
+    outline: none;
+    
+    /* Efecto de crecimiento al hover */
+    &:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 30px rgba(255, 69, 0, 0.7);
+    }
+    
+    /* Efecto al hacer click */
+    &:active {
+        transform: scale(0.98);
+    }
+}
+
+.hero-buttons button {
+    padding: 0.8rem 2rem;
+    border-radius: 50px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    min-width: 200px;
+}
+
+/* Que ofrecemos */
+
+.services {
+    position: relative;
+    padding: 3rem 2rem 5rem;
+    background-color: black;
+    margin-top: 4.5rem;
+    z-index: 5;
+}
+
+.services-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.services-item {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 3rem;
+    text-align: left;
+    padding: 1.5rem;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+.services-item #icon-text{
+    font-size: 1.1rem;
+}
+
+.services-item i {
+    font-size: 2.5rem;
+    color: orangered;
+    min-width: 60px;
+    text-align: center;
+    padding-top: 0.5rem;
+}
+
+.services-content {
+    flex: 1;
+}
+
+.services-item h1 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: white;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.services-item p {
+    font-size: 1.1rem;
+    color: white;
+    margin-bottom: 0.8rem;
+    line-height: 1.6;
+    font-family: 'Roboto', sans-serif;
+}
+
+.services span {
+    color: orangered;
+    font-weight: bold;
+}
+
+/* Estilos Botón IA (Mockpage) */
+
+.assist-button-container {
+    position: fixed;
+    bottom: 30px;
+    right: 40px;
+    z-index: 1000;
+}
+
+.assist-button {
+    background-color: orangered; /* Color principal */
+    color: black;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(255, 69, 0, 0.3); /* Sombra sutil */
+    backdrop-filter: blur(5px); /* Efecto de desenfoque */
+    -webkit-backdrop-filter: blur(5px);
+}
+
+.assist-button:hover {
+    background-color: #ff4500; /* Variación de naranjo */
+    transform: scale(1.1); /* Aumento de tamaño al pasar */
+    box-shadow: 0 6px 20px rgba(255, 69, 0, 0.4);
+    color:white;
+}
+
+.assist-button:active {
+    transform: scale(0.98); /* Efecto al hacer clic */
+}
+
+.assist-button i {
+    font-size: 1.5rem;
+}
+
+/* Tooltip de IA */
+.assist-tooltip {
+    max-width: 300px;
+    word-wrap: break-word;
+    white-space: normal;
+    position: fixed; /* Cambiado de absolute a fixed */
+    background-color: rgba(0, 0, 0, 0.85);
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 0.95rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 9999;
+    transform: translateY(10px);
+    font-family: 'Montserrat', sans-serif; /* Añadida fuente Montserrat */
+    pointer-events: none; /* Evita que el tooltip interfiera con clicks */
+}
+
+.assist-tooltip.fade-in {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Animación de salida (si la deseas en el futuro) */
+.assist-tooltip.fade-out {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+}
+
+/* Estilizado sección footer */
+
+footer {
+    margin-top: auto;
+    background: #1a1a1a;  /* Fondo oscuro elegante */
+    color: #fff;
+    padding: 2.5rem 0;
+    font-family: 'Arial', sans-serif;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);  /* Línea sutil de separación */
+}
+
+.footer-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    gap: 2rem;
+}
+
+/* Estilo para cada sección del footer */
+.footer-brand, .footer-contact {
+    flex: 1;
+    min-width: 200px;  /* Evita que se compriman demasiado */
+}
+
+.footer-brand img {
+    margin-top: 0.5rem;
+    width: 12rem;
+    height: 1.7rem;
+}
+
+.footer-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: #f8f8f8;
+}
+
+.footer-subtitle {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #e0e0e0;
+    position: relative;
+    display: inline-block;
+}
+
+.footer-subtitle::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    width: 40px;
+    height: 2px;
+    background: orangered;  /* Línea decorativa bajo el subtítulo */
+}
+
+.footer-description, .footer-info {
+    font-family: 'Montserrat', sans-serif;
+    color: #b0b0b0;
+    line-height: 1.5;
+    margin: 0.5rem 0;
+}
+
+.footer-info i {
+    margin-right: 8px;
+    color: orangered;  /* Color azul para íconos */
+    width: 20px;
+    text-align: center;
+}
+
+/* Copyright centrado y con estilo minimalista */
+.footer-copyright {
+    width: 100%;
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    font-family: 'Montserrat', sans-serif;
+}
+
+.copyright-text {
+    font-size: 0.9rem;
+    color: #777;
+}
+
+/* Efecto hover en los textos de contacto */
+.footer-info:hover {
+    color: #fff;
+    transition: color 0.3s ease;
+}
+
+/* Animación fade-in */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/*
+.overlay-formulario {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    animation: fadeIn 0.3s ease-out;
+}
+
+
+.formulario-registro {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    font-family: 'Montserrat', sans-serif;
+    animation: fadeIn 0.4s ease-out;
+}
+
+
+.formulario-registro {
+    font-family: 'Montserrat', sans-serif;
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.formulario-registro h2 {
+    font-family: 'Montserrat', sans-serif;
+    margin-top: 0;
+    color: orangered;
+    text-align: center;
+}
+
+.formulario-registro input {
+    font-family: 'Roboto', sans-serif;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.formulario-registro button {
+    font-family: 'Montserrat', sans-serif;
+    padding: 0.8rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.formulario-registro button[type="submit"] {
+    font-family: 'Montserrat', sans-serif;
+    background-color: orangered;
+    color: white;
+}
+
+.formulario-registro button#cerrar-formulario {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #ccc;
+    color: #333;
+} */
+
+
+/* #formulario-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+
+.formulario-registro {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow: auto;
+    position: relative;
+}
+
+
+#cerrar-formulario {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.formulario-registro {
+    animation: fadeInScale 0.3s ease;
+}
+
+@keyframes fadeInScale {
+    0% {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+} */
+
+/* Modifica estos estilos en tu CSS */
+.overlay-formulario {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    backdrop-filter: blur(5px);
+}
+
+.overlay-formulario.active {
+    display: flex;
+}
+
+.form-container {
+    position: relative;
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    background: transparent;
+}
+
+.ms-form {
+    width: 100%;
+    height: 80vh;
+    border: none;
+    border-radius: 8px;
+}
+
+.close-btn {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    background: orangered;
+    color: white;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.close-btn:hover {
+    background: #ff4500;
+    transform: scale(1.1);
+}
