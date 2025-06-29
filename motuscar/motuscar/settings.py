@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap5',  
     'safedelete',
-    'homepage',
+    'dashboard',
     
     
     'rest_framework',
