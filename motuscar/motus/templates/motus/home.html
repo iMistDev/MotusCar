@@ -1,0 +1,78 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Título Ventana-->
+    <title>Motuscar</title>
+    <!-- Icono -->
+    <link rel="icon" type="image/png" href="{% static 'img/motusicon128x128.webp' %}">
+    <!-- Estilos y scripts -->
+
+    <link rel="stylesheet" href="{% static 'motus/css/styles.css' %}">
+
+    <script src="{% static 'motus/js/scripts.js' %}"></script>
+
+    <!--CDN Awesome Fonts-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!--Fuentes-->
+    <!-- Para Roboto -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Para Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Animación de Carga (Opcional quitar y remover js)-->
+     <div class="loading-overlay">
+        <div class="gear-loader">
+            <i class="fa-solid fa-gear gear-background"></i>
+            <div class="gear-fill-container">
+                <i class="fa-solid fa-gear gear-fill"></i>
+            </div>
+        </div>
+     </div>
+     <!-- Navegación Superior (Navbar)-->
+      <header class="header">
+        <nav class="navbar">
+            <!-- Menu hamburgesa (opcional)-->
+             <div class="menu-hamburguesa">
+                <button id="hamburger-btn">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="dropdown-menu" id="dropdown-menu">
+                    <ul>
+                        <li class="ham-btn-element"><a href="http://">Elemento 1</a></li>
+                        <li class="ham-btn-element"><a href="http://">Elemento 2</a></li>
+                        <li class="ham-btn-element"><a href="http://">Elemento 3</a></li>
+                        <li class="ham-btn-element"><a href="http://">Elemento 4</a></li>
+                    </ul>
+                </div>
+             </div>
+             <div class="logo">
+                <a href="index.html"><img src="{% static 'img/Motuscar-logo.webp' %}" alt="Motuscar Logo"></a>
+            </div>
+            <!-- Botones de Autenticación (Opcionales, borrar el div si no se usan)-->
+             <div class="auth-buttons">
+                <button class="btn btn-login">
+                    <a></a>Iniciar Sesión</a>
+                </button>
+                <button class="btn btn-register">
+                    <a>Registrarse</a>
+                </button>
+             </div>
+        </nav>
+      </header>
+      <!-- Contenido Principal -->
+      <main>
+      </main>
+    
+</body>
+</html>

@@ -27,6 +27,7 @@ def home(request):
 
 urlpatterns = [
     
+    path('', include('motus.urls')),
     path('dashboard/', include('dashboard.urls')),
     path('core/', include('core.urls')),
     path('admin/', admin.site.urls),
