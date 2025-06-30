@@ -60,14 +60,30 @@
                 <a href="index.html"><img src="{% static 'img/Motuscar-logo.webp' %}" alt="Motuscar Logo"></a>
             </div>
              <!-- Botones de Autenticación (Opcionales, borrar el div si no se usan)-->
-             <div class="auth-buttons">
-                <button class="btn btn-login" onclick="window.location.href='{% url 'login' %}'">Iniciar Sesión</button>
-             </div>
-
+              <div class="auth-buttons">
+                {% if user.is_authenticated %}
+                    <div class="user-dropdown">
+                        <button class="btn btn-login user-btn" onclick="toggleDropdown()">
+                            <i class="fas fa-user-circle"></i> {{ user.username }}
+                            <i class="fas fa-caret-down"></i>
+                        </button>
+                        <div class="user-dropdown-content" id="userDropdown">
+                            <a href="{% url 'profile' %}">Mi Perfil</a>
+                            <a href="{% url 'logout' %}">Cerrar Sesión</a>
+                        </div>
+                    </div>
+                {% else %}
+                    <button class="btn btn-login" onclick="window.location.href='{% url 'login' %}'">
+                        Iniciar Sesión
+                    </button>
+                {% endif %}
+            </div>
         </nav>
       </header>
       <!-- Contenido Principal -->
       <main>
+        {% load static %}
+<script src="{% static 'js/script.js' %}"></script>
       </main>
     
 </body>

@@ -9,5 +9,6 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('register/', views.register_view, name='register'),
     path('profile/', views.perf_view, name='profile'),
+    path('motus/', include('motus.urls')),  # Asegúrate de que 'motus' es el nombre correcto de tu app
   
 ]
