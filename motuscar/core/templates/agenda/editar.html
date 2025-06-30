@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // obtener horarios ocupados (excluye la cita actual)
-    fetch(`/agenda/horarios_ocupados/?mecanico_id=${mecanicoId}&fecha=${fechaCita}`)
+    fetch(`/core/agenda/horarios_ocupados/?mecanico_id=${mecanicoId}&fecha=${fechaCita}`)
         .then(response => {
             if (!response.ok) throw new Error('Error en la respuesta');
             return response.json();
