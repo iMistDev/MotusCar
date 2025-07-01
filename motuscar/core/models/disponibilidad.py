@@ -2,7 +2,6 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from datetime import time
 
-
 class DisponibilidadMecanico(models.Model):
     mecanico = models.ForeignKey('core.Mecanico', on_delete=models.CASCADE, null=True, blank=True)
     dia_semana = models.PositiveSmallIntegerField(choices=[

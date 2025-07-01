@@ -1,0 +1,97 @@
+{% extends 'agenda/base.html' %}
+{% load static %}
+{% block content %}
+<script src="{% static 'agenda/filtros.js' %}"></script>
+
+<div class="container mt-4">
+  <h2>Editar Mecánico</h2>
+  <form method="post">
+    {% csrf_token %}
+
+    <div class="mb-3">
+      <label class="form-label">Nombre:</label>
+      {{ form.nombre }}
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Apellido:</label>
+      {{ form.apellido }}
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Email:</label>
+      {{ form.email }}
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Tipo:</label>
+      {{ form.tipo }}
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Especialidad:</label>
+      {{ form.especialidad }}
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Región:</label>
+      {{ form.region }}
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Comuna:</label>
+      {{ form.comuna }}
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Dirección del Taller:</label>
+      {{ form.direccion }}
+    </div>
+
+    <div class="text-end">
+      <button type="submit" class="btn btn-success">
+        <i class="fas fa-save me-1"></i> Guardar cambios y continuar
+      </button>
+      <a href="{% url 'listar_mecanico' %}" class="btn btn-secondary">Cancelar</a>
+    </div>
+  </form>
+
+<script>
+    const COMUNAS_POR_REGION = {{ comunas_por_region_json|safe }};
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // región-comuna
+    const regionSelect = document.getElementById('region');
+    const comunaSelect = document.getElementById('comuna');
+    const comunasPorRegion = JSON.parse('{{ comunas_por_region_json|escapejs }}');
+    
+    // actualizar comunas
+    function actualizarComunas() {
+        const regionCode = regionSelect.value;
+        const comunaActual = comunaSelect.value;
+
+        comunaSelect.innerHTML = '<option value="">Seleccione Comuna</option>';
+
+        let comunasDisponibles = [];
+
+        if (regionCode && comunasPorRegion[regionCode]) {
+            comunasDisponibles = comunasPorRegion[regionCode];
+        } else {
+            comunasDisponibles = Array.from(new Set(
+                Object.values(comunasPorRegion).flat()
+            )).sort();
+        }
+
+        comunasDisponibles.forEach(comuna => {
+            const option = new Option(comuna, comuna);
+            if (comuna === comunaActual) {
+                option.selected = true;
+            }
+            comunaSelect.add(option);
+        });
+
+        comunaSelect.disabled = comunasDisponibles.length === 0;
+    }
+
+    regionSelect.addEventListener('change', actualizarComunas);
+    actualizarComunas();  // Ejecutar al cargar si ya hay una región
+});
+</script>
+{% endblock %} 

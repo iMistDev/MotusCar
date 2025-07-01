@@ -1,0 +1,40 @@
+{% extends 'agenda/base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Mecánicos registrados</h2>
+    <a href="{% url 'crear_mecanico' %}" class="btn btn-primary my-3">+ Nuevo Mecánico</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Especialidad</th>
+                <th>Región</th>
+                <th>Comuna</th>
+                <th>Correo</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for m in mecanicos %}
+            <tr>
+                <td>{{ m.nombre }} {{ m.apellido }}</td>
+                <td>{{ m.get_especialidad_display }}</td>
+                <td>{{ m.get_region_display }}</td>
+                <td>{{ m.comuna }}</td>
+                <td>{{ m.email }}</td>
+                <td>
+                    <a href="{% url 'editar_mecanico' m.id %}" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <a href="{% url 'eliminar_mecanico' m.id %}" class="btn btn-sm btn-outline-danger">
+                        <i class="fas fa-trash-alt"></i>
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6">No hay mecánicos registrados.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -28,19 +28,19 @@ def listar_mecanicos(request):
     # obtener todos los mecanicos
     mecanicos = Mecanico.objects.all()
     region = request.GET.get('region')
+   # print("REGION:", repr(region))
+
     comuna = request.GET.get('comuna')
     especialidad = request.GET.get('especialidad')
     servicio_id = request.GET.get('servicio')
     
     # aplicar filtros
     if region:
-        # normalizar nombres manejar formatos
-        region_lower = region.lower()
-        region_map = {
-            'biobio': 'Biobío',
-        }
-        region_db = region_map.get(region_lower, region.capitalize())
-        mecanicos = mecanicos.filter(region=region_db)
+        region_lower = region.strip().lower()
+        mecanicos = mecanicos.filter(region__iexact=region_lower)
+        #print("Filtrando región con:", repr(region_db))
+        #print("Mecánicos encontrados:", mecanicos)
+
 
     if comuna:
         # filtro sin contar mayusculas - minusculas
@@ -79,21 +79,21 @@ def listar_mecanicos(request):
     # preparar diccionario de servicios por especialidad
     servicios_por_especialidad = {}
     for mecanico in Mecanico.objects.all():
-        especialidad = mecanico.especialidad.lower()
-        if especialidad not in servicios_por_especialidad:
-            servicios_por_especialidad[especialidad] = []
-        
+        esp = mecanico.especialidad.lower()
+        if esp not in servicios_por_especialidad:
+            servicios_por_especialidad[esp] = []
+
         for servicio in mecanico.servicio_set.all():
-            if servicio.id not in [s['id'] for s in servicios_por_especialidad[especialidad]]:
-                servicios_por_especialidad[especialidad].append({
+            if servicio.id not in [s['id'] for s in servicios_por_especialidad[esp]]:
+                servicios_por_especialidad[esp].append({
                     'id': servicio.id,
                     'nombre': servicio.nombre
                 })
-
+                
     # construir contexto para el template
     context = {
         'mecanicos': mecanicos,
-        'regiones': REGIONES_CHILE,
+        'regiones': REGIONES_CHILE, 
         'comunas': comunas,
         'especialidades': Mecanico.objects.values_list('especialidad', flat=True).distinct(),
         'servicios': Servicio.objects.all(),
@@ -101,12 +101,12 @@ def listar_mecanicos(request):
         'comuna_sel': comuna,
         'especialidad_sel': especialidad,
         'servicio_sel': servicio_id,
-        'mecanico': mecanico,
+       # 'mecanico': mecanico,
         'active': 'crear',
         'comunas_por_region_json': json.dumps(COMUNAS_POR_REGION),
         'servicios_por_especialidad_json': json.dumps(servicios_por_especialidad),
     }
-
+    
     return render(request, 'agenda/listar_mecanicos.html', context)
 
 # vista para agendar una cita
@@ -123,7 +123,7 @@ def agendar_cita(request, mecanico_id, servicio_id):
         try:
             # convertir y validar formatos de fecha - hora
             fecha = datetime.strptime(fecha_str, '%d/%m/%Y').date()
-            fecha_api_format = fecha.strftime('%Y-%m-%d')
+          #  fecha_api_format = fecha.strftime('%Y-%m-%d')
             hora_inicio = datetime.strptime(hora_inicio_str, '%H:%M').time()
             hora_fin = (datetime.combine(date.today(), hora_inicio) + servicio.duracion_estimada).time()
             

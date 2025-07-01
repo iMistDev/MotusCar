@@ -1,0 +1,11 @@
+{% extends 'agenda/base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>¿Estás seguro de eliminar a {{ mecanico.nombre }} {{ mecanico.apellido }}?</h2>
+    <form method="post">
+        {% csrf_token %}
+        <button class="btn btn-danger">Sí, eliminar</button>
+        <a href="{% url 'listar_mecanico' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}
