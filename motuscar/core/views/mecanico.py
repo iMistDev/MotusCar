@@ -44,7 +44,7 @@ def crear_mecanico(request):
             messages.success(request, 'Mecánico creado correctamente.')
             return redirect('asignar_servicios_disponibilidad', mecanico_id=mecanico.id)
         else:
-            # Recorrer errores de cada campo y agregarlos como mensajes
+            # recorrer errores de cada campo y agregarlos como mensajes
             for field, errors in form.errors.items():
                 for error in errors:
                     verbose_field = form.fields[field].label if field in form.fields else field
@@ -64,7 +64,7 @@ def editar_mecanico(request, mecanico_id):
     form = MecanicoForm(request.POST or None, instance=mecanico)
 
     if request.method == 'POST':
-        # guardar mecánico
+        # guardar mecanico
         if form.is_valid():
             form.save()
 
@@ -96,7 +96,7 @@ def asignar_servicios_disponibilidad(request, mecanico_id):
         Servicio.objects.filter(mecanicos=mecanico).delete()
         #DEJAR EN 'MECANICOS', MODELS SERVICIO USA MECANICOS NO MECANICO
         
-        servicios_seleccionados = request.POST.getlist('servicios')  # lista de forloop.counter (índices)
+        servicios_seleccionados = request.POST.getlist('servicios')  # lista de forloop.counter (indices)
 
         for idx in servicios_seleccionados:
             nombre = request.POST.get(f'nombre_{idx}', '')
@@ -126,7 +126,7 @@ def asignar_servicios_disponibilidad(request, mecanico_id):
         hora_inicio_general = request.POST.get('hora_inicio_general')
         hora_fin_general = request.POST.get('hora_fin_general')
 
-        # Aplicar disponibilidad de lunes (0) a viernes (4)
+        # aplicar disponibilidad de lunes (0) a viernes (4)
         if hora_inicio_general and hora_fin_general:
             hora_inicio = time.fromisoformat(hora_inicio_general)
             hora_fin = time.fromisoformat(hora_fin_general)
@@ -140,7 +140,7 @@ def asignar_servicios_disponibilidad(request, mecanico_id):
                         disponible=True
                     )
 
-        # Sábado (día 5)
+        # sabado (dia 5)
         if request.POST.get('libre_5') != 'on':
             hora_inicio_str = request.POST.get('hora_inicio_5')
             hora_fin_str = request.POST.get('hora_fin_5')
