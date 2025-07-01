@@ -36,12 +36,12 @@
             <div class="collapse navbar-collapse" id="motusNavbar">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link {% if active == 'listar' %}active{% endif %}" href="{% url 'listar_agenda' %}">
+                        <a class="nav-link {% if active == 'agenda' %}active{% endif %}" href="{% url 'listar_agenda' %}">
                             <i class="fas fa-calendar-alt me-2"></i>Mi Agenda
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if active == 'crear' %}active{% endif %}" href="{% url 'listar_mecanicos' %}">
+                        <a class="nav-link {% if active == 'agendar' %}active{% endif %}" href="{% url 'listar_mecanicos' %}">
                             <i class="fas fa-plus-circle me-2"></i>Agendar una cita
                         </a>
                     </li>

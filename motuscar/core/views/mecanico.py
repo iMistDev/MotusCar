@@ -33,7 +33,7 @@ def listar_mecanico(request):
         'comunas_por_region_json': json.dumps(COMUNAS_POR_REGION), 
         'tipos': TIPOS,
         'especialidades': ESPECIALIDADES,
-        'active': 'listar'
+        'active': 'mecanicos'
     })
 
 def crear_mecanico(request):
@@ -55,7 +55,7 @@ def crear_mecanico(request):
     context = {
         'form': form,
         'comunas_por_region_json': json.dumps(COMUNAS_POR_REGION),
-        'active': 'crear'
+        'active': 'mecanicos'
     }
     return render(request, 'mecanico/crear.html', context)
 
@@ -76,7 +76,7 @@ def editar_mecanico(request, mecanico_id):
         'mecanico': mecanico,
         'regiones': REGIONES_CHILE,
         'comunas_por_region_json': json.dumps(COMUNAS_POR_REGION),
-        'active': 'editar'
+        'active': 'mecanicos'
     })
 
 def eliminar_mecanico(request, mecanico_id):
@@ -85,7 +85,7 @@ def eliminar_mecanico(request, mecanico_id):
         mecanico.delete()
         messages.success(request, 'Mecánico eliminado.')
         return redirect('listar_mecanico')
-    return render(request, 'mecanico/eliminar.html', {'mecanico': mecanico})
+    return render(request, 'mecanico/eliminar.html', {'mecanico': mecanico, 'active': 'mecanicos'})
 
 def asignar_servicios_disponibilidad(request, mecanico_id):
     mecanico = get_object_or_404(Mecanico, id=mecanico_id)
@@ -170,5 +170,5 @@ def asignar_servicios_disponibilidad(request, mecanico_id):
         'dias': DIA_SEMANA_CHOICES,
         'horas': [f'{h:02d}:00' for h in range(8, 21)],
         'duraciones': duraciones,
-        'active': 'crear'
+        'active': 'mecanicos'
     })

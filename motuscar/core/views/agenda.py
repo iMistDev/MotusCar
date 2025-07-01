@@ -102,7 +102,7 @@ def listar_mecanicos(request):
         'especialidad_sel': especialidad,
         'servicio_sel': servicio_id,
        # 'mecanico': mecanico,
-        'active': 'crear',
+        'active': 'agendar',
         'comunas_por_region_json': json.dumps(COMUNAS_POR_REGION),
         'servicios_por_especialidad_json': json.dumps(servicios_por_especialidad),
     }
@@ -199,6 +199,7 @@ def agendar_cita(request, mecanico_id, servicio_id):
 
     return render(request, 'agenda/agendar_cita.html', {
         'mecanico': mecanico,
+        'active': 'agendar',
         'servicio': servicio,
         'disponibilidad': disponibilidad,
         'dias_semana': dict(DisponibilidadMecanico._meta.get_field('dia_semana').choices)
@@ -239,7 +240,7 @@ def listar_agenda(request):
     
     return render(request, 'agenda/listar.html', {
         'agendas': agendas_ordenadas,
-        'active': 'listar'
+        'active': 'agenda'
     })
 
 # vista para editar una cita existente
@@ -304,7 +305,8 @@ def editar_agenda(request, agenda_id):
     
     return render(request, 'agenda/editar.html', {
         'agenda': agenda,
-        'servicio': agenda.servicio
+        'servicio': agenda.servicio,
+        'active':'agenda'
     })
 
 # vista para eliminar una cita
@@ -314,7 +316,7 @@ def eliminar_agenda(request, agenda_id):
         agenda.delete()
         messages.success(request, f'Cita eliminada')
         return redirect('listar_agenda')
-    return render(request, 'agenda/eliminar.html', {'agenda': agenda, 'active': 'eliminar'})
+    return render(request, 'agenda/eliminar.html', {'agenda': agenda, 'active': 'agenda'})
 
 # vista API que devuelve horarios ocupados en formato JSON
 def horarios_ocupados(request):

@@ -12,10 +12,8 @@
     - py manage.py makemigrations
     - py manage.py migrate
   
-3. Cargar datos
+3. Cargar datos de prueba
     - py manage.py cargar_mecanicos
-    - py manage.py cargar_servicios
-    - py manage.py cargar_disponibilidad
 
 3. Iniciar la aplicación
 

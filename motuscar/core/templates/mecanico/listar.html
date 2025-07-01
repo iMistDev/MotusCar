@@ -1,15 +1,20 @@
 {% extends 'agenda/base.html' %}
 {% block content %}
-<div class="container mt-4">
-    <h2>Mecánicos registrados</h2>
-    <a href="{% url 'crear_mecanico' %}" class="btn btn-primary my-3">+ Nuevo Mecánico</a>
-    <table class="table table-striped">
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-tools me-2"></i>Mecánicos registrados</h2>
+    <a href="{% url 'crear_mecanico' %}" class="btn btn-primary">
+        <i class="fas fa-plus me-1"></i> Nuevo Mecánico
+    </a>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle">
         <thead>
             <tr>
                 <th>Nombre</th>
                 <th>Especialidad</th>
-                <th>Región</th>
-                <th>Comuna</th>
+                <th>Región / Comuna</th>
                 <th>Correo</th>
                 <th>Acciones</th>
             </tr>
@@ -17,24 +22,36 @@
         <tbody>
             {% for m in mecanicos %}
             <tr>
-                <td>{{ m.nombre }} {{ m.apellido }}</td>
-                <td>{{ m.get_especialidad_display }}</td>
-                <td>{{ m.get_region_display }}</td>
-                <td>{{ m.comuna }}</td>
+                <td>
+                    <strong>{{ m.nombre }} {{ m.apellido }}</strong>
+                </td>
+                <td>
+                    <span class="badge bg-secondary">{{ m.get_especialidad_display }}</span>
+                </td>
+                <td>
+                    {{ m.get_region_display }}<br><small class="text-muted">{{ m.comuna }}</small>
+                </td>
                 <td>{{ m.email }}</td>
                 <td>
-                    <a href="{% url 'editar_mecanico' m.id %}" class="btn btn-sm btn-outline-primary">
+                    <a href="{% url 'editar_mecanico' m.id %}" class="btn btn-sm btn-outline-primary me-1" title="Editar">
                         <i class="fas fa-edit"></i>
                     </a>
-                    <a href="{% url 'eliminar_mecanico' m.id %}" class="btn btn-sm btn-outline-danger">
+                    <a href="{% url 'eliminar_mecanico' m.id %}" class="btn btn-sm btn-outline-danger" title="Eliminar">
                         <i class="fas fa-trash-alt"></i>
                     </a>
                 </td>
             </tr>
             {% empty %}
-            <tr><td colspan="6">No hay mecánicos registrados.</td></tr>
+            <tr>
+                <td colspan="5" class="text-center py-4">
+                    <i class="fas fa-user-slash fa-2x mb-2 text-muted"></i>
+                    <p class="text-muted">No hay mecánicos registrados.</p>
+                </td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
+
 {% endblock %}
+
