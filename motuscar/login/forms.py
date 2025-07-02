@@ -8,11 +8,11 @@ from .models import CustomUser  # Import directly from models
 User = get_user_model()
 
 class LoginForm(AuthenticationForm):
-    username = forms.CharField(
-        label=_("Usuario"),
-        widget=forms.TextInput(attrs={
+    username = forms.EmailField(
+        label=_("Correo electrónico"),
+        widget=forms.EmailInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Nombre de usuario',
+            'placeholder': 'Correo electrónico',
             'autofocus': True
         })
     )
@@ -26,7 +26,7 @@ class LoginForm(AuthenticationForm):
     
     error_messages = {
         'invalid_login': _(
-            "Por favor ingresa un nombre de usuario y contraseña correctos. "
+            "Por favor ingresa un email y contraseña correctos. "
             "Nota que ambos campos pueden ser sensibles a mayúsculas."
         ),
         'inactive': _("Esta cuenta está inactiva."),
@@ -36,7 +36,7 @@ class LoginForm(AuthenticationForm):
         super().__init__(*args, **kwargs)
         self.fields['username'].widget.attrs.update({
             'class': 'form-input',
-            'autocomplete': 'username'
+            'autocomplete': 'email'
         })
         self.fields['password'].widget.attrs.update({
             'class': 'form-input',

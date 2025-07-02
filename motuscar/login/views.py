@@ -8,25 +8,18 @@ from .forms import LoginForm, RegisterForm
 def login_view(request):
     # Si el usuario ya está autenticado, redirigir al home
     if request.user.is_authenticated:
-        return redirect('landing')  # Opcional: puedes cambiarlo a 'landing' si prefieres
+        return redirect('landing')
 
     if request.method == 'POST':
         form = LoginForm(request, data=request.POST)
         if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            
-            if user is not None:
-                login(request, user)
-                messages.success(request, f'Bienvenido {username}!')
-                # Luego de darle al boton de login #redirige aqui a la pagina de inicio
-                next_url = request.GET.get('next', 'motus')  # Redirige a 'motus (home page)' por defecto
-                return redirect(next_url)
-            else:
-                messages.error(request, 'Usuario o contraseña incorrectos')
+            user = form.get_user()  # Usa el método correcto del form
+            login(request, user)
+            messages.success(request, f'Bienvenido {user.get_full_name() or user.email}!')
+            # Luego de darle al boton de login #redirige aqui a la pagina de inicio
+            return redirect(request.GET.get('next', 'motus'))  # Redirige a 'motus (home page)' por defecto
         else:
-            messages.error(request, 'Por favor corrige los errores')
+            messages.error(request, 'Usuario o contraseña incorrectos')
     else:
         form = LoginForm()
     
