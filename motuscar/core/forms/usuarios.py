@@ -1,8 +1,12 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
+#from django.contrib.auth.models import User
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
+
+from django.contrib.auth import get_user_model ## importacion corregida de AUTH_USER_MODEL = 'login.CustomUser' en settings
+
+User = get_user_model() ##def valor USER para create
 
 class UserForm(UserCreationForm):
     email = forms.EmailField(required=True)

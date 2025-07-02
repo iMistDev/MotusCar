@@ -1,9 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.models import User
+
+#from django.contrib.auth.models import User   
+from django.contrib.auth import get_user_model ## importacion corregida de AUTH_USER_MODEL = 'login.CustomUser' en settings
+
 from django.contrib import messages
 from core.forms.usuarios import UserForm
 from django.views.generic import DeleteView
 from django.urls import reverse_lazy
+
+User = get_user_model() ##def valor USER para list
 
 def user_list(request):
     users = User.objects.all().order_by('username')
