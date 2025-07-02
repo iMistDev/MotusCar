@@ -8,6 +8,8 @@ venv/
 __pycache__/
 *.so
 .Python
+**/__pycache__/
+*/__pycache__/
 
 # Entornos y configuración
 .env
@@ -20,6 +22,12 @@ __pycache__/
 # Base de datos
 *.sqlite3
 *.db
+**/*.sqlite3
+**/*.db
+
+# Directorios específicos
+/motuscar/core/__pycache__/
+/motuscar/*.sqlite3
 
 # Django migrations (excepto el __init__.py)
 */migrations/*.py
