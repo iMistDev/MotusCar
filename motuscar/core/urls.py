@@ -22,6 +22,9 @@ from core.views.agenda import (
     agendar_cita, listar_agenda
 )
 
+#URL USUARIO COMUN
+from core.views.usuario_comun import listar_usuario_comun, crear_usuario_comun, editar_usuario_comun, EliminarUsuarioComun
+
 
 
 urlpatterns = [
@@ -53,7 +56,7 @@ urlpatterns = [
     path('mecanico/<int:mecanico_id>/eliminar/', eliminar_mecanico, name='eliminar_mecanico'),
     path('mecanico/<int:mecanico_id>/asignar/', asignar_servicios_disponibilidad, name='asignar_servicios_disponibilidad'),
 
-    #ULR Agenda
+    #URL Agenda
     path('agenda/', listar_agenda, name='listar_agenda'),
     path('agenda/editar/<int:agenda_id>/', editar_agenda, name='editar_agenda'),
     path('agenda/eliminar/<int:agenda_id>/', eliminar_agenda, name='eliminar_agenda'),
@@ -62,4 +65,9 @@ urlpatterns = [
     path('agenda/mecanico/', listar_mecanicos, name='listar_mecanicos'),
     path('agenda/mecanico/<int:mecanico_id>/servicio/<int:servicio_id>/agendar/', agendar_cita, name='agendar_cita'),
 
+    #URL USUARIO COMUN
+    path('usuario_comun/', listar_usuario_comun, name='listar_usuario_comun'),
+    path('usuario_comun/crear/', crear_usuario_comun, name='crear_usuario_comun'),
+    path('usuario_comun/<int:pk>/editar/', editar_usuario_comun, name='editar_usuario_comun'),
+    path('usuario_comun/<int:pk>/eliminar/', EliminarUsuarioComun.as_view(), name='eliminar_usuario_comun'),
 ]

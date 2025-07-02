@@ -8,6 +8,7 @@ from core.models.servicio import Servicio
 from core.models.disponibilidad import DisponibilidadMecanico
 
 from datetime import time, timedelta
+from django.contrib.auth.decorators import login_required
 import importlib
 import json
 
@@ -25,6 +26,7 @@ DIA_SEMANA_CHOICES = [
 TIPOS = ['taller', 'particular']
 ESPECIALIDADES = ['lubricentro', 'electrico', 'vulcanizacion', 'mecanica', 'pintura']
 
+
 def listar_mecanico(request):
     mecanicos = Mecanico.objects.all()
     return render(request, 'mecanico/listar.html', {
@@ -35,7 +37,7 @@ def listar_mecanico(request):
         'especialidades': ESPECIALIDADES,
         'active': 'mecanicos'
     })
-
+    
 def crear_mecanico(request):
     if request.method == 'POST':
         form = MecanicoForm(request.POST)
@@ -59,6 +61,7 @@ def crear_mecanico(request):
     }
     return render(request, 'mecanico/crear.html', context)
 
+
 def editar_mecanico(request, mecanico_id):
     mecanico = get_object_or_404(Mecanico, pk=mecanico_id)
     form = MecanicoForm(request.POST or None, instance=mecanico)
@@ -78,6 +81,7 @@ def editar_mecanico(request, mecanico_id):
         'comunas_por_region_json': json.dumps(COMUNAS_POR_REGION),
         'active': 'mecanicos'
     })
+
 
 def eliminar_mecanico(request, mecanico_id):
     mecanico = get_object_or_404(Mecanico, pk=mecanico_id)

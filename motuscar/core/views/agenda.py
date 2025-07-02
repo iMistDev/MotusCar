@@ -4,12 +4,15 @@ from core.models.servicio import Servicio
 from core.models.agenda import Agenda
 from core.models.disponibilidad import DisponibilidadMecanico
 
+
 # Importacion de archivos
 from core.forms.agenda import AgendaForm
 from core.constants.regiones import REGIONES_CHILE, COMUNAS_POR_REGION
 
 # Librerias
 from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+
 import json
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
@@ -24,6 +27,7 @@ def home(request):
     return render(request, 'index.html')
 
 # listar mecanicos con filtros
+@login_required
 def listar_mecanicos(request):
     # obtener todos los mecanicos
     mecanicos = Mecanico.objects.all()
@@ -110,6 +114,7 @@ def listar_mecanicos(request):
     return render(request, 'agenda/listar_mecanicos.html', context)
 
 # vista para agendar una cita
+@login_required
 def agendar_cita(request, mecanico_id, servicio_id):
     # obtener mecanico y servicio o devolver 404 si no existen
     mecanico = get_object_or_404(Mecanico, pk=mecanico_id)
@@ -206,6 +211,7 @@ def agendar_cita(request, mecanico_id, servicio_id):
     })
 
 # vista para listar citas agendadas
+@login_required
 def listar_agenda(request):
     hoy = date.today()
     ahora = timezone.now().time()
@@ -244,6 +250,7 @@ def listar_agenda(request):
     })
 
 # vista para editar una cita existente
+@login_required
 def editar_agenda(request, agenda_id):
     agenda = get_object_or_404(Agenda, pk=agenda_id)
     
@@ -310,6 +317,7 @@ def editar_agenda(request, agenda_id):
     })
 
 # vista para eliminar una cita
+@login_required
 def eliminar_agenda(request, agenda_id):
     agenda = get_object_or_404(Agenda.objects.all(), pk=agenda_id)
     if request.method == 'POST':
