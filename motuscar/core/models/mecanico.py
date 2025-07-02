@@ -1,13 +1,16 @@
 from django.db import models
 from django.core.validators import EmailValidator
 
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.contrib.auth.base_user import BaseUserManager
+from django.utils.translation import gettext_lazy as _
+
+from login.models import CustomUser
+
 from core.constants.regiones import REGIONES_CHILE
 from core.constants.servicios import ESPECIALIDAD, TIPOS
 
-class Mecanico(models.Model):
-    nombre = models.CharField(max_length=50)
-    apellido = models.CharField(max_length=50)
-    email = models.EmailField(validators=[EmailValidator()], unique=True)
+class Mecanico(CustomUser):
     region = models.CharField(max_length=50, choices=REGIONES_CHILE)
     comuna = models.CharField(max_length=50)
     direccion = models.CharField(max_length=200)
@@ -15,8 +18,8 @@ class Mecanico(models.Model):
     tipo = models.CharField(max_length=20, choices=TIPOS)
     servicios = models.ManyToManyField('core.Servicio', blank=True)
 
-    def __str__(self):
-        return f'{self.nombre} {self.apellido} - {self.especialidad} ({self.comuna})'
-
     class Meta:
         db_table = 'mecanico'
+
+    def __str__(self):
+        return f'{self.first_name} {self.last_name} - {self.especialidad} ({self.comuna})'

@@ -3,14 +3,21 @@ from core.models.mecanico import Mecanico
 
 from core.constants.regiones import REGIONES_CHILE, COMUNAS_POR_REGION
 from core.constants.servicios import ESPECIALIDAD, TIPOS
-
+    
 class MecanicoForm(forms.ModelForm):
+    password = forms.CharField(
+        label='Contraseña',
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        required=True
+    )
+
     class Meta:
         model = Mecanico
-        fields = ['nombre', 'apellido', 'email', 'region', 'comuna', 'direccion', 'especialidad', 'tipo']
+        fields = ['first_name', 'last_name', 'email', 'username', 'region', 'comuna', 'direccion', 'especialidad', 'tipo', 'password']
         widgets = {
-            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
-            'apellido': forms.TextInput(attrs={'class': 'form-control'}),
+            'username': forms.TextInput(attrs={'class': 'form-control'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
             'region': forms.Select(choices=REGIONES_CHILE, attrs={'class': 'form-select', 'id': 'region'}),
             'comuna': forms.Select(attrs={'class': 'form-select', 'id': 'comuna'}),
@@ -20,13 +27,13 @@ class MecanicoForm(forms.ModelForm):
         }
         
         error_messages = {
-            'nombre': {
+            'first_name': {
                 'required': 'Por favor, ingresa el nombre del mecánico.',
-                'max_length': 'El nombre no puede exceder los 50 caracteres.',
+                'max_length': 'El nombre no puede exceder los 150 caracteres.',
             },
-            'apellido': {
+            'last_name': {
                 'required': 'Por favor, ingresa el apellido del mecánico.',
-                'max_length': 'El apellido no puede exceder los 50 caracteres.',
+                'max_length': 'El apellido no puede exceder los 150 caracteres.',
             },
             'email': {
                 'required': 'Por favor, ingresa un correo electrónico.',
@@ -50,3 +57,10 @@ class MecanicoForm(forms.ModelForm):
                 'required': 'Selecciona el tipo de mecánico.',
             },
         }
+        
+    def save(self, commit=True):
+        mecanico = super().save(commit=False)
+        mecanico.set_password(self.cleaned_data['password'])
+        if commit:
+            mecanico.save()
+        return mecanico

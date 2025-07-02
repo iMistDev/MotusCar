@@ -13,3 +13,6 @@ admin.site.register(Products)
 
 from core.models.usuarios import Usuario
 admin.site.register(Usuario)
+
+from core.models.mecanico import Mecanico
+admin.site.register(Mecanico)

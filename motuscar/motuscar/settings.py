@@ -18,6 +18,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 AUTHENTICATION_BACKENDS = [
     'login.backends.EmailBackend',
     'django.contrib.auth.backends.ModelBackend',
+    'login.backends.MecanicoBackend',
 ]
 
 # Quick-start development settings - unsuitable for production

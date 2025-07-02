@@ -5,19 +5,28 @@
     <form method="post">
         {% csrf_token %}
 
-
         <div class="mb-3">
             <label class="form-label">Nombre:</label>
-            {{ form.nombre }}
+            {{ form.first_name }}
         </div>
-
         <div class="mb-3">
             <label class="form-label">Apellido:</label>
-            {{ form.apellido }}
+            {{ form.last_name }}
         </div>
+
         <div class="mb-3">
             <label class="form-label">Email:</label>
             {{ form.email }}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Nombre de usuario:</label>
+            {{ form.username }}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Contraseña:</label>
+            {{ form.password }}
         </div>
 
         <div class="mb-3">

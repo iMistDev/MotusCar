@@ -14,8 +14,10 @@
         <header class="dashboard-header">
             <div class="header-content">
                 <div class="user-greeting">
-                    <h1>Hola, {{ user.username }}</h1>
-                <!--   <h1>Hola, {{ user.first_name|title }} {{ user.last_name|title }}</h1> -->
+                    <!-- NORMALIZA SALUDO PARA USUARIO O MECANICO -->
+                    <h1>
+                        Hola, {{ user.first_name|title }} {{ user.last_name|title }}
+                    </h1>
                     <p>Bienvenido de vuelta</p>
                 </div>
                 <div class="user-actions">
