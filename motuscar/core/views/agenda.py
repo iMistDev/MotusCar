@@ -217,7 +217,6 @@ def listar_agenda(request):
     ahora = timezone.now().time()
     
     # obtener todas las citas (debería filtrar por usuario)
-    # Cuando importe el usuario: Agenda.objects.filter(user=request.user)
     todas_citas = Agenda.objects.all()
     
     # clasificar citas en tres categorias para el orden en listar

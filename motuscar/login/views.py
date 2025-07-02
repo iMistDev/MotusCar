@@ -52,9 +52,12 @@ def register_view(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            username = form.cleaned_data.get('username')
-            messages.success(request, f'Cuenta creada para {username}! Ahora puedes iniciar sesión')
+            user = form.save(commit=False)
+            user.username = user.email.split('@')[0]  # auto-username
+            user.first_name = form.cleaned_data.get('first_name')
+            user.last_name = form.cleaned_data.get('last_name')
+            user.save()
+            messages.success(request, f'Cuenta creada para {user.email}! Ahora puedes iniciar sesión')
             return redirect('login')
     else:
         form = RegisterForm()

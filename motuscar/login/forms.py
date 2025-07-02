@@ -56,17 +56,22 @@ class RegisterForm(UserCreationForm):
         help_text=_("Requerido. Ingresa una dirección de correo válida.")
     )
     
-    username = forms.CharField(
-        label=_("Nombre de usuario"),
+    first_name = forms.CharField(
+        label=_("Nombre"),
         widget=forms.TextInput(attrs={
             'class': 'form-input',
-            'placeholder': 'Nombre de usuario',
-            'autocomplete': 'username'
-        }),
-        help_text=_(
-            "Requerido. 150 caracteres o menos. "
-            "Solo letras, dígitos y @/./+/-/_."
-        )
+            'placeholder': 'Tu nombre',
+            'autocomplete': 'given-name'
+        })
+    )
+
+    last_name = forms.CharField(
+        label=_("Apellido"),
+        widget=forms.TextInput(attrs={
+            'class': 'form-input',
+            'placeholder': 'Tu apellido',
+            'autocomplete': 'family-name'
+        })
     )
     
     password1 = forms.CharField(
@@ -94,7 +99,7 @@ class RegisterForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password1', 'password2')
+        fields = ('first_name', 'last_name','email', 'password1', 'password2')
     
     def clean_email(self):
         email = self.cleaned_data.get('email')
@@ -104,15 +109,6 @@ class RegisterForm(UserCreationForm):
                 code='email_exists'
             )
         return email
-    
-    def clean_username(self):
-        username = self.cleaned_data.get('username')
-        if User.objects.filter(username=username).exists():
-            raise ValidationError(
-                _("Este nombre de usuario ya está en uso."),
-                code='username_exists'
-            )
-        return username
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

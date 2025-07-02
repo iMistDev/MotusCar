@@ -8,7 +8,6 @@ from core.models.servicio import Servicio
 from core.models.disponibilidad import DisponibilidadMecanico
 
 from datetime import time, timedelta
-from django.contrib.auth.decorators import login_required
 import importlib
 import json
 

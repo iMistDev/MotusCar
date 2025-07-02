@@ -4,6 +4,9 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 class CustomUser(AbstractUser):
+    username = models.CharField(max_length=30, unique=True, blank=True, null=True)
+    email = models.EmailField(unique=True)
+    
     phone = models.CharField(max_length=15, blank=True, null=True, verbose_name=_('Teléfono'))
     birth_date = models.DateField(blank=True, null=True, verbose_name=_('Fecha de nacimiento'))
     avatar = models.ImageField(upload_to='avatars/', blank=True, null=True, verbose_name=_('Foto de perfil'))
@@ -13,7 +16,7 @@ class CustomUser(AbstractUser):
         verbose_name_plural = _('Usuarios')
 
     def __str__(self):
-        return self.username
+        return self.email
 
 class PerfilForm(forms.ModelForm):
     class Meta:
