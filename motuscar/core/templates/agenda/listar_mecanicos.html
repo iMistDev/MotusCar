@@ -18,8 +18,9 @@
                             <option value="">Todas las regiones</option>
                             {% for code, label in regiones %}
                                 <option value="{{ code }}" {% if code == region_sel %}selected{% endif %}>{{ label }}</option>
-                            {% endfor %}
+                            {% endfor %} 
                         </select>
+
                     </div>
                     <div class="col-md-3">
                         <label for="comuna" class="form-label">Comuna</label>
@@ -69,17 +70,17 @@
                         <div class="card-header bg-dark text-white">
                             <h5 class="mb-0">{{ mecanico.nombre|title }} {{ mecanico.apellido|title }}</h5>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body"> 
                             <div class="mb-3">
                                 <h6 class="text-primary"><i class="fas fa-tools me-2"></i>Especialidad</h6>
-                                <p>{{ mecanico.especialidad|title }}</p>
+                                <p>{{ mecanico.get_especialidad_display }}</p>
                             </div>
                             
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <h6 class="text-primary"><i class="fas fa-map-marker-alt me-2"></i>Ubicación</h6>
                                     <p>{{ mecanico.direccion|title }}<br>
-                                    {{ mecanico.comuna|title }}, {{ mecanico.region|title }}</p>
+                                    {{ mecanico.comuna|title }}, {{ mecanico.get_region_display }}</p>  
                                 </div>
                                 <div class="col-md-6">
                                     <h6 class="text-primary"><i class="fas fa-store me-2"></i>Tipo</h6>

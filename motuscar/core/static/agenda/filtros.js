@@ -52,3 +52,4 @@ document.addEventListener("DOMContentLoaded", function () {
         especialidadSelect.dispatchEvent(new Event('change'));
     }
 });
+

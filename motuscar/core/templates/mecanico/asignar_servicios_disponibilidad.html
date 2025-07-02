@@ -1,0 +1,190 @@
+{% extends 'agenda/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container py-4">
+  <h4 class="mb-3"><i class="fas fa-cogs me-2"></i>Configurar Servicios y Disponibilidad</h4>
+
+  <form method="post">
+    {% csrf_token %}
+
+    <!-- servicios -->
+    <div class="card mb-4">
+      <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="fas fa-wrench me-2"></i>Servicios según especialidad: {{ mecanico.especialidad|title }}</h5>
+        {% if servicios_disponibles %}
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="select_all">
+          <label class="form-check-label fw-bold" for="select_all">Seleccionar todos</label>
+        </div>
+        {% endif %}
+      </div>
+      <div class="card-body">
+        {% for servicio_nombre in servicios_disponibles %}
+          <div class="row align-items-center mb-3 border-bottom pb-2">
+            <div class="col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="servicios" value="{{ forloop.counter }}" id="servicio_{{ forloop.counter }}">
+                <label class="form-check-label" for="servicio_{{ forloop.counter }}">
+                  {{ servicio_nombre }}
+                </label>
+                <input type="hidden" name="nombre_{{ forloop.counter }}" value="{{ servicio_nombre }}">
+              </div>
+
+              <label for="precio_{{ forloop.counter }}" class="form-label mt-2">Precio</label>
+              <input type="number" class="form-control" name="precio_{{ forloop.counter }}" id="precio_{{ forloop.counter }}" disabled>
+
+              <label for="duracion_{{ forloop.counter }}" class="form-label mt-2">Duración</label>
+              <select class="form-select" name="duracion_{{ forloop.counter }}" id="duracion_{{ forloop.counter }}" disabled>
+                <option value="">Seleccionar duración</option>
+                {% for d in duraciones %}
+                  <option value="00:{{ d|floatformat:0 }}:00">{{ d }} minutos</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+        {% empty %}
+          <p class="text-muted">No hay servicios disponibles para esta especialidad.</p>
+        {% endfor %}
+      </div>
+    </div>
+
+<!-- disponibilidad -->
+<div class="card mb-4">
+  <div class="card-header bg-dark text-white">
+    <h5 class="mb-0"><i class="fas fa-clock me-2"></i>Disponibilidad Semanal</h5>
+  </div>
+  <div class="card-body">
+
+    <!-- lunes a viernes -->
+    <div class="mb-4 border p-3 rounded bg-light">
+      <label class="form-label fw-bold">Horario general (lunes a viernes):</label>
+      <div class="row">
+        <div class="col-md-5">
+          <select name="hora_inicio_general" class="form-select">
+            <option value="">Hora inicio</option>
+            {% for h in horas %}
+              <option value="{{ h }}">{{ h }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-5">
+          <select name="hora_fin_general" class="form-select">
+            <option value="">Hora fin</option>
+            {% for h in horas %}
+              <option value="{{ h }}">{{ h }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- sabado -->
+    <div class="mb-3 border p-3 rounded bg-light">
+      <label class="form-label fw-bold">Disponibilidad para el día sábado:</label>
+      <div class="row align-items-center mb-2">
+        <div class="col-md-5">
+          <select name="hora_inicio_5" class="form-select">
+            <option value="">Hora inicio</option>
+            {% for h in horas %}
+              <option value="{{ h }}">{{ h }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-5">
+          <select name="hora_fin_5" class="form-select">
+            <option value="">Hora fin</option>
+            {% for h in horas %}
+              <option value="{{ h }}">{{ h }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-2">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="libre_5" id="libre_5">
+            <label class="form-check-label" for="libre_5">Libre</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+    <div class="text-end">
+      <button type="submit" class="btn btn-success">
+        <i class="fas fa-save me-1"></i> Guardar configuración
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const selectAllCheckbox = document.getElementById('select_all');
+    const checkboxes = document.querySelectorAll('input[name="servicios"]');
+
+    if (selectAllCheckbox) {
+      selectAllCheckbox.addEventListener('change', function () {
+        checkboxes.forEach(cb => cb.checked = selectAllCheckbox.checked);
+      });
+    }
+  });
+
+  function aplicarAHabiles() {
+    const inicio = document.getElementById('hora_inicio_general').value;
+    const fin = document.getElementById('hora_fin_general').value;
+    const diasHabiles = ['0', '1', '2', '3', '4'];
+
+    diasHabiles.forEach(dia => {
+      const selectInicio = document.querySelector(`select[name=hora_inicio_${dia}]`);
+      const selectFin = document.querySelector(`select[name=hora_fin_${dia}]`);
+      if (selectInicio && selectFin) {
+        selectInicio.value = inicio;
+        selectFin.value = fin;
+      }
+    }); 
+  }
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  // activar/desactivar campos segun checkbox
+  const total = {{ servicios_disponibles|length }};
+
+  for (let i = 1; i <= total; i++) {
+    const checkbox = document.getElementById(`servicio_${i}`);
+    const precioInput = document.getElementById(`precio_${i}`);
+    const duracionSelect = document.getElementById(`duracion_${i}`);
+
+    checkbox.addEventListener('change', function () {
+      const habilitar = this.checked;
+      precioInput.disabled = !habilitar;
+      duracionSelect.disabled = !habilitar;
+
+      if (habilitar) {
+        precioInput.setAttribute('required', 'required');
+        duracionSelect.setAttribute('required', 'required');
+      } else {
+        precioInput.removeAttribute('required');
+        duracionSelect.removeAttribute('required');
+      }
+    });
+  }
+
+  // select all
+  const selectAll = document.getElementById('select_all');
+  if (selectAll) {
+    selectAll.addEventListener('change', function () {
+      for (let i = 1; i <= total; i++) {
+        const cb = document.getElementById(`servicio_${i}`);
+        if (cb) {
+          cb.checked = this.checked;
+          cb.dispatchEvent(new Event('change')); // activa el cambio para precio/duracion
+        }
+      }
+    });
+  }
+});
+</script>
+{% endblock %}

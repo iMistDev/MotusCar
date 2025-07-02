@@ -14,7 +14,7 @@ from core.views.vehiculo import (
 from core.views.usuarios import user_list, user_manage, UserDeleteView
 
 #URL Mecanico
-from core.views.mecanico import listar_mecanico, crear_mecanico
+from core.views.mecanico import listar_mecanico, crear_mecanico, editar_mecanico, eliminar_mecanico, asignar_servicios_disponibilidad
 
 #URL Agenda
 from core.views.agenda import (
@@ -49,7 +49,10 @@ urlpatterns = [
     #URL Mecanico
     path('mecanico/', listar_mecanico, name='listar_mecanico'),
     path('mecanico/crear/', crear_mecanico, name='crear_mecanico'),
-    
+    path('mecanico/<int:mecanico_id>/editar/', editar_mecanico, name='editar_mecanico'),
+    path('mecanico/<int:mecanico_id>/eliminar/', eliminar_mecanico, name='eliminar_mecanico'),
+    path('mecanico/<int:mecanico_id>/asignar/', asignar_servicios_disponibilidad, name='asignar_servicios_disponibilidad'),
+
     #ULR Agenda
     path('agenda/', listar_agenda, name='listar_agenda'),
     path('agenda/editar/<int:agenda_id>/', editar_agenda, name='editar_agenda'),

@@ -179,7 +179,7 @@ function updateHorarios(fechaStr) {
     }
 
     // obtener horas ocupadas con AJAX
-    fetch(`/agenda/horarios_ocupados/?mecanico_id={{ mecanico.id }}&fecha=${fechaStr}`)
+    fetch(`/core/agenda/horarios_ocupados/?mecanico_id={{ mecanico.id }}&fecha=${fechaStr}`)
         .then(response => response.json())
         .then(horariosOcupados => {
             const horasOcupadas = new Set();

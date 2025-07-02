@@ -12,7 +12,11 @@
     - py manage.py makemigrations
     - py manage.py migrate
 
-3. iniciar la aplicación
+3. Cargar datos
+
+    - py manage.py cargar_mecanicos
+
+4. iniciar la aplicación
 
     - py manage.py runserver
 
