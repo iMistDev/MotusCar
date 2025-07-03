@@ -23,3 +23,22 @@ class UsuarioComunForm(forms.ModelForm):
             self.save_m2m()
         return usuario_comun
 
+class UsuarioComunEditarForm(forms.ModelForm):
+    nueva_contraseña = forms.CharField(
+        label="Nueva contraseña",
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        required=False
+    )
+
+    class Meta:
+        model = UsuarioComun
+        fields = ['first_name', 'last_name', 'email']
+
+    def save(self, commit=True):
+        usuario = super().save(commit=False)
+        nueva_password = self.cleaned_data.get('nueva_contraseña')
+        if nueva_password:
+            usuario.set_password(nueva_password)
+        if commit:
+            usuario.save()
+        return usuario

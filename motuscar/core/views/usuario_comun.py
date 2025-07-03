@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from core.models.usuario_comun import UsuarioComun
-from core.forms.usuario_comun import UsuarioComunForm
+from core.forms.usuario_comun import UsuarioComunEditarForm, UsuarioComunForm
 from django.views.generic import DeleteView
 from django.urls import reverse_lazy
 
@@ -24,10 +24,10 @@ def crear_usuario_comun(request):
 
 def editar_usuario_comun(request, pk):
     usuario = get_object_or_404(UsuarioComun, pk=pk)
-    form = UsuarioComunForm(request.POST or None, instance=usuario)
+    form = UsuarioComunEditarForm(request.POST or None, instance=usuario)
     if form.is_valid():
         form.save()
-        messages.success(request, "Usuario común actualizado.")
+        messages.success(request, "Usuario actualizado.") 
         return redirect('listar_usuario_comun')
     return render(request, 'usuario_comun/user_forms.html', {'form': form, 'titulo': 'Editar Usuario Común'})
 
