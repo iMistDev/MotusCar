@@ -10,7 +10,7 @@ from core.forms.agenda import AgendaForm
 from core.constants.regiones import REGIONES_CHILE, COMUNAS_POR_REGION
 
 # Librerias
-from django.http import JsonResponse
+from django.http import HttpResponseForbidden, JsonResponse
 from django.contrib.auth.decorators import login_required
 
 import json
@@ -116,6 +116,9 @@ def listar_mecanicos(request):
 # vista para agendar una cita
 @login_required
 def agendar_cita(request, mecanico_id, servicio_id):
+    if hasattr(request.user, 'mecanico'):
+        messages.error(request, "No tienes permiso para agendar citas.")
+        return redirect('listar_mecanicos')
     # obtener mecanico y servicio o devolver 404 si no existen
     mecanico = get_object_or_404(Mecanico, pk=mecanico_id)
     servicio = get_object_or_404(Servicio, pk=servicio_id)
@@ -187,7 +190,8 @@ def agendar_cita(request, mecanico_id, servicio_id):
                 hora_inicio=hora_inicio,
                 hora_fin=hora_fin,
                 estado='pendiente',
-                descripcion=f'Cita agendada para {servicio.nombre}'
+                descripcion=f'Cita agendada para {servicio.nombre}',
+                usuariocomun=request.user.usuariocomun  # asociada al UsuarioComun
             )
             messages.success(request, 'Cita agendada exitosamente')
             return redirect('listar_agenda')
@@ -216,8 +220,13 @@ def listar_agenda(request):
     hoy = date.today()
     ahora = timezone.now().time()
     
-    # obtener todas las citas (debería filtrar por usuario)
-    todas_citas = Agenda.objects.all()
+    # obtener todas las citas filtrar por usuario
+    if hasattr(request.user, 'usuariocomun'):
+        todas_citas = Agenda.objects.filter(usuariocomun=request.user.usuariocomun)
+    elif hasattr(request.user, 'mecanico'):
+        todas_citas = Agenda.objects.filter(mecanico=request.user.mecanico)
+    else:
+        todas_citas = Agenda.objects.none()
     
     # clasificar citas en tres categorias para el orden en listar
     citas_hoy = []
@@ -245,7 +254,8 @@ def listar_agenda(request):
     
     return render(request, 'agenda/listar.html', {
         'agendas': agendas_ordenadas,
-        'active': 'agenda'
+        'active': 'agenda',
+        'usuario_es_mecanico': hasattr(request.user, 'mecanico')
     })
 
 # vista para editar una cita existente
@@ -352,3 +362,23 @@ def horarios_ocupados(request):
         })
     
     return JsonResponse(horarios, safe=False)
+
+
+
+@login_required
+def cambiar_estado_agenda(request, agenda_id):
+    if not hasattr(request.user, 'mecanico'):
+        return HttpResponseForbidden("Solo los mecánicos pueden cambiar el estado.")
+
+    agenda = get_object_or_404(Agenda, pk=agenda_id, mecanico=request.user.mecanico)
+
+    if request.method == 'POST':
+        nuevo_estado = request.POST.get('estado')
+        if nuevo_estado in ['pendiente', 'cancelada']:
+            agenda.estado = nuevo_estado
+            agenda.save()
+            messages.success(request, "Estado actualizado.")
+        else:
+            messages.error(request, "Estado inválido.")
+
+    return redirect('listar_agenda')

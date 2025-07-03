@@ -18,7 +18,7 @@ def user_manage(request, pk=None):
     user = get_object_or_404(User, pk=pk) if pk else None
     
     if request.method == 'POST':
-        form = UserForm(request.POST, instance=user)
+        form = UserForm(request.POST, instance=user) 
         
         if form.is_valid():
             user = form.save()

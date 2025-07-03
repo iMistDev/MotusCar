@@ -18,7 +18,7 @@ from core.views.mecanico import listar_mecanico, crear_mecanico, editar_mecanico
 
 #URL Agenda
 from core.views.agenda import (
-    listar_mecanicos, editar_agenda, eliminar_agenda, horarios_ocupados, listar_mecanicos,
+    cambiar_estado_agenda, listar_mecanicos, editar_agenda, eliminar_agenda, horarios_ocupados, listar_mecanicos,
     agendar_cita, listar_agenda
 )
 
@@ -61,6 +61,9 @@ urlpatterns = [
     path('agenda/editar/<int:agenda_id>/', editar_agenda, name='editar_agenda'),
     path('agenda/eliminar/<int:agenda_id>/', eliminar_agenda, name='eliminar_agenda'),
     path('agenda/horarios_ocupados/', horarios_ocupados, name='horarios_ocupados'), 
+    path('agenda/estado/<int:agenda_id>/', cambiar_estado_agenda, name='cambiar_estado_agenda'),
+
+    
     #URL Agenda -> Buscar mecanico
     path('agenda/mecanico/', listar_mecanicos, name='listar_mecanicos'),
     path('agenda/mecanico/<int:mecanico_id>/servicio/<int:servicio_id>/agendar/', agendar_cita, name='agendar_cita'),
@@ -70,4 +73,5 @@ urlpatterns = [
     path('usuario_comun/crear/', crear_usuario_comun, name='crear_usuario_comun'),
     path('usuario_comun/<int:pk>/editar/', editar_usuario_comun, name='editar_usuario_comun'),
     path('usuario_comun/<int:pk>/eliminar/', EliminarUsuarioComun.as_view(), name='eliminar_usuario_comun'),
+    
 ]
