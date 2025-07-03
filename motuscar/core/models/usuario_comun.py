@@ -2,9 +2,9 @@ from django.db import models
 from login.models import CustomUser
 
 class UsuarioComun(CustomUser):
-    telefono = models.CharField(max_length=20, blank=True)
+    #telefono = models.CharField(max_length=20, blank=True)
     
-    vehiculos = models.ManyToManyField('core.Vehiculo', blank=True)
+   # vehiculos = models.ManyToManyField('core.Vehiculo', blank=True)
 
     class Meta:
         db_table = 'usuario_comun'

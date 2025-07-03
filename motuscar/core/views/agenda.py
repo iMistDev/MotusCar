@@ -24,7 +24,7 @@ from django.core.exceptions import ValidationError
 
 # homepage
 def home(request):
-    return render(request, 'index.html')
+    return render(request, 'motus.html')
 
 # listar mecanicos con filtros
 @login_required

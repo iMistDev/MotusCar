@@ -4,17 +4,16 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.contrib.auth.hashers import make_password
 from datetime import time, timedelta
 
 
 from core.constants.regiones import COMUNAS_POR_REGION
 from core.constants.servicios import SERVICIOS_POR_ESPECIALIDAD
-from core.forms.mecanico import  Mecanico2Form, MecanicoForm
-from core.forms.usuario_comun import UsuarioComun2Form, UsuarioComunForm
+from core.forms.mecanico import  Mecanico2Form
 from core.models.disponibilidad import DisponibilidadMecanico
 from core.models.mecanico import Mecanico
 from core.models.servicio import Servicio
+from core.models.usuario_comun import UsuarioComun
 from core.views.mecanico import DIA_SEMANA_CHOICES
 from login.models import CustomUser
 from .forms import LoginForm, RegisterForm
@@ -70,14 +69,14 @@ def register_view(request):
                 messages.error(request, 'Este correo ya está registrado.')
             else:
                 if tipo_usuario == 'mecanico':
-                    user = Mecanico(  # CAMBIO: instancia Mecanico directamente
+                    user = Mecanico(  # instancia Mecanico
                         first_name=form.cleaned_data['first_name'],
                         last_name=form.cleaned_data['last_name'],
                         email=email,
                         username=email,
                     )
                 else:
-                    user = CustomUser(
+                    user = UsuarioComun( # instancia Usuario
                         first_name=form.cleaned_data['first_name'],
                         last_name=form.cleaned_data['last_name'],
                         email=email,
@@ -192,8 +191,9 @@ def asignar_servicios(request, mecanico_id):
                         disponible=True
                     )
 
+        messages.success(request, 'Usuario registrado correctamente.')
         messages.success(request, 'Servicios y disponibilidad asignados correctamente.')
-        return redirect('motus')
+        return redirect('login')
 
     especialidad = mecanico.especialidad.lower().strip()
     servicios_disponibles = SERVICIOS_POR_ESPECIALIDAD.get(especialidad, [])

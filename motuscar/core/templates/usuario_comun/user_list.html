@@ -19,7 +19,6 @@
                         <tr>
                             <th style="background: #4a6cf7; color: white;"><i class="bi bi-person-badge"></i> Nombre</th>
                             <th style="background: #4a6cf7; color: white;"><i class="bi bi-envelope"></i> Email</th>
-                            <th style="background: #4a6cf7; color: white;"><i class="bi bi-telephone"></i> Teléfono</th>
                             <th style="background: #4a6cf7; color: white;"><i class="bi bi-gear"></i> Acciones</th>
                         </tr>
                     </thead>
@@ -28,7 +27,6 @@
                         <tr>
                             <td class="fw-bold">{{ user.get_full_name }}</td>
                             <td>{{ user.email }}</td>
-                            <td>{{ user.telefono }}</td>
                             <td>
                                 <div class="btn-group">
                                     <a href="{% url 'editar_usuario_comun' user.pk %}" class="btn btn-warning btn-sm rounded-pill me-2">

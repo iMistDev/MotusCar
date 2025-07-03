@@ -1,11 +1,10 @@
 from django import forms
 from core.models.usuario_comun import UsuarioComun
-from django.contrib.auth.forms import UserCreationForm
 
-class UsuarioComunForm(UserCreationForm):
+class UsuarioComunForm(forms.ModelForm):
     class Meta:
         model = UsuarioComun
-        fields = ['first_name', 'last_name', 'email', 'telefono', 'password1', 'password2']
+        fields = ['first_name', 'last_name', 'email', 'password']
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
@@ -13,10 +12,14 @@ class UsuarioComunForm(UserCreationForm):
             raise forms.ValidationError("Este correo ya está registrado.")
         return email
     
-class UsuarioComun2Form(UserCreationForm):
-    class Meta:
-        model = UsuarioComun
-        fields = ['telefono']
-        widgets= {
-        'telefono': forms.TextInput(attrs={'class': 'form-control'})
-        }
+    def save(self, commit=True):
+        usuario_comun = super().save(commit=False)
+        # contraseña cifrada
+        password = self.cleaned_data.get('password')
+        if password:
+            usuario_comun.set_password(password)
+        if commit:
+            usuario_comun.save()
+            self.save_m2m()
+        return usuario_comun
+
