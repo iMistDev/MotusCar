@@ -9,8 +9,7 @@ from core.constants.servicios import ESPECIALIDAD, TIPOS
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
-class Mecanico(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='mecanico')
+class Mecanico(CustomUser):
 
     region = models.CharField(max_length=50, choices=REGIONES_CHILE)
     comuna = models.CharField(max_length=50)

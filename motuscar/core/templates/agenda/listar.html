@@ -26,7 +26,7 @@
             {% for agenda in agendas %}
             <tr>
                 <td>
-                    <strong>{{ agenda.mecanico.user.first_name|title }} {{ agenda.mecanico.user.last_name|title }}</strong>
+                    <strong>{{ agenda.mecanico.first_name|title }} {{ agenda.mecanico.last_name|title }}</strong>
                     <br>
                     <span class="text-muted">{{ agenda.descripcion|cut:"Cita agendada para " }}</span>
                 </td>

@@ -32,50 +32,59 @@
 </style>
 <div class="container mt-4">
     <h2>Registrar Nuevo Mecánico</h2>
-    <form method="post">
+    <form method="post" novalidate>
         {% csrf_token %}
 
-        {{ user_form.non_field_errors }}
+        {{ form.non_field_errors }}
+
         <div class="mb-3">
-            {{ user_form.first_name.label_tag }} {{ user_form.first_name }}
-        </div>
-        <div class="mb-3">
-            {{ user_form.last_name.label_tag }} {{ user_form.last_name }}
-        </div>
-        <div class="mb-3">
-            {{ user_form.email.label_tag }} {{ user_form.email }}
-        </div>
-        <div class="mb-3">
-            {{ user_form.password1.label_tag }} {{ user_form.password1 }}
-        </div>
-        <div class="mb-3">
-            {{ user_form.password2.label_tag }} {{ user_form.password2 }}
+            {{ form.first_name.label_tag }} {{ form.first_name }}
+            {{ form.first_name.errors }}
         </div>
 
-        {{ mecanico_form.non_field_errors }}
         <div class="mb-3">
-            {{ mecanico_form.region.label_tag }} {{ mecanico_form.region }}
+            {{ form.last_name.label_tag }} {{ form.last_name }}
+            {{ form.last_name.errors }}
         </div>
+
         <div class="mb-3">
-            {{ mecanico_form.comuna.label_tag }} {{ mecanico_form.comuna }}
+            {{ form.email.label_tag }} {{ form.email }}
+            {{ form.email.errors }}
         </div>
+
         <div class="mb-3">
-            {{ mecanico_form.direccion.label_tag }} {{ mecanico_form.direccion }}
+            {{ form.password.label_tag }} {{ form.password }}
+            {{ form.password.errors }}
         </div>
+
         <div class="mb-3">
-            {{ mecanico_form.especialidad.label_tag }} {{ mecanico_form.especialidad }}
+            {{ form.region.label_tag }} {{ form.region }}
+            {{ form.region.errors }}
         </div>
+
         <div class="mb-3">
-            {{ mecanico_form.tipo.label_tag }} {{ mecanico_form.tipo }}
+            {{ form.comuna.label_tag }} {{ form.comuna }}
+            {{ form.comuna.errors }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.direccion.label_tag }} {{ form.direccion }}
+            {{ form.direccion.errors }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.especialidad.label_tag }} {{ form.especialidad }}
+            {{ form.especialidad.errors }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.tipo.label_tag }} {{ form.tipo }}
+            {{ form.tipo.errors }}
         </div>
 
         <button type="submit" class="btn btn-primary">Continuar</button>
         <a href="{% url 'listar_mecanico' %}" class="btn btn-secondary">Cancelar</a>
     </form>
-    
-
-
-
 </div>
 
 <script>

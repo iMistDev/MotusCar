@@ -23,7 +23,7 @@
             {% for m in mecanicos %}
             <tr>
                 <td>
-                    <strong>{{ m.user.first_name|title }} {{ m.user.last_name|title }}</strong>
+                    <strong>{{ m.first_name|title }} {{ m.last_name|title }}</strong>
                 </td>
                 <td>
                     <span class="badge bg-secondary">{{ m.get_especialidad_display }}</span>
@@ -31,7 +31,7 @@
                 <td>
                     {{ m.get_region_display }}<br><small class="text-muted">{{ m.comuna }}</small>
                 </td>
-                <td>{{ m.user.email }}</td>
+                <td>{{ m.email }}</td>
                 <td>
                     <a href="{% url 'editar_mecanico' m.id %}" class="btn btn-sm btn-outline-primary me-1" title="Editar">
                         <i class="fas fa-edit"></i>

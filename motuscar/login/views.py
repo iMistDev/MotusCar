@@ -10,8 +10,8 @@ from datetime import time, timedelta
 
 from core.constants.regiones import COMUNAS_POR_REGION
 from core.constants.servicios import SERVICIOS_POR_ESPECIALIDAD
-from core.forms.mecanico import  MecanicoForm
-from core.forms.usuario_comun import UsuarioComunForm
+from core.forms.mecanico import  Mecanico2Form, MecanicoForm
+from core.forms.usuario_comun import UsuarioComun2Form, UsuarioComunForm
 from core.models.disponibilidad import DisponibilidadMecanico
 from core.models.mecanico import Mecanico
 from core.models.servicio import Servicio
@@ -69,23 +69,30 @@ def register_view(request):
             if CustomUser.objects.filter(email=email).exists():
                 messages.error(request, 'Este correo ya está registrado.')
             else:
-                user = CustomUser(
-                    first_name=form.cleaned_data['first_name'],
-                    last_name=form.cleaned_data['last_name'],
-                    email=email,
-                    username=email,
-                )
-                user.set_password(form.cleaned_data['password1'])  # set_password para que quede correctamente
-                user.save()
+                if tipo_usuario == 'mecanico':
+                    user = Mecanico(  # CAMBIO: instancia Mecanico directamente
+                        first_name=form.cleaned_data['first_name'],
+                        last_name=form.cleaned_data['last_name'],
+                        email=email,
+                        username=email,
+                    )
+                else:
+                    user = CustomUser(
+                        first_name=form.cleaned_data['first_name'],
+                        last_name=form.cleaned_data['last_name'],
+                        email=email,
+                        username=email,
+                    )
 
-                # Guardar el ID del usuario en la sesión
+                user.set_password(form.cleaned_data['password1'])
+                user.save()
                 request.session['user_id_registro'] = user.id
 
                 if tipo_usuario == 'mecanico':
                     return redirect('datos_mecanico')
                 elif tipo_usuario == 'usuario':
-                    return redirect('datos_usuario_comun')
-
+                    messages.success(request, 'Usuario registrado correctamente.')
+                    return redirect('login')
     else:
         form = RegisterForm()
 
@@ -94,22 +101,19 @@ def register_view(request):
 def datos_mecanico(request):
     user_id = request.session.get('user_id_registro')
     if not user_id:
-        return redirect('register')  # seguridad
-    
+        return redirect('register')
 
-
-    user = get_object_or_404(CustomUser, id=user_id)
+    # ya es instancia de Mecanico (porque lo fue al registrarse)
+    mecanico = get_object_or_404(Mecanico, id=user_id)
 
     if request.method == 'POST':
-        form = MecanicoForm(request.POST)
+        form = Mecanico2Form(request.POST, instance=mecanico)
         if form.is_valid():
-            mecanico = form.save(commit=False)
-            mecanico.user = user  # vinculación correcta
-            mecanico.save()
+            form.save()
             del request.session['user_id_registro']
             return redirect('asignar_servicios', mecanico_id=mecanico.id)
     else:
-        form = MecanicoForm()
+        form = Mecanico2Form(instance=mecanico)
 
     return render(request, 'datos_mecanico.html', {
         'form': form,
@@ -118,13 +122,9 @@ def datos_mecanico(request):
     })
 
 
-
-
-
 def asignar_servicios(request, mecanico_id):
     mecanico = get_object_or_404(Mecanico, id=mecanico_id)
     duraciones = [30, 45, 60, 90, 120]
-    print("Usuario final:", mecanico.user.id, mecanico.user.email, mecanico.user.first_name)
 
     if request.method == 'POST':
         DisponibilidadMecanico.objects.filter(mecanico=mecanico).delete()
@@ -208,35 +208,6 @@ def asignar_servicios(request, mecanico_id):
         'duraciones': duraciones,
         'active': 'mecanicos'
     })
-    
-def datos_usuario_comun(request):
-    if request.method == 'POST':
-        form = UsuarioComunForm(request.POST)
-        datos_generales = request.session.get('registro_general')
-
-        if form.is_valid() and datos_generales:
-            user = CustomUser.objects.create(
-                first_name=datos_generales['first_name'],
-                last_name=datos_generales['last_name'],
-                email=datos_generales['email'],
-                username=datos_generales['email'],  # si usas email como username
-                password=make_password(datos_generales['password1']),
-                tipo_usuario='usuario_comun'
-            )
-
-            usuario_comun = form.save(commit=False)
-            usuario_comun.user = user
-            usuario_comun.save()
-
-            del request.session['registro_general']
-
-            return redirect('login')  # Redirige donde desees
-    else:
-        form = UsuarioComunForm()
-
-
-    return render(request, 'datos_usuario_comun.html'
-    )
 
 
 @login_required

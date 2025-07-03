@@ -11,7 +11,6 @@ urlpatterns = [
     path('profile/', views.perf_view, name='profile'),
     path('motus/', include('motus.urls')),  # Asegúrate de que 'motus' es el nombre correcto de tu app
     
-    path('registro/usuario/crear', views.datos_usuario_comun, name='datos_usuario_comun'),
     path('registro/mecanico/crear', views.datos_mecanico, name='datos_mecanico'),
     path('mecanico/<int:mecanico_id>/asignar-servicios/', views.asignar_servicios, name='asignar_servicios'),
 ]

@@ -12,3 +12,11 @@ class UsuarioComunForm(UserCreationForm):
         if UsuarioComun.objects.filter(email=email).exists():
             raise forms.ValidationError("Este correo ya está registrado.")
         return email
+    
+class UsuarioComun2Form(UserCreationForm):
+    class Meta:
+        model = UsuarioComun
+        fields = ['telefono']
+        widgets= {
+        'telefono': forms.TextInput(attrs={'class': 'form-control'})
+        }
