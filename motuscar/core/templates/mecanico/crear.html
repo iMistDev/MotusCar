@@ -1,56 +1,81 @@
 {% extends 'agenda/base.html' %}
+{% load static %}
+
 {% block content %}
+<style>
+    .form-label {
+        font-weight: 500;
+         margin-bottom: 5px;
+        display: block;
+        color: #333;
+     }
+     .form-input,
+    .form-select {
+        width: 100%;
+        padding: 8px 10px;
+        border: 1px solid #ccc;
+         border-radius: 8px;
+    }
+
+     .auth-btn {
+        background-color: #ff6600;
+         color: white;
+        border: none;
+         padding: 10px 20px;
+        border-radius: 8px;
+         cursor: pointer;
+    }
+
+     .auth-btn:hover {
+        background-color: #e05500;
+     }
+</style>
 <div class="container mt-4">
     <h2>Registrar Nuevo Mecánico</h2>
     <form method="post">
         {% csrf_token %}
 
+        {{ user_form.non_field_errors }}
         <div class="mb-3">
-            <label class="form-label">Nombre:</label>
-            {{ form.first_name }}
+            {{ user_form.first_name.label_tag }} {{ user_form.first_name }}
         </div>
         <div class="mb-3">
-            <label class="form-label">Apellido:</label>
-            {{ form.last_name }}
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Email:</label>
-            {{ form.email }}
+            {{ user_form.last_name.label_tag }} {{ user_form.last_name }}
         </div>
         <div class="mb-3">
-            <label class="form-label">Contraseña:</label>
-            {{ form.password }}
+            {{ user_form.email.label_tag }} {{ user_form.email }}
         </div>
-
         <div class="mb-3">
-            <label class="form-label">Tipo:</label>
-            {{ form.tipo }}
+            {{ user_form.password1.label_tag }} {{ user_form.password1 }}
+        </div>
+        <div class="mb-3">
+            {{ user_form.password2.label_tag }} {{ user_form.password2 }}
         </div>
 
+        {{ mecanico_form.non_field_errors }}
         <div class="mb-3">
-            <label class="form-label">Especialidad:</label>
-            {{ form.especialidad }}
+            {{ mecanico_form.region.label_tag }} {{ mecanico_form.region }}
+        </div>
+        <div class="mb-3">
+            {{ mecanico_form.comuna.label_tag }} {{ mecanico_form.comuna }}
+        </div>
+        <div class="mb-3">
+            {{ mecanico_form.direccion.label_tag }} {{ mecanico_form.direccion }}
+        </div>
+        <div class="mb-3">
+            {{ mecanico_form.especialidad.label_tag }} {{ mecanico_form.especialidad }}
+        </div>
+        <div class="mb-3">
+            {{ mecanico_form.tipo.label_tag }} {{ mecanico_form.tipo }}
         </div>
 
-        <div class="mb-3">
-            <label class="form-label">Región:</label>
-            {{ form.region }}
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Comuna:</label>
-            {{ form.comuna }}
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Dirección del Taller:</label>
-            {{ form.direccion }}
-        </div>
-    
-
-        <button class="btn btn-success">Guardar y continuar</button>
+        <button type="submit" class="btn btn-primary">Continuar</button>
         <a href="{% url 'listar_mecanico' %}" class="btn btn-secondary">Cancelar</a>
     </form>
+    
+
+
+
 </div>
 
 <script>

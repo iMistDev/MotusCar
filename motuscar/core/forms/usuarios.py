@@ -28,3 +28,5 @@ class UserForm(UserCreationForm):
         if not self.instance.pk and User.objects.filter(email=email).exists():
             raise forms.ValidationError("Este correo ya está registrado")
         return email
+    
+

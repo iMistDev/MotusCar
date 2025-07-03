@@ -10,12 +10,11 @@ from datetime import time, timedelta
 
 from core.constants.regiones import COMUNAS_POR_REGION
 from core.constants.servicios import SERVICIOS_POR_ESPECIALIDAD
-from core.forms.mecanico import Mecanico2Form, MecanicoForm
+from core.forms.mecanico import  MecanicoForm
 from core.forms.usuario_comun import UsuarioComunForm
 from core.models.disponibilidad import DisponibilidadMecanico
 from core.models.mecanico import Mecanico
 from core.models.servicio import Servicio
-from core.models.usuario_comun import UsuarioComun
 from core.views.mecanico import DIA_SEMANA_CHOICES
 from login.models import CustomUser
 from .forms import LoginForm, RegisterForm

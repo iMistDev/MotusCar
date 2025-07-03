@@ -14,6 +14,8 @@ import json
 from core.constants.regiones import COMUNAS_POR_REGION, REGIONES_CHILE
 
 from core.constants.servicios import SERVICIOS_POR_ESPECIALIDAD
+from login.forms import EditarUsuarioForm, SubClasesForm
+from login.models import CustomUser
 
 servicios_por_especialidad = importlib.import_module("core.constants.servicios").SERVICIOS_POR_ESPECIALIDAD
 
@@ -38,23 +40,36 @@ def listar_mecanico(request):
     })
     
 def crear_mecanico(request):
+    
     if request.method == 'POST':
-        form = MecanicoForm(request.POST)
-        if form.is_valid():
-            mecanico = form.save()
+        user_form = SubClasesForm(request.POST)
+        mecanico_form = MecanicoForm(request.POST)
+        
+        if user_form.is_valid() and mecanico_form.is_valid():
+            # Crear mecánico directamente como usuario
+            mecanico = Mecanico(
+                region=mecanico_form.cleaned_data['region'],
+                comuna=mecanico_form.cleaned_data['comuna'],
+                direccion=mecanico_form.cleaned_data['direccion'],
+                especialidad=mecanico_form.cleaned_data['especialidad'],
+                tipo=mecanico_form.cleaned_data['tipo'],
+            )
+
             messages.success(request, 'Mecánico creado correctamente.')
             return redirect('asignar_servicios_disponibilidad', mecanico_id=mecanico.id)
         else:
-            # recorrer errores de cada campo y agregarlos como mensajes
-            for field, errors in form.errors.items():
-                for error in errors:
-                    verbose_field = form.fields[field].label if field in form.fields else field
-                    messages.error(request, f"{verbose_field}: {error}")
+            for form in [user_form, mecanico_form]:
+                for field, errors in form.errors.items():
+                    for error in errors:
+                        label = form.fields[field].label if field in form.fields else field
+                        messages.error(request, f"{label}: {error}")
     else:
-        form = MecanicoForm()
+        user_form = SubClasesForm()
+        mecanico_form = MecanicoForm()
 
     context = {
-        'form': form,
+        'user_form': user_form,
+        'mecanico_form': mecanico_form,
         'comunas_por_region_json': json.dumps(COMUNAS_POR_REGION),
         'active': 'mecanicos'
     }
@@ -63,18 +78,21 @@ def crear_mecanico(request):
 
 def editar_mecanico(request, mecanico_id):
     mecanico = get_object_or_404(Mecanico, pk=mecanico_id)
-    form = MecanicoForm(request.POST or None, instance=mecanico)
+    user = CustomUser.objects.get(pk=mecanico.pk)
 
+    mecanico_form = MecanicoForm(request.POST or None, instance=mecanico)
+    user_form = EditarUsuarioForm(request.POST or None, instance=user)
+    print('awaaaaaaaaaaa6')
     if request.method == 'POST':
-        # guardar mecanico
-        if form.is_valid():
-            form.save()
-
-            messages.success(request, 'Mecánico actualizado.')
+        if user_form.is_valid() and mecanico_form.is_valid():
+            user_form.save()
+            mecanico_form.save()
+            messages.success(request, 'Mecánico actualizado correctamente.')
             return redirect('asignar_servicios_disponibilidad', mecanico_id=mecanico.id)
 
     return render(request, 'mecanico/editar.html', {
-        'form': form,
+        'mecanico_form': mecanico_form,
+        'user_form': user_form,
         'mecanico': mecanico,
         'regiones': REGIONES_CHILE,
         'comunas_por_region_json': json.dumps(COMUNAS_POR_REGION),

@@ -3,57 +3,107 @@
 {% block content %}
 <script src="{% static 'agenda/filtros.js' %}"></script>
 
-<div class="container mt-4">
-  <h2>Editar Mecánico</h2>
-  <form method="post">
-    {% csrf_token %}
+    <style>
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 5px;
+            display: block;
+            color: #333;
+        }
 
-    <div class="mb-3">
-      <label class="form-label">Nombre:</label>
-      {{ form.first_name }}
-    </div>
-    <div class="mb-3">
-      <label class="form-label">Apellido:</label>
-      {{ form.last_name }}
-    </div>
-    <div class="mb-3">
-      <label class="form-label">Email:</label>
-      {{ form.email }}
-    </div>
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
 
-    <div class="mb-3">
-        <label class="form-label">Contraseña (reemplaza la actual):</label>
-        {{ form.password }}
-    </div>
-    <div class="mb-3">
-      <label class="form-label">Tipo:</label>
-      {{ form.tipo }}
-    </div>
-    <div class="mb-3">
-      <label class="form-label">Especialidad:</label>
-      {{ form.especialidad }}
-    </div>
-    <div class="mb-3">
-      <label class="form-label">Región:</label>
-      {{ form.region }}
-    </div>
-    <div class="mb-3">
-      <label class="form-label">Comuna:</label>
-      {{ form.comuna }}
-    </div>
-    <div class="mb-3">
-      <label class="form-label">Dirección del Taller:</label>
-      {{ form.direccion }}
-    </div>
+        .auth-btn {
+            background-color: #ff6600;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
 
-    <div class="text-end">
-      <button type="submit" class="btn btn-success">
-        <i class="fas fa-save me-1"></i> Guardar cambios y continuar
-      </button>
-      <a href="{% url 'listar_mecanico' %}" class="btn btn-secondary">Cancelar</a>
-    </div>
-  </form>
+        .auth-btn:hover {
+            background-color: #e05500;
+        }
+    </style>
+</head>
+<body>
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+          <h2><i class="fas fa-tools me-2"></i>Editar Mecánico</h2>
+            <p>Actualiza los datos generales y específicos</p>
+        </div>
 
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+
+                <div class="form-group">
+                    <label class="form-label">Nombre:</label>
+                    {{ user_form.first_name }}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Apellido:</label>
+                    {{ user_form.last_name }}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Correo electrónico:</label>
+                    {{ user_form.email }}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Contraseña nueva:</label>
+                    {{ user_form.password1 }}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Confirmar contraseña:</label>
+                    {{ user_form.password2 }}
+                </div>
+
+
+                <div class="form-group">
+                    <label class="form-label">Región:</label>
+                    {{ mecanico_form.region }}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Comuna:</label>
+                    {{ mecanico_form.comuna }}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Dirección:</label>
+                    {{ mecanico_form.direccion }}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Especialidad:</label>
+                    {{ mecanico_form.especialidad }}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Tipo:</label>
+                    {{ mecanico_form.tipo }}
+                </div>
+            </div>
+
+            <div class="text-end">
+                <button type="submit" class="auth-btn">
+                    <i class="fas fa-save"></i> Guardar Cambios
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 <script>
     const COMUNAS_POR_REGION = {{ comunas_por_region_json|safe }};
 </script>
