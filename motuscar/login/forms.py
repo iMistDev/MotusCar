@@ -110,6 +110,8 @@ class RegisterForm(UserCreationForm):
             )
         return email
     
+
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Mejora los mensajes de error

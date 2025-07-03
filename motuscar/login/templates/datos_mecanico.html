@@ -1,0 +1,131 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Datos Mecánico</title>
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: url("{% static 'imgs/background-login.jpg' %}");
+            background-size: 100rem;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 0.3rem;
+            color: #333;
+        }
+        .form-control, .form-select {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        .opciones-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            align-items: center;
+        }
+        .opcion-btn {
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 8px;
+            background-color: #ff6600;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 100%;
+            max-width: 300px;
+        }
+        .opcion-btn:hover {
+            background-color: #cc5200;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="logo"><i class="fas fa-tools"></i></div>
+                <h1 style="color: #000000;">Datos Mecánico</h1>
+                <p style="color: #000000;">Completa la información adicional para tu perfil</p>
+            </div>
+            <form method="post" class="auth-form">
+                {% csrf_token %}
+                <!-- Campos visibles del formulario -->
+                <div class="mb-3">
+                    <label class="form-label">Región</label>
+                    {{ form.region }}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Comuna</label>
+                    {{ form.comuna }}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Dirección</label>
+                    {{ form.direccion }}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Especialidad</label>
+                    {{ form.especialidad }}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Tipo</label>
+                    {{ form.tipo }}
+                </div>
+
+                <div class="text-end">
+                    <button type="submit" class="auth-btn">
+                        <i class="fas fa-sign-in-alt"></i> Continuar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const regionSelect = document.getElementById('region');
+        const comunaSelect = document.getElementById('comuna');
+        const comunasPorRegion = JSON.parse('{{ comunas_por_region_json|escapejs }}');
+
+        function actualizarComunas() {
+            const regionCode = regionSelect.value;
+            const comunaActual = comunaSelect.value;
+
+            comunaSelect.innerHTML = '<option value="">Seleccione Comuna</option>';
+
+            let comunasDisponibles = [];
+
+            if (regionCode && comunasPorRegion[regionCode]) {
+                comunasDisponibles = comunasPorRegion[regionCode];
+            } else {
+                comunasDisponibles = Array.from(new Set(
+                    Object.values(comunasPorRegion).flat()
+                )).sort();
+            }
+
+            comunasDisponibles.forEach(comuna => {
+                const option = new Option(comuna, comuna);
+                if (comuna === comunaActual) {
+                    option.selected = true;
+                }
+                comunaSelect.add(option);
+            });
+
+            comunaSelect.disabled = comunasDisponibles.length === 0;
+        }
+
+        regionSelect.addEventListener('change', actualizarComunas);
+        actualizarComunas();  // ejecutar al cargar si ya hay valor
+    });
+    </script>
+</body>
+</html>
+

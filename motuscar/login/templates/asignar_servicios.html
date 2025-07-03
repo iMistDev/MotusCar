@@ -1,0 +1,253 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Asignar Servicios</title>
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: url("{% static 'imgs/background-login.jpg' %}");
+            background-size: 100rem;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 0.3rem;
+            color: #333;
+        }
+        .form-control, .form-select {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        .opciones-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            align-items: center;
+        }
+        .auth-card {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 1000px;
+        }
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .auth-header .logo {
+            font-size: 2rem;
+            color: orange;
+        }
+        .auth-btn {
+            padding: 0.8rem 1.5rem;
+            background-color: #ff6600;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .auth-btn:hover {
+            background-color: #cc5200;
+        }
+        .card-header {
+            background-color: #212529;
+            color: white;
+            border-radius: 8px 8px 0 0;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        .card-body {
+            background-color: #f9f9f9;
+            border-radius: 0 0 8px 8px;
+        }
+        .form-check-label {
+            font-weight: 500;
+        }
+        .mb-3 {
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="logo"><i class="fas fa-tools"></i></div>
+            <h1 style="color: #000000;">Asignar Servicios y Disponibilidad</h1>
+            <p style="color: #000000;">Define los servicios ofrecidos y tus horarios disponibles</p>
+        </div>
+
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+
+            <!-- Servicios -->
+            <div class="mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-wrench me-2"></i> Servicios según especialidad</h5>
+                    {% if servicios_disponibles %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="select_all">
+                        <label class="form-check-label" for="select_all">Seleccionar todos</label>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    {% for servicio_nombre in servicios_disponibles %}
+                    <div class="row mb-3 border-bottom pb-3">
+                        <div class="col-md-12">
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" name="servicios" value="{{ forloop.counter }}" id="servicio_{{ forloop.counter }}">
+                                <label class="form-check-label" for="servicio_{{ forloop.counter }}">{{ servicio_nombre }}</label>
+                                <input type="hidden" name="nombre_{{ forloop.counter }}" value="{{ servicio_nombre }}">
+                            </div>
+
+                            <label for="precio_{{ forloop.counter }}" class="form-label">Precio</label>
+                            <input type="number" class="form-control" name="precio_{{ forloop.counter }}" id="precio_{{ forloop.counter }}" disabled>
+
+                            <label for="duracion_{{ forloop.counter }}" class="form-label mt-2">Duración</label>
+                            <select class="form-select" name="duracion_{{ forloop.counter }}" id="duracion_{{ forloop.counter }}" disabled>
+                                <option value="">Seleccionar duración</option>
+                                {% for d in duraciones %}
+                                <option value="00:{{ d|floatformat:0 }}:00">{{ d }} minutos</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p class="text-muted">No hay servicios disponibles para esta especialidad.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Disponibilidad -->
+            <div class="mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-clock me-2"></i> Disponibilidad Semanal</h5>
+                </div>
+                <div class="card-body">
+
+                    <!-- lunes a viernes -->
+                    <div class="mb-4 border p-3 rounded bg-light">
+                        <label class="form-label fw-bold">Horario general (lunes a viernes):</label>
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <select name="hora_inicio_general" id="hora_inicio_general" class="form-select">
+                                    <option value="">Hora inicio</option>
+                                    {% for h in horas %}
+                                    <option value="{{ h }}">{{ h }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <select name="hora_fin_general" id="hora_fin_general" class="form-select">
+                                    <option value="">Hora fin</option>
+                                    {% for h in horas %}
+                                    <option value="{{ h }}">{{ h }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- sábado -->
+                    <div class="mb-3 border p-3 rounded bg-light">
+                        <br><label class="form-label fw-bold">Disponibilidad para el día sábado:</label>
+                        <div class="row align-items-center mb-2">
+                            <div class="col-md-5">
+                                <select name="hora_inicio_5" class="form-select">
+                                    <option value="">Hora inicio</option>
+                                    {% for h in horas %}
+                                    <option value="{{ h }}">{{ h }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-5">
+                                <select name="hora_fin_5" class="form-select">
+                                    <option value="">Hora fin</option>
+                                    {% for h in horas %}
+                                    <option value="{{ h }}">{{ h }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-2 text-center">
+                                <input class="form-check-input mt-2" type="checkbox" name="libre_5" id="libre_5">
+                                <label class="form-check-label ms-1" for="libre_5">Sábado libre</label>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Botón guardar -->
+            <div class="text-end">
+                <button type="submit" class="auth-btn">
+                    <i class="fas fa-save me-1"></i> Guardar configuración
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const total = {{ servicios_disponibles|length }};
+    for (let i = 1; i <= total; i++) {
+        const cb = document.getElementById(`servicio_${i}`);
+        const precio = document.getElementById(`precio_${i}`);
+        const duracion = document.getElementById(`duracion_${i}`);
+
+        cb.addEventListener('change', function () {
+            const checked = this.checked;
+            precio.disabled = !checked;
+            duracion.disabled = !checked;
+
+            if (checked) {
+                precio.setAttribute('required', 'required');
+                duracion.setAttribute('required', 'required');
+            } else {
+                precio.removeAttribute('required');
+                duracion.removeAttribute('required');
+            }
+        });
+    }
+
+    const selectAll = document.getElementById('select_all');
+    if (selectAll) {
+        selectAll.addEventListener('change', function () {
+            for (let i = 1; i <= total; i++) {
+                const cb = document.getElementById(`servicio_${i}`);
+                cb.checked = this.checked;
+                cb.dispatchEvent(new Event('change'));
+            }
+        });
+    }
+});
+
+function aplicarAHabiles() {
+    const inicio = document.getElementById('hora_inicio_general').value;
+    const fin = document.getElementById('hora_fin_general').value;
+    const dias = [0,1,2,3,4];
+    dias.forEach(d => {
+        const inicioSelect = document.querySelector(`select[name="hora_inicio_${d}"]`);
+        const finSelect = document.querySelector(`select[name="hora_fin_${d}"]`);
+        if (inicioSelect && finSelect) {
+            inicioSelect.value = inicio;
+            finSelect.value = fin;
+        }
+    });
+}
+</script>
+
+</body>
+</html>

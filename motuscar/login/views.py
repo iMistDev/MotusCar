@@ -1,7 +1,23 @@
-from django.shortcuts import render, redirect
+import json
+import time
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.auth.hashers import make_password
+from datetime import time, timedelta
+
+
+from core.constants.regiones import COMUNAS_POR_REGION
+from core.constants.servicios import SERVICIOS_POR_ESPECIALIDAD
+from core.forms.mecanico import Mecanico2Form, MecanicoForm
+from core.forms.usuario_comun import UsuarioComunForm
+from core.models.disponibilidad import DisponibilidadMecanico
+from core.models.mecanico import Mecanico
+from core.models.servicio import Servicio
+from core.models.usuario_comun import UsuarioComun
+from core.views.mecanico import DIA_SEMANA_CHOICES
+from login.models import CustomUser
 from .forms import LoginForm, RegisterForm
 
 def login_view(request):
@@ -45,24 +61,184 @@ def login_view(request):
 
 
 def register_view(request):
-    # Si el usuario ya está autenticado, redirigir al home
-    if request.user.is_authenticated:
-        return redirect('landing')  # Cambia 'home' por 'landing' si prefieres
-
     if request.method == 'POST':
         form = RegisterForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.username = user.email.split('@')[0]  # auto-username
-            user.first_name = form.cleaned_data.get('first_name')
-            user.last_name = form.cleaned_data.get('last_name')
-            user.save()
-            messages.success(request, f'Cuenta creada para {user.email}! Ahora puedes iniciar sesión')
-            return redirect('login')
+        tipo_usuario = request.POST.get('tipo')
+
+        if form.is_valid() and tipo_usuario:
+            email = form.cleaned_data['email']
+            if CustomUser.objects.filter(email=email).exists():
+                messages.error(request, 'Este correo ya está registrado.')
+            else:
+                user = CustomUser(
+                    first_name=form.cleaned_data['first_name'],
+                    last_name=form.cleaned_data['last_name'],
+                    email=email,
+                    username=email,
+                )
+                user.set_password(form.cleaned_data['password1'])  # set_password para que quede correctamente
+                user.save()
+
+                # Guardar el ID del usuario en la sesión
+                request.session['user_id_registro'] = user.id
+
+                if tipo_usuario == 'mecanico':
+                    return redirect('datos_mecanico')
+                elif tipo_usuario == 'usuario':
+                    return redirect('datos_usuario_comun')
+
     else:
         form = RegisterForm()
-    
+
     return render(request, 'register.html', {'form': form})
+
+def datos_mecanico(request):
+    user_id = request.session.get('user_id_registro')
+    if not user_id:
+        return redirect('register')  # seguridad
+    
+
+
+    user = get_object_or_404(CustomUser, id=user_id)
+
+    if request.method == 'POST':
+        form = MecanicoForm(request.POST)
+        if form.is_valid():
+            mecanico = form.save(commit=False)
+            mecanico.user = user  # vinculación correcta
+            mecanico.save()
+            del request.session['user_id_registro']
+            return redirect('asignar_servicios', mecanico_id=mecanico.id)
+    else:
+        form = MecanicoForm()
+
+    return render(request, 'datos_mecanico.html', {
+        'form': form,
+        'comunas_por_region_json': json.dumps(COMUNAS_POR_REGION),
+        'active': 'mecanicos'
+    })
+
+
+
+
+
+def asignar_servicios(request, mecanico_id):
+    mecanico = get_object_or_404(Mecanico, id=mecanico_id)
+    duraciones = [30, 45, 60, 90, 120]
+    print("Usuario final:", mecanico.user.id, mecanico.user.email, mecanico.user.first_name)
+
+    if request.method == 'POST':
+        DisponibilidadMecanico.objects.filter(mecanico=mecanico).delete()
+        Servicio.objects.filter(mecanicos=mecanico).delete()
+        #DEJAR EN 'MECANICOS', MODELS SERVICIO USA MECANICOS NO MECANICO
+        
+        servicios_seleccionados = request.POST.getlist('servicios')  # lista de forloop.counter (indices)
+
+        for idx in servicios_seleccionados:
+            nombre = request.POST.get(f'nombre_{idx}', '')
+            precio = request.POST.get(f'precio_{idx}', '0')
+            duracion_str = request.POST.get(f'duracion_{idx}', '')
+
+            try:
+                h, m, _ = map(int, duracion_str.split(':'))  # HH:MM:SS
+                duracion = timedelta(hours=h, minutes=m)
+            except:
+                duracion = timedelta(minutes=30)
+
+            if not nombre or not precio or not duracion_str:
+                messages.error(request, f"Falta algún dato para el servicio seleccionado ({nombre}).")
+                return redirect('asignar_servicios_disponibilidad', mecanico_id=mecanico_id)
+
+            Servicio.objects.create(
+                mecanicos=mecanico,
+                nombre=nombre,
+                precio=precio,
+                duracion_estimada=duracion
+            )
+
+        #doble check eliminar la dispon. anterior
+        DisponibilidadMecanico.objects.filter(mecanico=mecanico).delete()
+        # Obtener horario general (lunes a viernes)
+        hora_inicio_general = request.POST.get('hora_inicio_general')
+        hora_fin_general = request.POST.get('hora_fin_general')
+
+        # aplicar disponibilidad de lunes (0) a viernes (4)
+        if hora_inicio_general and hora_fin_general:
+            hora_inicio = time.fromisoformat(hora_inicio_general)
+            hora_fin = time.fromisoformat(hora_fin_general)
+            if hora_inicio < hora_fin:
+                for dia in range(0, 5):  # lunes a viernes
+                    DisponibilidadMecanico.objects.create(
+                        mecanico=mecanico,
+                        dia_semana=dia,
+                        hora_inicio=hora_inicio,
+                        hora_fin=hora_fin,
+                        disponible=True
+                    )
+
+
+        # sabado (dia 5)
+        if request.POST.get('libre_5') != 'on':
+            hora_inicio_str = request.POST.get('hora_inicio_5')
+            hora_fin_str = request.POST.get('hora_fin_5')
+            if hora_inicio_str and hora_fin_str:
+                hora_inicio = time.fromisoformat(hora_inicio_str)
+                hora_fin = time.fromisoformat(hora_fin_str)
+                if hora_inicio < hora_fin:
+                    DisponibilidadMecanico.objects.create(
+                        mecanico=mecanico,
+                        dia_semana=5,
+                        hora_inicio=hora_inicio,
+                        hora_fin=hora_fin,
+                        disponible=True
+                    )
+
+        messages.success(request, 'Servicios y disponibilidad asignados correctamente.')
+        return redirect('motus')
+
+    especialidad = mecanico.especialidad.lower().strip()
+    servicios_disponibles = SERVICIOS_POR_ESPECIALIDAD.get(especialidad, [])
+    
+
+
+    return render(request, 'asignar_servicios.html', {
+        'mecanico': mecanico,
+        'servicios_disponibles': servicios_disponibles,
+        'dias': DIA_SEMANA_CHOICES,
+        'horas': [f'{h:02d}:00' for h in range(8, 21)],
+        'duraciones': duraciones,
+        'active': 'mecanicos'
+    })
+    
+def datos_usuario_comun(request):
+    if request.method == 'POST':
+        form = UsuarioComunForm(request.POST)
+        datos_generales = request.session.get('registro_general')
+
+        if form.is_valid() and datos_generales:
+            user = CustomUser.objects.create(
+                first_name=datos_generales['first_name'],
+                last_name=datos_generales['last_name'],
+                email=datos_generales['email'],
+                username=datos_generales['email'],  # si usas email como username
+                password=make_password(datos_generales['password1']),
+                tipo_usuario='usuario_comun'
+            )
+
+            usuario_comun = form.save(commit=False)
+            usuario_comun.user = user
+            usuario_comun.save()
+
+            del request.session['registro_general']
+
+            return redirect('login')  # Redirige donde desees
+    else:
+        form = UsuarioComunForm()
+
+
+    return render(request, 'datos_usuario_comun.html'
+    )
+
 
 @login_required
 def logout_view(request):

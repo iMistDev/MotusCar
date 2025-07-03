@@ -15,6 +15,27 @@
             background: url("{% static 'imgs/background-login.jpg' %}");
             background-size: 100rem;
         }
+        .opciones-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            align-items: center;
+        }
+        .opcion-btn {
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 8px;
+            background-color: #ff6600;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 100%;
+            max-width: 300px;
+        }
+        .opcion-btn:hover {
+            background-color: #cc5200;
+        }
     </style>
 </head>
 <body>
@@ -93,10 +114,14 @@
                     <div class="error-text">{{ form.password2.errors }}</div>
                     {% endif %}
                 </div>
+                    
+                <div>
+                <h2>¿Qué tipo de cuenta deseas?</h2>
+                    <button name="tipo" value="usuario" class="auth-btn">Soy Usuario</button>
+                    <button name="tipo" value="mecanico" class="auth-btn">Soy Mecánico</button>
+                </div>
                 
-                <button type="submit" class="auth-btn">
-                    <i class="fas fa-user-plus"></i> Registrarse
-                </button>
+
                 
                 <div class="auth-footer">
                     <p>¿Ya tienes una cuenta? <a href="{% url 'login' %}" class="login-link">Inicia sesión</a></p>
