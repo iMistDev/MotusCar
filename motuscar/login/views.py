@@ -247,11 +247,15 @@ def crear_vehiculo(request):
         form = VehiculoForm()
     return render(request, 'vehiculo/crear.html', {'form': form})
 
+
 @login_required
 def editar_vehiculo(request, vehiculo_id):
     usuario_comun = UsuarioComun.objects.get(id=request.user.id)
-    vehiculo = get_object_or_404(Vehiculo, id=vehiculo_id, usuario=usuario_comun, deleted__isnull=True)
-    
+
+    vehiculo = Vehiculo.objects.filter(id=vehiculo_id).first()
+
+    vehiculo = Vehiculo.objects.filter(id=vehiculo_id, usuario=usuario_comun, deleted__isnull=True).first()
+
     if request.method == 'POST':
         form = VehiculoForm(request.POST, instance=vehiculo)
         if form.is_valid():
@@ -259,5 +263,20 @@ def editar_vehiculo(request, vehiculo_id):
             return redirect('mis_vehiculos')
     else:
         form = VehiculoForm(instance=vehiculo)
-    
+
     return render(request, 'vehiculo/editar.html', {'form': form})
+
+@login_required
+def eliminar_vehiculo(request, vehiculo_id):
+    usuario_comun = UsuarioComun.objects.get(id=request.user.id)
+    
+    # Obtener vehículo solo si pertenece al usuario y no está eliminado
+    vehiculo = get_object_or_404(Vehiculo, id=vehiculo_id, usuario=usuario_comun, deleted__isnull=True)
+    
+    if request.method == 'POST':
+        vehiculo.delete()  # Soft delete por SafeDelete
+        messages.success(request, f'Vehículo {vehiculo.patente} eliminado correctamente.')
+        return redirect('mis_vehiculos')
+
+    # Si quieres, muestra una confirmación antes de eliminar
+    return render(request, 'vehiculo/eliminar_definitivo.html', {'vehiculo': vehiculo})

@@ -24,8 +24,8 @@
             <td>{{ vehiculo.modelo }}</td>
             <td>{{ vehiculo.año }}</td>
             <td>
-                <a href="{% url 'editar_vehiculo' vehiculo.id %}" class="btn btn-sm btn-primary">Editar</a>
-                <a href="{% url 'eliminar_vehiculo' vehiculo.id %}" class="btn btn-sm btn-danger">Eliminar</a>
+                <a href="{% url 'editar_vehiculo' vehiculo_id=vehiculo.id %}" class="btn btn-sm btn-primary">Editar</a>
+                <a href="{% url 'eliminar_vehiculo' vehiculo_id=vehiculo.id %}" class="btn btn-sm btn-danger">Eliminar</a>
             </td>
         </tr>
         {% empty %}
