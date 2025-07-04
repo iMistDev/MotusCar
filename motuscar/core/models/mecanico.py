@@ -22,4 +22,5 @@ class Mecanico(CustomUser):
         db_table = 'mecanico'
 
     def __str__(self):
-        return f'{self.user.first_name} {self.user.last_name} - {self.especialidad} ({self.comuna})'
+        return f'{self.first_name} {self.last_name} - {self.especialidad} ({self.comuna})'
+
