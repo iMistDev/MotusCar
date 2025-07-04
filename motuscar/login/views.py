@@ -280,3 +280,4 @@ def eliminar_vehiculo(request, vehiculo_id):
 
     # Si quieres, muestra una confirmación antes de eliminar
     return render(request, 'vehiculo/eliminar_definitivo.html', {'vehiculo': vehiculo})
+
