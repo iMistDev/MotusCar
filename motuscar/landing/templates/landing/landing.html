@@ -60,7 +60,7 @@
                 {% if user.is_authenticated %}
                     <div class="user-dropdown">
                         <button class="btn btn-login user-btn" onclick="window.location.href='{% url 'profile' %}'">
-                            <i class="fas fa-user-circle"></i> {{ user.first_name }} {{ user.last_name }}
+                            <i class="fas fa-user-circle"></i> {{ user.first_name|title }} {{ user.last_name|title }}
                             <i class="fas fa-caret-down"></i>
                         </button>
                         <div class="user-dropdown-content">
