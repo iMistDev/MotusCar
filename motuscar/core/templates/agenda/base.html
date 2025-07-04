@@ -1,71 +1,76 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 {% load static %}
 <html lang="es">
-<head>
+<head> 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agenda - Motuscar</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="{% static 'css/styles.css' %}" rel="stylesheet"> 
+    <link href="{% static 'agenda/css/styles.css' %}" rel="stylesheet"> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-    <!-- CSS Flatpickr -->
+    <!-- Flatpickr -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-
-    <!-- JS Flatpickr -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
-    <!-- traducción al español -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
-    <style>
-    select.form-select option:disabled {
-        color: #6c757d !important;
-        background-color: #f8f9fa !important;
-    }
-    </style>
 
+    <style>
+        select.form-select option:disabled {
+            color: #6c757d !important;
+            background-color: #f8f9fa !important;
+        }
+    </style>
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-2 sidebar position-fixed vh-100">
-                <div class="text-center my-4 py-3">
-                    <a href="{% url 'dashboard' %}" class="text-decoration-none">
-                        <img src="{% static 'img/logo.png' %}" 
-                            alt="Motuscar Logo" 
-                            class="img-fluid" 
-                            style="max-height: auto; width: auto;">
-                    </a>
-                </div>
-                <ul class="nav flex-column">
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'dashboard' %}">
+                <img src="{% static 'img/Motuscar-logo.webp' %}" alt="Motuscar Logo" height="30">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#motusNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="motusNavbar">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link {% if active == 'listar' %}active{% endif %}" href="{% url 'listar_agenda' %}">
+                        <a class="nav-link {% if active == 'agenda' %}active{% endif %}" href="{% url 'listar_agenda' %}">
                             <i class="fas fa-calendar-alt me-2"></i>Mi Agenda
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if active == 'crear' %}active{% endif %}" href="{% url 'listar_mecanicos' %}">
+                        <a class="nav-link {% if active == 'agendar' %}active{% endif %}" href="{% url 'listar_mecanicos' %}">
                             <i class="fas fa-plus-circle me-2"></i>Agendar una cita
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if active == 'mecanicos' %}active{% endif %}" href="{% url 'listar_mecanico' %}">
+                            <i class="fas fa-tools me-2"></i>Gestión de Mecánicos
                         </a>
                     </li>
                 </ul>
             </div>
-            
-            <div class="col-md-10 main-content offset-md-2">
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show mt-3">
-                            {{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    {% endfor %}
-                {% endif %}
-                
-                {% block content %}{% endblock %}
-            </div>
         </div>
+    </nav>
+
+    <!-- CONTENIDO -->
+    <div class="container-fluid mt-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}{% endblock %}
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     {% block extra_js %}{% endblock %}
+    
 </body>
 </html>

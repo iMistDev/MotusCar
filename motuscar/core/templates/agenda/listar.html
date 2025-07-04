@@ -19,18 +19,36 @@
                 <th>Hora</th>
                 <th>Precio</th>
                 <th>Estado</th>
+                {% if not usuario_es_mecanico %}
                 <th>Acciones</th>
+                {% endif %}
             </tr>
         </thead>
         <tbody>
             {% for agenda in agendas %}
             <tr>
-                <td>{{ agenda.mecanico.nombre }} {{ agenda.mecanico.apellido }}<br>{{ agenda.descripcion|cut:"Cita agendada para " }}</td>
+                {% if not usuario_es_mecanico %}
+                <td>
+                    <strong>{{ agenda.mecanico.first_name|title }} {{ agenda.mecanico.last_name|title }}</strong>
+                    <br>
+                    <span class="text-muted">{{ agenda.descripcion|cut:"Cita agendada para " }}</span>
+                </td>
+                {% endif %}
+
+                {% if usuario_es_mecanico %}
+                <td>
+                    <strong>{{ agenda.usuariocomun.first_name|title }} {{ agenda.usuariocomun.last_name|title }}</strong>
+                    <br>
+                    <span class="text-muted">{{ agenda.descripcion|cut:"Cita agendada para " }}</span>
+                </td>
+                {% endif %}
+
                 <td>{{ agenda.mecanico.direccion }}<br>{{ agenda.mecanico.comuna }}, {{ agenda.mecanico.region }}</td>
                 <td>{{ agenda.fecha|date:"d/m/Y" }}</td>
                 <td>{{ agenda.hora_inicio|time:"H:i" }}</td>
                 <td><span class="badge bg-primary">${{ agenda.servicio.precio|intcomma }} CLP</span></td>
                 
+                {% if not usuario_es_mecanico %}
                 <td>
                     <span class="badge 
                         {% if agenda.estado == 'pendiente' %}bg-warning text-dark
@@ -40,14 +58,31 @@
                         {{ agenda.get_estado_display }}
                     </span>
                 </td>
+                {% endif %}
+
+                {% if usuario_es_mecanico %}
                 <td>
-                    <a href="{% url 'editar_agenda' agenda.id %}" class="btn btn-sm btn-outline-primary">
-                        <i class="fas fa-edit"></i>
-                    </a>
-                    <a href="{% url 'eliminar_agenda' agenda.id %}" class="btn btn-sm btn-outline-danger">
-                        <i class="fas fa-trash-alt"></i>
-                    </a>
+                <form method="post" action="{% url 'cambiar_estado_agenda' agenda.id %}">
+                {% csrf_token %}
+                <select name="estado" class="form-select form-select-sm d-inline w-auto">
+                    <option value="pendiente" {% if agenda.estado == "pendiente" %}selected{% endif %}>Pendiente</option>
+                    <option value="cancelada" {% if agenda.estado == "cancelada" %}selected{% endif %}>Cancelada</option>
+                </select>
+                <button class="btn btn-outline-primary btn-sm">Cambiar</button>
+                </form>
                 </td>
+                {% endif %}
+
+                {% if not usuario_es_mecanico %}
+                <td>
+                <a href="{% url 'editar_agenda' agenda.id %}" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-edit"></i>
+                </a>
+                <a href="{% url 'eliminar_agenda' agenda.id %}" class="btn btn-sm btn-outline-danger">
+                    <i class="fas fa-trash-alt"></i>
+                </a>
+                </td>
+                {% endif %}
             </tr>
             {% empty %}
             <tr>

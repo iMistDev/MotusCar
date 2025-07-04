@@ -1,0 +1,154 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro | Mi App</title>
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Estilos específicos para registro */
+
+        body {
+            background: url("{% static 'imgs/background-login.jpg' %}");
+            background-size: 100rem;
+        }
+        .opciones-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            align-items: center;
+        }
+        .opcion-btn {
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 8px;
+            background-color: #ff6600;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 100%;
+            max-width: 300px;
+        }
+        .opcion-btn:hover {
+            background-color: #cc5200;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="logo">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <h1 style="color: #FF4500;">Crear Cuenta</h1> <!-- Hereda el color -->
+                <p style="color:  #FF4500">Completa el formulario para registrarte</p>
+                </div>
+
+            <form method="post" class="auth-form">
+                {% csrf_token %}
+                
+                {% if form.errors %}
+                <div class="alert alert-error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    Por favor corrige los errores
+                </div>
+                {% endif %}
+                <div class="form-group">
+                    <label for="id_first_name">Nombre</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-id-card"></i>
+                        {{ form.first_name }}
+                    </div>
+                    {% if form.first_name.errors %}
+                    <div class="error-text">{{ form.first_name.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_last_name">Apellido</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-id-card-alt"></i>
+                        {{ form.last_name }}
+                    </div>
+                    {% if form.last_name.errors %}
+                    <div class="error-text">{{ form.last_name.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="id_email">Correo electrónico</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-envelope"></i>
+                        {{ form.email }}
+                    </div>
+                    {% if form.email.errors %}
+                    <div class="error-text">{{ form.email.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_password1">Contraseña</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        {{ form.password1 }}
+                    </div>
+                    <div class="password-requirements">
+                        <ul>
+                            <li class="{% if form.password1.errors %}invalid{% else %}valid{% endif %}">Mínimo 8 caracteres</li>
+                            <li class="{% if form.password1.errors %}invalid{% else %}valid{% endif %}">No puede ser completamente numérica</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_password2">Confirmar Contraseña</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        {{ form.password2 }}
+                    </div>
+                    {% if form.password2.errors %}
+                    <div class="error-text">{{ form.password2.errors }}</div>
+                    {% endif %}
+                </div>
+                    
+                <div>
+                <h2>¿Qué tipo de cuenta deseas?</h2>
+                    <button name="tipo" value="usuario" class="auth-btn">Soy Usuario</button>
+                    <button name="tipo" value="mecanico" class="auth-btn">Soy Mecánico</button>
+                </div>
+                
+
+                
+                <div class="auth-footer">
+                    <p>¿Ya tienes una cuenta? <a href="{% url 'login' %}" class="login-link">Inicia sesión</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Validación de contraseña en tiempo real
+        document.addEventListener('DOMContentLoaded', function() {
+            const password1 = document.getElementById('id_password1');
+            const password2 = document.getElementById('id_password2');
+            
+            if (password1 && password2) {
+                password1.addEventListener('input', validatePassword);
+                password2.addEventListener('input', validatePassword);
+            }
+            
+            function validatePassword() {
+                if (password1.value !== password2.value) {
+                    password2.setCustomValidity('Las contraseñas no coinciden');
+                } else {
+                    password2.setCustomValidity('');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

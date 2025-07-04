@@ -13,3 +13,9 @@ admin.site.register(Products)
 
 from core.models.usuarios import Usuario
 admin.site.register(Usuario)
+
+from core.models.mecanico import Mecanico
+admin.site.register(Mecanico)
+
+from core.models.usuario_comun import UsuarioComun
+admin.site.register(UsuarioComun)
