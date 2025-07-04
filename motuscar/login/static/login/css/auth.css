@@ -30,16 +30,12 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    background: url(% static 'login/imgs/background-login.jpg'%);
     color: var(--text-color);
     height: auto;
     width: auto;
     display: flex;
     justify-content: center;
     align-items: center;
-
-    background-position: center;
-
 }
 
 /* Contenedor principal */
