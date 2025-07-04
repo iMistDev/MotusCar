@@ -25,7 +25,7 @@ from core.views.agenda import (
 #URL USUARIO COMUN
 from core.views.usuario_comun import listar_usuario_comun, crear_usuario_comun, editar_usuario_comun, EliminarUsuarioComun
 
-
+ 
 
 urlpatterns = [
     #URL Vehículos
