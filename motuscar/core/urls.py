@@ -15,14 +15,18 @@ from core.views.usuarios import user_list, user_manage, UserDeleteView
 
 #URL Mecanico
 from core.views.mecanico import listar_mecanico, crear_mecanico, editar_mecanico, eliminar_mecanico, asignar_servicios_disponibilidad
+from core.views.mecanico import listar_mecanico, crear_mecanico, editar_mecanico, eliminar_mecanico, asignar_servicios_disponibilidad
 
 #URL Agenda
 from core.views.agenda import (
-    listar_mecanicos, editar_agenda, eliminar_agenda, horarios_ocupados, listar_mecanicos,
+    cambiar_estado_agenda, listar_mecanicos, editar_agenda, eliminar_agenda, horarios_ocupados, listar_mecanicos,
     agendar_cita, listar_agenda
 )
 
+#URL USUARIO COMUN
+from core.views.usuario_comun import listar_usuario_comun, crear_usuario_comun, editar_usuario_comun, EliminarUsuarioComun
 
+ 
 
 urlpatterns = [
     #URL Vehículos
@@ -53,15 +57,22 @@ urlpatterns = [
     path('mecanico/<int:mecanico_id>/eliminar/', eliminar_mecanico, name='eliminar_mecanico'),
     path('mecanico/<int:mecanico_id>/asignar/', asignar_servicios_disponibilidad, name='asignar_servicios_disponibilidad'),
 
-
-    
-    #ULR Agenda
+    #URL Agenda
     path('agenda/', listar_agenda, name='listar_agenda'),
     path('agenda/editar/<int:agenda_id>/', editar_agenda, name='editar_agenda'),
     path('agenda/eliminar/<int:agenda_id>/', eliminar_agenda, name='eliminar_agenda'),
     path('agenda/horarios_ocupados/', horarios_ocupados, name='horarios_ocupados'), 
+    path('agenda/estado/<int:agenda_id>/', cambiar_estado_agenda, name='cambiar_estado_agenda'),
+
+    
     #URL Agenda -> Buscar mecanico
     path('agenda/mecanico/', listar_mecanicos, name='listar_mecanicos'),
     path('agenda/mecanico/<int:mecanico_id>/servicio/<int:servicio_id>/agendar/', agendar_cita, name='agendar_cita'),
 
+    #URL USUARIO COMUN
+    path('usuario_comun/', listar_usuario_comun, name='listar_usuario_comun'),
+    path('usuario_comun/crear/', crear_usuario_comun, name='crear_usuario_comun'),
+    path('usuario_comun/<int:pk>/editar/', editar_usuario_comun, name='editar_usuario_comun'),
+    path('usuario_comun/<int:pk>/eliminar/', EliminarUsuarioComun.as_view(), name='eliminar_usuario_comun'),
+    
 ]

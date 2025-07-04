@@ -10,7 +10,7 @@
         <p class="lead">¿Estás seguro que deseas eliminar la siguiente cita?</p>
         
         <div class="mb-4">
-            <h5>{{ agenda.mecanico.nombre }} {{ agenda.mecanico.apellido }} - {{ agenda.descripcion|cut:"Cita agendada para " }}</h5>
+            <h5>{{ agenda.mecanico.first_name|title }} {{ agenda.mecanico.last_name|title }} - {{ agenda.descripcion|cut:"Cita agendada para " }}</h5>
             
             <div class="text-muted mb-2">
                 <i class="fas fa-map-marker-alt me-1"></i>

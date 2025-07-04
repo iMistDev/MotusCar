@@ -9,11 +9,19 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         # === 1. Crear Mecánicos ===
         mecanicos_data = [
+<<<<<<< HEAD
             {"nombre": "Juan", "apellido": "Pérez", "email": "juan.perez@example.com", "region": "Biobío", "comuna": "Concepción", "direccion": "Av. Collao 1234", "especialidad": "lubricentro", "tipo": "taller"},
             {"nombre": "Pedro", "apellido": "López", "email": "pedro.lopez@example.com", "region": "Biobío", "comuna": "Concepción", "direccion": "O'Higgins 1122", "especialidad": "electrico", "tipo": "taller"},
             {"nombre": "Luis", "apellido": "Torres", "email": "luis.torres@example.com", "region": "Biobío", "comuna": "Concepción", "direccion": "Av. Paicaví 456", "especialidad": "vulcanizacion", "tipo": "taller"},
             {"nombre": "Héctor", "apellido": "Vargas", "email": "hector.vargas@example.com", "region": "Biobío", "comuna": "Concepción", "direccion": "Av. Chacabuco 789", "especialidad": "mecanica", "tipo": "taller"},
             {"nombre": "Arturo", "apellido": "Miranda", "email": "arturo.miranda@example.com", "region": "Biobío", "comuna": "Concepción", "direccion": "Av. Los Robles 667", "especialidad": "pintura", "tipo": "taller"},
+=======
+            {"nombre": "Juan", "apellido": "Pérez", "email": "juan.perez@example.com", "region": "biobio", "comuna": "Talcahuano", "direccion": "Av. Collao 1234", "especialidad": "lubricentro", "tipo": "taller"},
+            {"nombre": "Pedro", "apellido": "López", "email": "pedro.lopez@example.com", "region": "biobio", "comuna": "Chiguayante", "direccion": "O'Higgins 1122", "especialidad": "electrico", "tipo": "taller"},
+            {"nombre": "Luis", "apellido": "Torres", "email": "luis.torres@example.com", "region": "biobio", "comuna": "Concepción", "direccion": "Av. Paicaví 456", "especialidad": "vulcanizacion", "tipo": "taller"},
+            {"nombre": "Héctor", "apellido": "Vargas", "email": "hector.vargas@example.com", "region": "biobio", "comuna": "Concepción", "direccion": "Av. Chacabuco 789", "especialidad": "mecanica", "tipo": "taller"},
+            {"nombre": "Arturo", "apellido": "Miranda", "email": "arturo.miranda@example.com", "region": "biobio", "comuna": "Concepción", "direccion": "Av. Los Robles 667", "especialidad": "pintura", "tipo": "taller"},
+>>>>>>> Develop
         ]
 
         mecanicos = []

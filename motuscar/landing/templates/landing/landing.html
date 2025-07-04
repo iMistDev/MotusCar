@@ -1,0 +1,193 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landing | Motuscar</title>
+    <!--Icon-->
+    <link rel="icon" type="image/png" href="{% static 'img/motusicon128x128.webp' %}">
+    <!-- Estilos y scripts -->
+    <link rel="stylesheet" href="{% static 'landing/css/styles.css' %}">
+    <script src="{% static 'landing/js/scripts.js' %}"></script>
+
+    <!--CDN Awesome Fonts-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!--Fuentes-->
+    <!-- Para Roboto -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Para Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!--Animación de Carga-->
+    <div class="loading-overlay">
+        <div class="gear-loader">
+            <i class="fa-solid fa-gear gear-background"></i>
+            <div class="gear-fill-container">
+                <i class="fa-solid fa-gear gear-fill"></i>
+            </div>
+        </div>
+    </div>
+    <!--Navegación-->
+    <header class="header">
+        <nav class="navbar">
+            <div class="menu-hamburguesa">
+                <button id="hamburger-btn">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="dropdown-menu" id="dropdown-menu">
+                    <ul>
+                        <li class="ham-btn-element"><a href="#Hero-Sec">Inicio</a></li>
+                        <li class="ham-btn-element"><a href="#Quienes-Somos" id="servicios-link">Nosotros</a></li>
+                        <li class="ham-btn-element"><a href="#Servicios">Servicios</a></li>
+                        <li class="ham-btn-element"><a href="#Unete">Únete</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="logo">
+                <a href="{% url 'landing' %}"><img src="{% static 'img/Motuscar-logo.webp' %}" alt="MotusCar Logo"></a>
+            </div>
+            <!-- Auth Buttons -->
+            <div class="auth-buttons">
+                {% if user.is_authenticated %}
+                    <div class="user-dropdown">
+                        <button class="btn btn-login user-btn" onclick="window.location.href='{% url 'motus' %}'">
+                            <i class="fas fa-user-circle"></i> {{ user.first_name|title }} {{ user.last_name|title }}
+                            <i class="fas fa-caret-down"></i>
+                        </button>
+                        <div class="user-dropdown-content">
+                    </div>
+                {% else %}
+                    <button class="btn btn-login">
+                        <a href="{% url 'login' %}">Iniciar Sesión</a>
+                    </button>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+    <!--Contenido-->
+    <main>
+        <!-- Hero section-->
+        <section class="hero" id="Hero-Sec">
+            <!-- Carousel Hero-->
+            <div class="hero-carousel">
+                <div class="carousel-slide active">
+                    <img src="{% static 'landing/img/reparacion.webp' %}" alt="">
+                </div>
+                <div class="carousel-slide">
+                    <img src="{% static 'landing/img/mecanico-reparando.webp' %}" alt="">
+                </div>
+                <div class="carousel-slide">
+                    <img src="{% static 'landing/img/garage.webp' %}" alt="">
+                </div>
+                <div class="carousel-slide">
+                    <img src="{% static 'landing/img/mecanico-reparando2.webp' %}" alt="">
+                </div>
+            </div>
+
+            <!-- texto superpuesto -->
+            <div class="hero-content">
+                <h1 class="hero-title">Lo Mejor Para tu <span class="text-orange">Auto</span></h1>
+                <p class="hero-subtitle">Lo Mejor para tu <span class="text-orange">Tiempo</span></p>
+                <!--CTA-->
+                <div class="hero-buttons">
+                    <button class="cta-hero">
+                        <a class="cta-text" href="{% url 'motus' %}">Descubre Motuscar</a>
+                    </button>
+                </div>
+            </div>
+
+            <!--Controles Carousel-->
+            <div class="carousel-controls">
+                <button class="carousel-prev"><i class="fas fa-chevron-left"></i></button>
+                <button class="carousel-next"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <!--Indicadores-->
+            <div class="carousel-indicators">
+                <span class="indicator active"></span>
+                <span class="indicator"></span>
+                <span class="indicator"></span>
+                <span class="indicator"></span>
+            </div>
+        </section>
+        <div class="wave-divider"></div>
+        <!--Qué ofrecemos-->
+        <section class="services">
+            <div class="services-item">
+                <i class="fas fa-tools"></i>
+                <div class="services-content" id="Servicios">
+                    <h1>¿Qué ofrecemos?</h1>
+                    <p>Motuscar ofrece soluciones rápidas para ti y tu vehículo</p>
+                    <p>Nuestra plataforma te provee de conexión <span>¡con lo que necesites!</span></p>
+                    <p>¿Necesitas un taller?</p>
+                    <p><i class="fa-solid fa-check" id="icon-text"></i> Proveemos ubicaciones cercanas a ti en todo momento. </p>
+                    <p>¿Buscas repuestos?</p>
+                    <p><i class="fa-solid fa-check" id="icon-text"></i> Conectamos con proveedores para lo que necesites.</p>
+                    <p>¿Quieres agendar un servicio en línea?</p>
+                    <p><i class="fa-solid fa-check" id="icon-text"></i> Desde la plataforma podrás hacerlo.</p>
+                    <p>¡Todo eso y más podrás encontrar en nuestra plataforma!</p>
+                </div>
+            </div>
+            <div class="services-item">
+                <i class="fa-solid fa-robot"></i>
+                <div class="services-content">
+                    <h1>Asistencia Personalizada</h1>
+                    <p>Deja que nuestro amable compañero Adrián te ayude a escoger lo que necesites para tu vehículo, gracias a su poderosa <span>Inteligencia Artificial</span> ya sean repuestos, servicios o lo que necesites ¡puedes contar con él!</p>
+                </div>
+            </div>
+            <div class="services-item" id="Quienes-Somos">
+                <i class="fa-solid fa-people-group"></i>
+                <div class="services-content">
+                    <h1>¿Quiénes Somos?</h1>
+                    <p>Somos un equipo de jóvenes desarrolladores e innovadores que creemos que el mantenimiento de tu auto no tiene por qué ser una experiencia frustrante.</p>
+                    <p>Vinimos a solucionar la falta de <span>confianza y transparencia</span> en los servicios automotrices tradicionales.</p>
+                    <p>Nos une la pasión por la tecnología, la movilidad y la experiencia del usuario. Con Motuscar, buscamos construir una comunidad donde la confianza y la eficiencia vayan de la mano.</p>
+                </div>
+            </div>
+            <div class="services-item" id="Unete">
+                <i class="fa-solid fa-handshake"></i>
+                <div class="services-content">
+                    <h1>¿Te interesa trabajar con nosotros?</h1>
+                    <p>Si eres mecánico, taller o proveedor de repuestos...</p>
+                    <p>¡Motuscar te conecta con cientos de nuevos clientes cada semana!</p>
+                    <p><i class="fa-solid fa-wrench" id="icon-text"></i> Aumenta tu visibilidad: Aparece en los resultados cuando usuarios busquen servicios cercanos.</p>
+                    <p><i class="fa-solid fa-square-pen" id="icon-text"></i>Recibe evaluaciones positivas que generen confianza.</p>
+                    <p><i class="fa-solid fa-briefcase" id="icon-text"></i>Gestiona reservas fácilmente y recibe pagos directos.</p>
+                    <p><i class="fa-solid fa-box" id="icon-text"></i>¿Vendes repuestos? Publica tu stock y accede a un nuevo canal de ventas.</p>
+                </div>
+            </div>
+        </section>
+        <!-- Mock IA-->
+        <!-- <div class="assist-button-container">
+            <button class="assist-button">
+                <i class="fa-solid fa-robot"></i>
+            </button>
+        </div> -->
+    </main>
+    <!--Footer-->
+    <footer id="contacto">
+        <div class="container footer-container">
+            <div class="footer-brand">
+                <img src="{% static 'img/Motuscar-logo.webp' %}" alt="">
+                <p class="footer-description">Lo mejor para tu Auto, lo mejor para tu Tiempo.</p>
+            </div>
+            <div class="footer-contact">
+                <h4 class="footer-subtitle">Contacto</h4>
+                <p class="footer-info"><i class="fas fa-envelope"></i> contacto@motuscar.cl</p>
+                <p class="footer-info"><i class="fas fa-phone-alt"></i> +56 9 8765 4321</p>
+            </div>
+            <div class="footer-copyright">
+                <p class="copyright-text">© 2025 Motuscar. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

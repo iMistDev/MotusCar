@@ -18,9 +18,6 @@
                     <thead>
                         <tr>
                             <th style="background: #4a6cf7; color: white;">
-                                <i class="bi bi-person-badge"></i> Username
-                            </th>
-                            <th style="background: #4a6cf7; color: white;">
                                 <i class="bi bi-envelope"></i> Email
                             </th>
                             <th style="background: #4a6cf7; color: white;">
@@ -34,7 +31,6 @@
                     <tbody>
                         {% for user in users %}
                         <tr>
-                            <td class="fw-bold" style="color: #4a6cf7;">{{ user.username }}</td>
                             <td>{{ user.email }}</td>
                             <td>{{ user.get_full_name }}</td>
                             <td>

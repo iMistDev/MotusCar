@@ -8,7 +8,7 @@
     </div>
     <div class="card-body">
         <div class="mb-4">
-            <h5>{{ agenda.mecanico.nombre }} {{ agenda.mecanico.apellido }}</h5>
+            <h5>{{ agenda.mecanico.first_name|title }} {{ agenda.mecanico.last_name|title }}</h5>
             <div class="text-muted mb-2">
                 <i class="fas fa-wrench me-1"></i>
                 {{ agenda.descripcion|cut:"Cita agendada para " }}

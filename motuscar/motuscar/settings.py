@@ -15,6 +15,11 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+AUTHENTICATION_BACKENDS = [
+    'login.backends.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
+    'login.backends.MecanicoBackend',
+]
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -25,7 +30,7 @@ SECRET_KEY = 'django-insecure-%+(k*a1ey)0@no6%-7b-y13b1iomc3&vtxsy4zu6+v&_719e2m
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -37,20 +42,28 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'Login',
+    #'login',
     'core',
     'crispy_forms',
     'crispy_bootstrap5',  
     'safedelete',
     'dashboard',
     'motus',
-    
-    
+    'landing',
+    'login.apps.LoginConfig',
+
+
     'rest_framework',
     'django.contrib.humanize',
 ]
 
-AUTH_USER_MODEL = 'auth.User'  # Reemplaza 'usuarios' con el nombre de tu app
+LOGIN_REDIRECT_URL = 'motus'  # Reemplaza 'motus:home' con el nombre de tu vista de inicio
+LOGOUT_REDIRECT_URL = 'login'  # Reemplaza 'login' con el nombre de tu vista de inicio
+LOGIN_URL = 'login'  # Reemplaza 'login' con el nombre de tu vista de inicio de sesión
+
+
+
+AUTH_USER_MODEL = 'login.CustomUser'  # 'login' debe ser el nombre correcto de tu app
 
 
 MIDDLEWARE = [
@@ -70,7 +83,10 @@ import os
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            BASE_DIR / 'templates',
+            os.path.join(BASE_DIR, 'login', 'templates'),
+            ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -121,7 +137,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Santiago' #HORA CHILENA
 
 USE_I18N = True
 
@@ -132,9 +148,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static')
-]
+STATICFILES_DIRS = [BASE_DIR / 'static']
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
@@ -142,13 +158,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# Configuración de login
-LOGIN_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
-
-
 
 
 # Default primary key field type

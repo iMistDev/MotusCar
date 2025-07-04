@@ -2,6 +2,7 @@ from django.db import models
 from django.core.exceptions import ValidationError
 
 from core.models.disponibilidad import DisponibilidadMecanico
+from core.models.usuario_comun import UsuarioComun
 
 class Agenda(models.Model):
     ESTADOS = [
@@ -18,6 +19,8 @@ class Agenda(models.Model):
     hora_fin = models.TimeField()
     estado = models.CharField(max_length=20, choices=ESTADOS, default='pendiente')
     descripcion = models.TextField(blank=True)
+    usuariocomun = models.ForeignKey('core.UsuarioComun', on_delete=models.CASCADE, null=True, blank=True)
+
     
     
     class Meta:

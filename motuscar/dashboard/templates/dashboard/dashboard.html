@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Motuscar Dashboard</title>
+    <title>Administracion | Motuscar</title>
     <!-- Icon -->
     <link rel="icon" href="{% static 'dashboard/img/motusicon128x128.webp' %}" type="image/webp">
     <!--CSS HOMPAGE-->
@@ -25,6 +25,16 @@
     <!--CDN Awesome Fonts-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
+<style>
+        body {
+        background-image: url("{% static 'img/background-login.jpg' %}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        min-height: 100vh;
+    }
+</style>
 <body>
     <header>
         <nav class="navbar">
@@ -43,6 +53,9 @@
             <li><i class="fa-solid fa-user"></i><a href="{% url 'user_list' %}">Usuarios</a></li>
             <li><i class="fa-solid fa-car-side"></i><a href="{% url 'listar_vehiculos' %}">Vehículos</a></li>
             <li><i class="fa-solid fa-warehouse"></i><a href="{% url 'listar_productos' %}">Productos</a></li>
+            <li><i class="fa-solid fas fa-tools me-2"></i><a class="nav-link {% if active == 'mecanicos' %}active{% endif %}" href="{% url 'listar_mecanico' %}">Mecánicos</a></li>
+            <li><i class="fa-solid fas fa-calendar-alt me-2"></i><a class="nav-link {% if active == 'agenda' %}active{% endif %}" href="{% url 'listar_agenda' %}">Mi Agenda</a></li>
+            <li><i class="fa-solid fas fa-plus-circle me-2"></i><a class="nav-link {% if active == 'agendar' %}active{% endif %}" href="{% url 'listar_mecanicos' %}">Agendar una cita</a></li>
         </ul>
     </aside>
     <main class="main-content" id="main-content">

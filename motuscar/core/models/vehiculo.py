@@ -2,6 +2,7 @@ from django.db import models
 from safedelete.models import SafeDeleteModel, SOFT_DELETE
 from safedelete import SOFT_DELETE, HARD_DELETE
 from safedelete.managers import SafeDeleteAllManager
+from core.models.usuario_comun import UsuarioComun
 
 class DeletedOnlyManager(SafeDeleteAllManager):
     def get_queryset(self):
@@ -26,7 +27,7 @@ class Vehiculo(SafeDeleteModel):
     ]
     
     patente = models.CharField(max_length=10, unique=True)
-    usuario = models.CharField(max_length=100)
+    usuario = models.ForeignKey(UsuarioComun, on_delete=models.CASCADE, related_name='vehiculos')
     marca = models.CharField(max_length=50)
     modelo = models.CharField(max_length=50)
     año = models.IntegerField()

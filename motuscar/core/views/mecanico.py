@@ -25,6 +25,7 @@ DIA_SEMANA_CHOICES = [
 TIPOS = ['taller', 'particular']
 ESPECIALIDADES = ['lubricentro', 'electrico', 'vulcanizacion', 'mecanica', 'pintura']
 
+
 def listar_mecanico(request):
     mecanicos = Mecanico.objects.all()
     return render(request, 'mecanico/listar.html', {
@@ -35,7 +36,7 @@ def listar_mecanico(request):
         'especialidades': ESPECIALIDADES,
         'active': 'mecanicos'
     })
-
+    
 def crear_mecanico(request):
     if request.method == 'POST':
         form = MecanicoForm(request.POST)
@@ -44,11 +45,10 @@ def crear_mecanico(request):
             messages.success(request, 'Mecánico creado correctamente.')
             return redirect('asignar_servicios_disponibilidad', mecanico_id=mecanico.id)
         else:
-            # recorrer errores de cada campo y agregarlos como mensajes
             for field, errors in form.errors.items():
                 for error in errors:
-                    verbose_field = form.fields[field].label if field in form.fields else field
-                    messages.error(request, f"{verbose_field}: {error}")
+                    label = form.fields[field].label if field in form.fields else field
+                    messages.error(request, f"{label}: {error}")
     else:
         form = MecanicoForm()
 
@@ -59,25 +59,30 @@ def crear_mecanico(request):
     }
     return render(request, 'mecanico/crear.html', context)
 
+
+
 def editar_mecanico(request, mecanico_id):
     mecanico = get_object_or_404(Mecanico, pk=mecanico_id)
-    form = MecanicoForm(request.POST or None, instance=mecanico)
 
     if request.method == 'POST':
-        # guardar mecanico
+        form = MecanicoForm(request.POST, instance=mecanico)
         if form.is_valid():
             form.save()
-
-            messages.success(request, 'Mecánico actualizado.')
+            messages.success(request, 'Mecánico actualizado correctamente.')
             return redirect('asignar_servicios_disponibilidad', mecanico_id=mecanico.id)
+    else:
+        form = MecanicoForm(instance=mecanico)
 
-    return render(request, 'mecanico/editar.html', {
+    context = {
         'form': form,
         'mecanico': mecanico,
         'regiones': REGIONES_CHILE,
         'comunas_por_region_json': json.dumps(COMUNAS_POR_REGION),
         'active': 'mecanicos'
-    })
+    }
+    return render(request, 'mecanico/editar.html', context)
+
+
 
 def eliminar_mecanico(request, mecanico_id):
     mecanico = get_object_or_404(Mecanico, pk=mecanico_id)
