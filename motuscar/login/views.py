@@ -219,6 +219,7 @@ def logout_view(request):
 
 @login_required
 def perf_view(request):
+    usuario = request.user
     return render(request, 'profile.html', {'user': request.user})
 
 @login_required
