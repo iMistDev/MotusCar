@@ -105,15 +105,32 @@ WSGI_APPLICATION = 'motuscar.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+""""""
+#DATABASES = {
+    #'default': {
+   #     'ENGINE': 'django.db.backends.sqlite3',
+  #      'NAME': BASE_DIR / 'db.sqlite3',
+ #   }
+#}
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'motuscar',                # nombre de tu base de datos
+        'USER': 'motus',                  # el usuario que creaste
+        'PASSWORD': 'usm-2025',# la contraseña del usuario
+        'HOST': 'localhost',               # porque está en la misma VM
+        'PORT': '3306',                    # puerto por defecto de MySQL
     }
 }
 
+
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
+
+
+
+
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
