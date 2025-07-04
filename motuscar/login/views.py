@@ -17,6 +17,8 @@ from core.models.usuario_comun import UsuarioComun
 from core.views.mecanico import DIA_SEMANA_CHOICES
 from login.models import CustomUser
 from .forms import LoginForm, RegisterForm
+from core.models.vehiculo import Vehiculo
+from core.forms.vehiculo import VehiculoForm
 
 def login_view(request):
 # Si el usuario ya está autenticado, redirigir al home
@@ -219,9 +221,43 @@ def logout_view(request):
 
 @login_required
 def perf_view(request):
-    usuario = request.user
     return render(request, 'profile.html', {'user': request.user})
 
 @login_required
 def landing_view(request):
     return render(request, 'landing.html', {'user': request.user})
+
+@login_required
+def vista_vehiculos_usuario(request):
+    usuario_comun = UsuarioComun.objects.get(id=request.user.id)
+    vehiculos = Vehiculo.objects.filter(usuario=usuario_comun, deleted__isnull=True)
+    return render(request, 'vehiculo/listar.html', {'vehiculos': vehiculos})
+
+@login_required
+def crear_vehiculo(request):
+    usuario_comun = UsuarioComun.objects.get(id=request.user.id)
+    if request.method == "POST":
+        form = VehiculoForm(request.POST)
+        if form.is_valid():
+            vehiculo = form.save(commit=False)
+            vehiculo.usuario = usuario_comun
+            vehiculo.save()
+            return redirect('mis_vehiculos')
+    else:
+        form = VehiculoForm()
+    return render(request, 'vehiculo/crear.html', {'form': form})
+
+@login_required
+def editar_vehiculo(request, vehiculo_id):
+    usuario_comun = UsuarioComun.objects.get(id=request.user.id)
+    vehiculo = get_object_or_404(Vehiculo, id=vehiculo_id, usuario=usuario_comun, deleted__isnull=True)
+    
+    if request.method == 'POST':
+        form = VehiculoForm(request.POST, instance=vehiculo)
+        if form.is_valid():
+            form.save()
+            return redirect('mis_vehiculos')
+    else:
+        form = VehiculoForm(instance=vehiculo)
+    
+    return render(request, 'vehiculo/editar.html', {'form': form})
