@@ -122,3 +122,101 @@ select.form-select option:disabled {
     background-color: #f8f9fa !important;
 }
 
+
+
+.form-label {
+  font-weight: 500;
+  margin-bottom: 5px;
+  display: block;
+  color: #333;
+}
+
+.form-input,
+.form-select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.auth-btn {
+  background-color: #ff6600;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.auth-btn:hover {
+  background-color: #e05500;
+}
+
+.select.form-select option:disabled {
+  color: #6c757d !important;
+  background-color: #f8f9fa !important;
+}
+
+
+.menu-hamburguesa {
+    position: relative;
+    display: block; /* Mostrar SIEMPRE */
+}
+
+
+/* Botones de autenticación a la derecha */
+.auth-buttons {
+    margin-left: auto;
+}
+
+
+@media (max-width: 576px) {
+    .logo img {
+        width: 120px;
+    }
+}
+
+#hamburger-toggle {
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+}
+
+.dropdown-hamburguesa {
+    position: absolute;
+    right: 0;
+    top: 110%;
+    background-color: #fff;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 999;
+    width: 220px;
+}
+
+.dropdown-hamburguesa ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.dropdown-hamburguesa ul li a {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 12px 16px;
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.dropdown-hamburguesa ul li a:hover {
+    background-color: #f1f1f1;
+}
+
+
+
+.hidden {
+    display: none !important;
+}

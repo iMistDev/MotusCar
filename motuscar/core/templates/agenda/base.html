@@ -6,86 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Motuscar</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="{% static 'agenda/css/styles.css' %}" rel="stylesheet"> 
+    <link rel="stylesheet" href="{% static 'agenda/css/styles.css' %}?v=1.1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <!-- Flatpickr -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
-
-    <style>
-        select.form-select option:disabled {
-            color: #6c757d !important;
-            background-color: #f8f9fa !important;
-        }
-
-
-.menu-hamburguesa {
-    position: relative;
-    display: block; /* Mostrar SIEMPRE */
-}
-
-
-/* Botones de autenticación a la derecha */
-.auth-buttons {
-    margin-left: auto;
-}
-
-
-@media (max-width: 576px) {
-    .logo img {
-        width: 120px;
-    }
-}
-
-#hamburger-toggle {
-    background: none;
-    border: none;
-    font-size: 1.3rem;
-}
-
-.dropdown-hamburguesa {
-    position: absolute;
-    right: 0;
-    top: 110%;
-    background-color: #fff;
-    box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
-    border-radius: 8px;
-    overflow: hidden;
-    z-index: 999;
-    width: 220px;
-}
-
-.dropdown-hamburguesa ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-.dropdown-hamburguesa ul li a {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 12px 16px;
-    text-decoration: none;
-    color: #333;
-    font-weight: 500;
-    transition: background-color 0.2s;
-}
-
-.dropdown-hamburguesa ul li a:hover {
-    background-color: #f1f1f1;
-}
-
-
-
-.hidden {
-    display: none !important;
-}
-
-
-    </style>
 </head>
 <body>
 
