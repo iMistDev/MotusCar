@@ -27,7 +27,6 @@ def home(request):
     return render(request, 'motus.html')
 
 # listar mecanicos con filtros
-@login_required
 def listar_mecanicos(request):
     # obtener todos los mecanicos
     mecanicos = Mecanico.objects.all()

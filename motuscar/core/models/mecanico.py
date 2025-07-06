@@ -20,6 +20,13 @@ class Mecanico(CustomUser):
 
     class Meta:
         db_table = 'mecanico'
+    @property
+    def es_mecanico(self):
+        return True
+    
+    @property
+    def es_usuario_comun(self):
+        return False
 
     def __str__(self):
         return f'{self.first_name} {self.last_name} - {self.especialidad} ({self.comuna})'

@@ -49,9 +49,33 @@ class Usuario(AbstractUser):
         verbose_name = _('usuario')
         verbose_name_plural = _('usuarios')
         db_table = 'usuarios_usuario'  # Nombre personalizado para la tabla
+        
     
     def __str__(self):
         return self.email
+    
+    
+    @property
+    def tipo_usuario(self):
+        """
+        Devuelve el tipo de usuario como string.
+        Opciones: 'mecanico', 'usuario_comun', 'admin'
+        """
+        if hasattr(self, 'mecanico'):
+            return 'mecanico'
+        elif hasattr(self, 'usuariocomun'):
+            return 'usuario_comun'
+        elif self.is_superuser:
+            return 'admin'
+        return None
+    
+    @property
+    def es_mecanico(self):
+        return self.tipo_usuario == 'mecanico'
+    
+    @property
+    def es_usuario_comun(self):
+        return self.tipo_usuario == 'usuario_comun'
 
     # Solución para el conflicto de related_name
     groups = models.ManyToManyField(
