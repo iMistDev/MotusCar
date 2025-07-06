@@ -11,50 +11,26 @@
                     <div class="card-icon">
                         <i class="fas fa-car"></i>
                     </div>
-                        {% if user.is_authenticated %}
-                            <h1>
-                                ¡Bienvenido de vuelta, {{ user.first_name|title }}!
-                            </h1>
-                            <p class="welcome-subtitle">
-                                En MotusCar tenemos todo lo que necesitas para tu vehículo:
-                            </p>
-                            <ul class="welcome-features">
-                                <li><i class="fas fa-calendar-check"></i> Agenda citas con los mejores mecánicos</li>
-                                <li><i class="fas fa-tools"></i> Compra repuestos originales con garantía</li>
-                                <li><i class="fas fa-history"></i> Revisa tu historial de servicios</li>
-                            </ul>
-                        </div>
-                        {% else %}
-                        <div class="welcome-message">
-                            <h2 class="welcome-title">
-                                <i class="fas fa-car-side"></i> Bienvenido a MotusCar
-                            </h2>
-                            <p class="welcome-subtitle">
-                                Tu solución integral para el cuidado del automóvil
-                            </p>
-                            <div class="welcome-benefits">
-                                <div class="benefit-card">
-                                    <i class="fas fa-calendar-alt"></i>
-                                    <h3>Agenda con Mecánicos</h3>
-                                    <p>Encuentra especialistas certificados cerca de ti</p>
-                                </div>
-                                <div class="benefit-card">
-                                    <i class="fas fa-shopping-cart"></i>
-                                    <h3>Repuestos Garantizados</h3>
-                                    <p>Compra con seguridad partes originales</p>
-                                </div>
-                                <div class="benefit-card">
-                                    <i class="fas fa-user-plus"></i>
-                                    <h3>Únete Ahora</h3>
-                                    <p>Regístrate para acceder a todos los beneficios</p>
-                                </div>
-                            </div>
-                        </div>
-                        {% endif %}
+                        <h1>
+                            Bienvenido a MotusCar {{ user.first_name|title }}
+                        </h1>
+                        <p class="welcome-subtitle">
+                            En MotusCar tenemos todo lo que necesitas para tu vehículo:
+                        </p>
+                        <ul class="welcome-features">
+                            <li><i class="fas fa-calendar-check"></i> Agenda citas con los mejores mecánicos</li>
+                            <li><i class="fas fa-tools"></i> Compra repuestos originales con garantía</li>
+                            <li><i class="fas fa-history"></i> Revisa tu historial de servicios</li>
+                        </ul>
+                    </div>
             </section>
 
             <section class="quick-actions">
-                <h3>Acciones rápidas</h3>
+                {% if user.is_authenticated %}
+                <h3>¡ Prueba nuestras funciones !</h3>
+                {% else %}
+                <h3>¡ Registrate para probar todas nuestras funciones !</h3>
+                {% endif %}
                 <div class="action-grid">
                     <a href="{% url 'listar_agenda' %}" class="action-card">
                         <i class="fas fa-calendar-alt"></i>
