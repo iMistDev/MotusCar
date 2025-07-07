@@ -19,6 +19,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.http import HttpResponse
+from login.views import admin_login_view
 import os
 
 def home(request):
@@ -28,10 +29,11 @@ def home(request):
 urlpatterns = [
     
     path('', include('motus.urls')),
-    path('dashboard/', include('dashboard.urls')),
     path('core/', include('core.urls')),
-    path('admin/', admin.site.urls),
+    #path('admin/', admin.site.urls),
     path('login/', include('login.urls')),
-    path('landing/', include('landing.urls'))
+    path('landing/', include('landing.urls')),
+    path('', include('dashboard.urls', namespace='dashboard')),  # ← Aquí el namespace
+
     
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

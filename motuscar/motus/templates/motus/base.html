@@ -217,6 +217,7 @@
         <div class="auth-buttons">
 
         <div class="menu-hamburguesa">
+            {% if user.is_authenticated and user.is_staff %}
             <button id="hamburger-toggle" class="btn text-white">
                 <i class="fas fa-bars fa-lg"></i>
             </button>
@@ -230,6 +231,7 @@
                     <li><a href="{% url 'listar_usuario_comun' %}"><i class="fas fa-user"></i> Usuarios Comunes</a></li>
                 </ul>
             </div>
+            {% endif %}
         </div>
             {% if user.is_authenticated %}
                 <div class="user-dropdown">

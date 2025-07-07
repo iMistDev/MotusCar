@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from datetime import time, timedelta
-
+from django.urls import reverse   # ←  nuevo import
 
 from core.constants.regiones import COMUNAS_POR_REGION
 from core.constants.servicios import SERVICIOS_POR_ESPECIALIDAD
@@ -19,11 +19,16 @@ from login.models import CustomUser
 from .forms import LoginForm, RegisterForm
 from core.models.vehiculo import Vehiculo
 from core.forms.vehiculo import VehiculoForm
+#
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
+
 
 def login_view(request):
 # Si el usuario ya está autenticado, redirigir al home
     if request.user.is_authenticated:
-        return redirect('landing')
+        return redirect('motus')
 
     if request.method == 'POST':
         form = LoginForm(request, data=request.POST)
@@ -56,8 +61,6 @@ def login_view(request):
         form = LoginForm()
 
     return render(request, 'login.html', {'form': form})
-
-
 
 
 def register_view(request):
@@ -285,3 +288,22 @@ def eliminar_vehiculo(request, vehiculo_id):
     # Si quieres, muestra una confirmación antes de eliminar
     return render(request, 'vehiculo/eliminar_definitivo.html', {'vehiculo': vehiculo})
 
+
+
+#vista de administrador (login_required)
+def admin_login_view(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            if user.is_staff or user.is_superuser:
+                login(request, user)
+                # ‼️ Redirección al dashboard de administradores:
+                return render(request, 'dashboard/dashboard.html', {'user': user})
+            else:
+                messages.error(request, "No tienes permisos de administrador.")
+        else:
+            messages.error(request, "Credenciales inválidas.")
+    return render(request, 'login/admin_login.html')

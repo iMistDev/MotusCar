@@ -57,7 +57,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
 ]
 
-LOGIN_REDIRECT_URL = 'motus'  # Reemplaza 'motus:home' con el nombre de tu vista de inicio
+LOGIN_REDIRECT_URL = '/'  # Reemplaza 'motus:home' con el nombre de tu vista de inicio
 LOGOUT_REDIRECT_URL = 'login'  # Reemplaza 'login' con el nombre de tu vista de inicio
 LOGIN_URL = 'login'  # Reemplaza 'login' con el nombre de tu vista de inicio de sesión
 
