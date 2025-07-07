@@ -14,6 +14,7 @@ class Agenda(models.Model):
      
     mecanico = models.ForeignKey('core.Mecanico', on_delete=models.CASCADE, null=True, blank=True)
     servicio = models.ForeignKey('core.Servicio', on_delete=models.CASCADE, null=True, blank=True)
+    vehiculo = models.ForeignKey('core.Vehiculo', on_delete=models.SET_NULL, null=True, blank=True)
     fecha = models.DateField()
     hora_inicio = models.TimeField()
     hora_fin = models.TimeField()
@@ -62,6 +63,9 @@ class Agenda(models.Model):
 
             if not disponible:
                 raise ValidationError("El mecánico no está disponible en ese horario")
+            
+        if self.vehiculo and self.vehiculo.usuario != self.usuariocomun:
+            raise ValidationError("El vehículo seleccionado no pertenece al usuario")
 
     def save(self, *args, **kwargs):
         self.full_clean()

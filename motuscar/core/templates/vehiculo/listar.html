@@ -4,7 +4,7 @@
 {% block content %}
     <div class="d-flex justify-content-between align-items-center mb-4 pt-3">
         <h2 class="mb-0"><i class="fas fa-car me-2 text-orange"></i>Mis Vehículos</h2>
-        <a href="{% url 'crear_vehiculo' %}" class="btn btn-orange">
+        <a href="{% url 'crear_mi_vehiculo' %}" class="btn btn-orange">
             <i class="fas fa-plus me-1"></i> Agregar Vehículo
     </a>
 </div>
@@ -25,7 +25,7 @@
                         <tr class="position-relative">
                             <td class="ps-4">
                                 <span class="badge bg-dark bg-opacity-10 text-dark fs-6 fw-normal py-2 px-3">
-                                    <i class="fas fa-car me-2 text-orange"></i>
+                                    <i class="fas fa-rectangle-list me-2 text-orange"></i>
                                     {{ vehiculo.patente|upper }}
                                 </span>
                             </td>
@@ -35,11 +35,23 @@
                             <td>
                                 <div class="d-flex align-items-center">
                                     <div class="flex-shrink-0 me-3">
-                                        <i class="fas fa-car-side text-orange fs-4"></i>
+                                        {% if vehiculo.tipo_vehiculo == 'auto' %}
+                                            <i class="fas fa-car-side" title="Automóvil"></i>
+                                        {% elif vehiculo.tipo_vehiculo == 'camioneta' %}
+                                            <i class="fas fa-truck-pickup" title="Camioneta"></i>
+                                        {% elif vehiculo.tipo_vehiculo == 'moto' %}
+                                            <i class="fas fa-motorcycle" title="Motocicleta"></i>
+                                        {% elif vehiculo.tipo_vehiculo == 'bus' %}
+                                            <i class="fas fa-bus" title="Bus"></i>
+                                        {% elif vehiculo.tipo_vehiculo == 'camion' %}
+                                            <i class="fas fa-truck" title="Camión"></i>
+                                        {% else %}
+                                            <i class="fas fa-car-side" title="Vehículo"></i>
+                                        {% endif %}
                                     </div>
                                     <div class="flex-grow-1">
                                         <h6 class="mb-0">{{ vehiculo.marca|title }}</h6>
-                                        <small class="text-muted">{{ vehiculo.modelo|title }}</small>
+                                        <small class="text-muted">{{ vehiculo.modelo|title }} · {{ vehiculo.año }}</small>
                                     </div>
                                 </div>
                             </td>
@@ -66,7 +78,7 @@
                                     <i class="fas fa-car-side fa-3x text-muted mb-3"></i>
                                     <h5 class="text-muted">No tienes vehículos registrados</h5>
                                     <p class="text-muted mb-4">Comienza agregando tu primer vehículo</p>
-                                    <a href="{% url 'crear_vehiculo' %}" class="btn btn-orange">
+                                    <a href="{% url 'crear_mi_vehiculo' %}" class="btn btn-orange"> 
                                         <i class="fas fa-plus me-1"></i> Agregar Vehículo
                                     </a>
                                 </div>

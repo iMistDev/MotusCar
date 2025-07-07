@@ -4,7 +4,7 @@ from login.models import CustomUser
 class UsuarioComun(CustomUser):
     #telefono = models.CharField(max_length=20, blank=True)
     
-   # vehiculos = models.ManyToManyField('core.Vehiculo', blank=True) 1:N != N:M
+    #vehiculos = models.ManyToManyField('core.Vehiculo', blank=True)
 
     class Meta:
         db_table = 'usuario_comun'

@@ -28,6 +28,7 @@ from core.views.usuario_comun import listar_usuario_comun, crear_usuario_comun, 
  
 
 urlpatterns = [
+    
     #URL Vehículos
     path('vehiculos/', listar_vehiculos, name='listar_vehiculos'),
     path('vehiculos/crear/', crear_vehiculo, name='crear_vehiculo'),
