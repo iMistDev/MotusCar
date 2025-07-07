@@ -338,3 +338,62 @@ main {
 .user-dropdown:hover .dropdown-content {
     display: block;
 }
+
+.welcome-subtitle {
+    color:rgb(177, 183, 184);
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+}
+
+.welcome-features {
+    list-style: none;
+    padding: 0;
+}
+
+.welcome-features li {
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.welcome-features i {
+    color: #FF8C00;
+    width: 20px;
+}
+
+.welcome-benefits {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.benefit-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.benefit-card:hover {
+    transform: translateY(-5px);
+}
+
+.benefit-card i {
+    font-size: 2rem;
+    color: #FF8C00;
+    margin-bottom: 1rem;
+}
+
+.benefit-card h3 {
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.benefit-card p {
+    font-size: 0.9rem;
+}
+

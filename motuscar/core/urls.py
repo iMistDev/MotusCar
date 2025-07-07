@@ -29,6 +29,7 @@ from core.views.usuario_comun import listar_usuario_comun, crear_usuario_comun, 
  
 
 urlpatterns = [
+    
     #URL Vehículos
     path('vehiculos/', listar_vehiculos, name='listar_vehiculos'),
     path('vehiculos/crear/', crear_vehiculo, name='crear_vehiculo'),
@@ -68,7 +69,7 @@ urlpatterns = [
     #URL Agenda -> Buscar mecanico
     path('agenda/mecanico/', listar_mecanicos, name='listar_mecanicos'),
     path('agenda/mecanico/<int:mecanico_id>/servicio/<int:servicio_id>/agendar/', agendar_cita, name='agendar_cita'),
-
+ 
     #URL USUARIO COMUN
     path('usuario_comun/', listar_usuario_comun, name='listar_usuario_comun'),
     path('usuario_comun/crear/', crear_usuario_comun, name='crear_usuario_comun'),

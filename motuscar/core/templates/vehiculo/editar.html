@@ -1,4 +1,4 @@
-{% extends 'vehiculo/base.html' %}
+{% extends 'agenda/base.html' %}
 {% load static %}
 
 {% block content %}
@@ -7,6 +7,6 @@
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit" class="btn btn-primary">Actualizar</button>
-    <a href="{% url 'listar_vehiculos' %}" class="btn btn-secondary">Cancelar</a>
+    <a href="#" onclick="window.history.back(); return false;" class="btn btn-secondary">Cancelar</a>
 </form>
 {% endblock %}

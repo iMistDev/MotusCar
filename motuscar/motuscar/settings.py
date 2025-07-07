@@ -105,6 +105,7 @@ WSGI_APPLICATION = 'motuscar.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+""""""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -112,9 +113,25 @@ DATABASES = {
     }
 }
 
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.mysql',
+#        'NAME': 'motuscar',                # nombre de tu base de datos
+#        'USER': 'motus',                  # el usuario que creaste
+#        'PASSWORD': 'usm-2025',# la contraseña del usuario
+#        'HOST': 'localhost',               # porque está en la misma VM
+#        'PORT': '3306',                    # puerto por defecto de MySQL
+#    }
+#}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
+
+
+
+
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -152,6 +169,8 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+
+
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
@@ -172,3 +191,7 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 
 
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]

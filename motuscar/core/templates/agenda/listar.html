@@ -2,7 +2,7 @@
 {% load static %}
 {% load humanize %}
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 pt-3">
     <h2><i class="fas fa-calendar me-2"></i>Mis Citas</h2>
     <a href="{% url 'listar_mecanicos' %}" class="btn btn-primary">
         <i class="fas fa-plus me-1"></i> Nueva Cita
@@ -13,7 +13,12 @@
     <table class="table table-hover">
         <thead>
             <tr>
+                {% if not usuario_es_mecanico %}
                 <th>Mecánico - Servicio</th>
+                {% else %}
+                <th>Usuario - Servicio</th>
+                {% endif %}
+                <th>Vehículo</th>
                 <th>Dirección</th>
                 <th>Fecha</th>
                 <th>Hora</th>
@@ -42,6 +47,27 @@
                     <span class="text-muted">{{ agenda.descripcion|cut:"Cita agendada para " }}</span>
                 </td>
                 {% endif %}
+
+                {% if agenda.vehiculo.marca %}
+                    <td>
+                        {% if agenda.vehiculo.tipo_vehiculo == 'auto' %}
+                            <i class="fas fa-car" title="Automóvil"></i>
+                        {% elif agenda.vehiculo.tipo_vehiculo == 'camioneta' %}
+                            <i class="fas fa-truck-pickup" title="Camioneta"></i>
+                        {% elif agenda.vehiculo.tipo_vehiculo == 'moto' %}
+                            <i class="fas fa-motorcycle" title="Motocicleta"></i>
+                        {% elif agenda.vehiculo.tipo_vehiculo == 'bus' %}
+                            <i class="fas fa-bus" title="Bus"></i>
+                        {% elif agenda.vehiculo.tipo_vehiculo == 'camion' %}
+                            <i class="fas fa-truck" title="Camión"></i>
+                        {% endif %}
+                        
+                        {{ agenda.vehiculo.marca|title }}<br>{{ agenda.vehiculo.modelo|title }}, {{ agenda.vehiculo.año }}
+                    </td>
+                {% else %}
+                    <td>Sin definir</td>
+                {% endif %}
+
 
                 <td>{{ agenda.mecanico.direccion }}<br>{{ agenda.mecanico.comuna }}, {{ agenda.mecanico.region }}</td>
                 <td>{{ agenda.fecha|date:"d/m/Y" }}</td>
@@ -86,7 +112,7 @@
             </tr>
             {% empty %}
             <tr>
-                <td colspan="7" class="text-center py-4">
+                <td colspan="8" class="text-center py-4">
                     <i class="fas fa-calendar-times fa-2x mb-2 text-muted"></i>
                     <p class="text-muted">No hay citas registradas</p>
                 </td>

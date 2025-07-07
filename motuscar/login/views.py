@@ -227,11 +227,15 @@ def perf_view(request):
 def landing_view(request):
     return render(request, 'landing.html', {'user': request.user})
 
+
+
+
+
 @login_required
 def vista_vehiculos_usuario(request):
     usuario_comun = UsuarioComun.objects.get(id=request.user.id)
     vehiculos = Vehiculo.objects.filter(usuario=usuario_comun, deleted__isnull=True)
-    return render(request, 'vehiculo/listar.html', {'vehiculos': vehiculos})
+    return render(request, 'vehiculo/listar.html',  {'vehiculos': vehiculos})
 
 @login_required
 def crear_vehiculo(request):
@@ -280,3 +284,4 @@ def eliminar_vehiculo(request, vehiculo_id):
 
     # Si quieres, muestra una confirmación antes de eliminar
     return render(request, 'vehiculo/eliminar_definitivo.html', {'vehiculo': vehiculo})
+

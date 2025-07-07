@@ -58,7 +58,19 @@
                         </select>
                     </div>
                 </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="vehiculo">Vehículo (opcional)</label>
+                        <select class="form-control" id="vehiculo" name="vehiculo">
+                            <option value="">-- Selecciona un vehículo --</option>
+                            {% for vehiculo in vehiculos %}
+                                <option value="{{ vehiculo.id }}">{{ vehiculo.patente|upper }} - {{ vehiculo.marca|title }} {{ vehiculo.modelo|title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
             </div>
+
 
             <div class="mb-4">
                 <h5>Horarios Disponibles</h5>
@@ -86,8 +98,7 @@
                 <button type="submit" class="btn btn-success">
                     <i class="fas fa-calendar-check me-1"></i> Confirmar Cita
                 </button>
-                <a href="{% url 'listar_mecanicos' %}" class="btn btn-secondary">
-                    <i class="fas fa-times me-1"></i> Cancelar
+                <a href="#" onclick="window.history.back(); return false;" class="btn btn-secondary">Cancelar</a>
                 </a>
             </div>
         </form>

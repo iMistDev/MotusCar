@@ -2,84 +2,6 @@
 {% load static %}
 {% block content %}
 <script src="{% static 'agenda/filtros.js' %}"></script>
-
-<<<<<<< HEAD
-<div class="container mt-4">
-  <h2>Editar Mecánico</h2>
-  <form method="post">
-    {% csrf_token %}
-
-    <div class="mb-3">
-      <label class="form-label">Nombre:</label>
-      {{ form.nombre }}
-    </div>
-    <div class="mb-3">
-      <label class="form-label">Apellido:</label>
-      {{ form.apellido }}
-    </div>
-    <div class="mb-3">
-      <label class="form-label">Email:</label>
-      {{ form.email }}
-    </div>
-    <div class="mb-3">
-      <label class="form-label">Tipo:</label>
-      {{ form.tipo }}
-    </div>
-    <div class="mb-3">
-      <label class="form-label">Especialidad:</label>
-      {{ form.especialidad }}
-    </div>
-    <div class="mb-3">
-      <label class="form-label">Región:</label>
-      {{ form.region }}
-    </div>
-    <div class="mb-3">
-      <label class="form-label">Comuna:</label>
-      {{ form.comuna }}
-    </div>
-    <div class="mb-3">
-      <label class="form-label">Dirección del Taller:</label>
-      {{ form.direccion }}
-    </div>
-
-    <div class="text-end">
-      <button type="submit" class="btn btn-success">
-        <i class="fas fa-save me-1"></i> Guardar cambios y continuar
-      </button>
-      <a href="{% url 'listar_mecanico' %}" class="btn btn-secondary">Cancelar</a>
-    </div>
-  </form>
-
-=======
-    <style>
-        .form-label {
-            font-weight: 500;
-            margin-bottom: 5px;
-            display: block;
-            color: #333;
-        }
-
-        .form-input,
-        .form-select {
-            width: 100%;
-            padding: 8px 10px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-        }
-
-        .auth-btn {
-            background-color: #ff6600;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .auth-btn:hover {
-            background-color: #e05500;
-        }
-    </style>
 </head>
 <body>
 <div class="auth-container">
@@ -150,7 +72,7 @@
             </div>
 
             <button type="submit" class="btn btn-primary mt-3">Guardar Cambios</button>
-            <a href="{% url 'listar_mecanico' %}" class="btn btn-secondary mt-3">Cancelar</a>
+            <a href="#" onclick="window.history.back(); return false;" class="btn btn-secondary">Cancelar</a>
         </form>
     </div>
 </div>

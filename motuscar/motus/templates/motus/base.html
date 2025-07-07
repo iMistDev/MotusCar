@@ -12,9 +12,8 @@
     <link rel="icon" type="image/png" href="{% static 'img/motusicon128x128.webp' %}">
     
     <!-- Hojas de estilo -->
-    <link rel="stylesheet" href="{% static 'motus/css/styles.css' %}">
-    
-    
+    <link rel="stylesheet" href="{% static 'motus/css/styles.css' %}?v=1.1">
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
@@ -26,7 +25,7 @@
     <!-- Estilos internos -->
     <style>
         body {
-            background-image: url("{% static 'login/imgs/background-login.jpg' %}");
+            
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -184,24 +183,15 @@
 
 
 .hidden {
-    display: none !important;
+    display: none;
 }
 
 
     </style>
-</head>
 
-<body>
-    <!-- Animación de carga -->
-    <div class="loading-overlay">
-        <div class="gear-loader">
-            <i class="fa-solid fa-gear gear-background"></i>
-            <div class="gear-fill-container">
-                <i class="fa-solid fa-gear gear-fill"></i>
-            </div>
-        </div>
-    </div>
-    
+{% block extra_css %}{% endblock %}
+</head>
+     
     <!-- Header -->
 <header class="header">
     <nav class="navbar">
@@ -213,14 +203,13 @@
 
         <!-- Enlaces de navegación centrales -->
         <div class="nav-links">
-            {% if user.is_authenticated %}
-                <a href="{% url 'listar_agenda' %}" class="nav-link">
-                    <i class="fas fa-calendar-alt"></i> Agenda
-                </a>
-                <a href="{% url 'listar_mecanicos' %}" class="nav-link">
-                    <i class="fas fa-user-cog"></i> Mecánicos
-                </a>
-            {% endif %}
+            <a href="{% url 'listar_agenda' %}" class="nav-link">
+                <i class="fas fa-calendar-alt"></i> Agenda
+            </a>
+            <a href="{% url 'listar_mecanicos' %}" class="nav-link">
+                <i class="fas fa-user-cog"></i> Mecánicos
+            </a>
+            
         </div>
 
 
@@ -262,8 +251,7 @@
     </nav>
 </header>
 
-<body>
-    <!-- CONTENIDO -->
+<body class="{% block body_class %}{% endblock %}">
     <div class="container-fluid mt-4">
         {% if messages %}
             {% for message in messages %}

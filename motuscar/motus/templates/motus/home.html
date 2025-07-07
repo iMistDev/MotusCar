@@ -1,11 +1,36 @@
 {% extends 'motus/base.html' %}
 {% load static %}
 {% load humanize %}
-{% block content %}
 
-    
+{% block extra_css %}
+    <!-- CSS específico para esta página -->
+    <link rel="stylesheet" href="{% static 'login/css/home.css' %}?v={% now 'U' %}">
+
+    <style>
+        body {
+            background-image: url("{% static 'login/imgs/background-login.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+    </style>
+{% endblock %}
+
+{% block body_class %}custom-body-style{% endblock %}
+
+{% block content %}
+    <!-- Animación de carga -->
+    <div class="loading-overlay">
+        <div class="gear-loader">
+            <i class="fa-solid fa-gear gear-background"></i>
+            <div class="gear-fill-container">
+                <i class="fa-solid fa-gear gear-fill"></i>
+            </div>
+        </div>
+    </div>
     <!-- Contenido principal -->
-    <link rel="stylesheet" href="{% static 'login/css/home.css' %}">
     <div class="dashboard-container">
         <main class="dashboard-main">
             <section class="welcome-section">
@@ -13,18 +38,31 @@
                     <div class="card-icon">
                         <i class="fas fa-car"></i>
                     </div>
-                    <h2>Bienvenido a Motuscar</h2>
-                    <p>Solo lo mejor para tu vehículo</p>
-                </div>
+                        <h1>
+                            Bienvenido a MotusCar {{ user.first_name|title }}
+                        </h1>
+                        <p class="welcome-subtitle">
+                            En MotusCar tenemos todo lo que necesitas para tu vehículo:
+                        </p>
+                        <ul class="welcome-features">
+                            <li><i class="fas fa-calendar-check"></i> Agenda citas con los mejores mecánicos</li>
+                            <li><i class="fas fa-tools"></i> Compra repuestos originales con garantía</li>
+                            <li><i class="fas fa-history"></i> Revisa tu historial de servicios</li>
+                        </ul>
+                    </div>
             </section>
 
             <section class="quick-actions">
-                <h3>Acciones rápidas</h3>
+                {% if user.is_authenticated %}
+                <h3>¡ Prueba nuestras funciones !</h3>
+                {% else %}
+                <h3>¡ Registrate para probar todas nuestras funciones !</h3>
+                {% endif %}
                 <div class="action-grid">
                     <a href="{% url 'listar_agenda' %}" class="action-card">
                         <i class="fas fa-calendar-alt"></i>
                         <span>Mi Agenda</span>
-                    </a> 
+                    </a>  
                     <a href="{% url 'listar_mecanicos' %}" class="action-card">
                         <i class="fas fa-user-cog"></i>
                         <span>Buscar un Mecanico</span>

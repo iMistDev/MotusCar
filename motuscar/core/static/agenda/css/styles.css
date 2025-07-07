@@ -11,8 +11,10 @@ body {
   font-family: 'Segoe UI', sans-serif;
   background-color: var(--gris-claro);
   color: var(--negro);
+  padding-top: 30px;
+        
 }
-
+ 
 /* Sidebar */
 .sidebar {
   background-color: var(--negro);
@@ -122,3 +124,208 @@ select.form-select option:disabled {
     background-color: #f8f9fa !important;
 }
 
+
+
+.form-label {
+  font-weight: 500;
+  margin-bottom: 5px;
+  display: block;
+  color: #333;
+}
+
+.form-input,
+.form-select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.auth-btn {
+  background-color: #ff6600;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.auth-btn:hover {
+  background-color: #e05500;
+}
+
+.select.form-select option:disabled {
+  color: #6c757d !important;
+  background-color: #f8f9fa !important;
+}
+
+
+.menu-hamburguesa {
+    position: relative;
+    display: block; /* Mostrar SIEMPRE */
+}
+
+
+/* Botones de autenticación a la derecha */
+.auth-buttons {
+    margin-left: auto;
+}
+
+
+@media (max-width: 576px) {
+    .logo img {
+        width: 120px;
+    }
+}
+
+#hamburger-toggle {
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+}
+
+.dropdown-hamburguesa {
+    position: absolute;
+    right: 0;
+    top: 110%;
+    background-color: #fff;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 999;
+    width: 220px;
+}
+
+.dropdown-hamburguesa ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.dropdown-hamburguesa ul li a {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 12px 16px;
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.dropdown-hamburguesa ul li a:hover {
+    background-color: #f1f1f1;
+}
+
+
+
+.hidden {
+    display: none !important;
+}
+
+:root {
+  --navbar-height: 2.5rem;
+}
+
+/* NAVBAR PRINCIPAL ESTILO MOTUSCAR */
+.navbar {
+    height: var(--navbar-height);
+    z-index: 1000;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1rem;
+    border-bottom: 3px solid var(--naranja);
+}
+
+.logo img {
+    width: 12rem;
+    height: 1.6rem;
+}
+
+.nav-links {
+    display: flex;
+    gap: 1.5rem;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: white;
+    text-decoration: none;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    padding: 0.5rem 0;
+}
+.nav-link:hover {
+    color: var(--naranja);
+    transform: translateY(-2px);
+}
+
+/* Dropdown de usuario */
+.user-dropdown {
+    position: relative;
+    display: inline-block;
+}
+.user-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #4a6cf7;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.user-btn:hover {
+    background: #3a5ce4;
+}
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background: white;
+    min-width: 180px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    border-radius: 5px;
+    z-index: 1000;
+    margin-top: 5px;
+}
+.dropdown-content a {
+    color: #333;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    transition: all 0.2s ease;
+}
+.dropdown-content a:hover {
+    background: #f1f1f1;
+    color: #4a6cf7;
+}
+.dropdown-content i {
+    width: 20px;
+    text-align: center;
+    margin-right: 8px;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .nav-links {
+        display: none;
+    }
+}

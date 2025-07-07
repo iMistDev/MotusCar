@@ -3,41 +3,96 @@
 {% load humanize %}
 {% block content %}
     <!-- Contenido principal -->
-    <link rel="stylesheet" href="{% static 'login/css/home.css' %}">
+    <link rel="stylesheet" href="{% static 'login/css/home.css' %}?v=1.1">
+
+    <style>
+        body {
+            background-image: url("{% static 'login/imgs/background-login.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+    </style>
+        <!-- Animación de carga -->
+    <div class="loading-overlay">
+        <div class="gear-loader">
+            <i class="fa-solid fa-gear gear-background"></i>
+            <div class="gear-fill-container">
+                <i class="fa-solid fa-gear gear-fill"></i>
+            </div>
+        </div>
+    </div>
     <div class="dashboard-container">
         <main class="dashboard-main">
             <section class="welcome-section">
                 <div class="welcome-card">
                     <div class="card-icon">
-                        <i class="fas fa-car"></i>
+                        <i class="fas fa-user-cog"></i>
                     </div>
                     <h1>
-                        Hola, {{ user.first_name|title }} {{ user.last_name|title }}
+                        ¡Hola, {{ user.first_name|title }}!
                     </h1>
-                    <p>Bienvenido de vuelta</p>
-                    <p>Explora todas las funcionalidades que tenemos preparadas para ti.</p>
+                    <p class="welcome-subtitle">
+                        Gestiona tu perfil de MotusCar y aprovecha al máximo nuestros servicios
+                    </p>
+                    <ul class="welcome-features">
+                        <li><i class="fas fa-id-card"></i> Actualiza tu información personal</li>
+                        {% if user.tipo_usuario == 'usuario_comun' %}
+                        <li><i class="fas fa-car-alt"></i> Administra tus vehículos registrados</li>
+                        <li><i class="fas fa-shield-alt"></i> Gestiona la seguridad de tu cuenta</li>
+                        {% elif user.tipo_usuario == 'mecanico' %}
+                        <li><i class="fas fa-map-marked-alt"></i> Modifica la ubicación de tu taller y tu especialidad</li>
+                        <li><i class="fas fa-calendar-check"></i> Administra tus servicios y disponibilidad</li>
+                        {% endif %}
+                        
+                    </ul>
                 </div>
             </section>
-
+ 
             <section class="quick-actions">
                 <h3>Acciones rápidas</h3>
                 <div class="action-grid">
+                    <!-- editar usuario -->
+                    {% if user.tipo_usuario == 'usuario_comun' %}
+                    <a href="{% url 'editar_usuario_comun' pk=user.id %}" class="action-card">
+                        <i class="fas fa-user-edit"></i>
+                        <span>Editar perfil</span>
+                    </a>
+
+                    <!-- editar usuario -->
+                    {% elif user.tipo_usuario == 'mecanico' %}
+                    <a href="{% url 'editar_mecanico' mecanico_id=user.mecanico.id %}" class="action-card">
+                        <i class="fas fa-user-edit"></i>
+                        <span>Editar perfil</span>
+                    </a>
+
+                    <!-- para evitar errores -->
+                    {% else %}
                     <a href="#" class="action-card">
                         <i class="fas fa-user-edit"></i>
                         <span>Editar perfil</span>
                     </a>
-                    <a href="#" class="action-card">
-                        <i class="fas fa-cog"></i>
-                        <span>Configuración</span>
-                    </a>
+                    {% endif %}
+
                     <a href="#" class="action-card">
                         <i class="fas fa-question-circle"></i>
                         <span>Ayuda</span>
                     </a>
+                    {% if user.tipo_usuario == 'usuario_comun' %}
                     <a href="{% url 'mis_vehiculos' %}" class="action-card">
                         <i class="fas fa-car"></i>
                         <span>Mis Vehículos</span>
                     </a>
+
+                    {% elif user.tipo_usuario == 'mecanico' %}
+                    <a href="{% url 'asignar_servicios_disponibilidad' mecanico_id=user.mecanico.id %}" class="action-card">
+                        <i class="fas fa-tools me-2"></i>
+                        <span>Mis servicios y disponibilidad</span>
+                    </a>
+
+                    {% endif %}
                 </div>
             </section>
         </main>

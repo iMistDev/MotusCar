@@ -3,39 +3,68 @@ from core.models import Mecanico, Servicio, DisponibilidadMecanico
 from datetime import time, timedelta
 from django.core.validators import EmailValidator
 
+from django.contrib.auth import get_user_model
+from core.models import Mecanico  # Ajusta si Mecanico está en otra app
+
+User = get_user_model()
+
 class Command(BaseCommand):
     help = 'Carga datos de prueba completos para mecánicos, servicios y disponibilidad'
 
     def handle(self, *args, **options):
-        # === 1. Crear Mecánicos ===
         mecanicos_data = [
-<<<<<<< HEAD
-<<<<<<< HEAD
-            {"nombre": "Juan", "apellido": "Pérez", "email": "juan.perez@example.com", "region": "Biobío", "comuna": "Concepción", "direccion": "Av. Collao 1234", "especialidad": "lubricentro", "tipo": "taller"},
-            {"nombre": "Pedro", "apellido": "López", "email": "pedro.lopez@example.com", "region": "Biobío", "comuna": "Concepción", "direccion": "O'Higgins 1122", "especialidad": "electrico", "tipo": "taller"},
-            {"nombre": "Luis", "apellido": "Torres", "email": "luis.torres@example.com", "region": "Biobío", "comuna": "Concepción", "direccion": "Av. Paicaví 456", "especialidad": "vulcanizacion", "tipo": "taller"},
-            {"nombre": "Héctor", "apellido": "Vargas", "email": "hector.vargas@example.com", "region": "Biobío", "comuna": "Concepción", "direccion": "Av. Chacabuco 789", "especialidad": "mecanica", "tipo": "taller"},
-            {"nombre": "Arturo", "apellido": "Miranda", "email": "arturo.miranda@example.com", "region": "Biobío", "comuna": "Concepción", "direccion": "Av. Los Robles 667", "especialidad": "pintura", "tipo": "taller"},
-=======
-=======
->>>>>>> 981321085f89da0ae2d27e1f28b26ec312f8095d
-            {"nombre": "Juan", "apellido": "Pérez", "email": "juan.perez@example.com", "region": "biobio", "comuna": "Talcahuano", "direccion": "Av. Collao 1234", "especialidad": "lubricentro", "tipo": "taller"},
-            {"nombre": "Pedro", "apellido": "López", "email": "pedro.lopez@example.com", "region": "biobio", "comuna": "Chiguayante", "direccion": "O'Higgins 1122", "especialidad": "electrico", "tipo": "taller"},
-            {"nombre": "Luis", "apellido": "Torres", "email": "luis.torres@example.com", "region": "biobio", "comuna": "Concepción", "direccion": "Av. Paicaví 456", "especialidad": "vulcanizacion", "tipo": "taller"},
-            {"nombre": "Héctor", "apellido": "Vargas", "email": "hector.vargas@example.com", "region": "biobio", "comuna": "Concepción", "direccion": "Av. Chacabuco 789", "especialidad": "mecanica", "tipo": "taller"},
-            {"nombre": "Arturo", "apellido": "Miranda", "email": "arturo.miranda@example.com", "region": "biobio", "comuna": "Concepción", "direccion": "Av. Los Robles 667", "especialidad": "pintura", "tipo": "taller"},
-<<<<<<< HEAD
->>>>>>> Develop
-=======
->>>>>>> 981321085f89da0ae2d27e1f28b26ec312f8095d
+            {
+                "first_name": "Juan", "last_name": "Pérez", "email": "juan.perez@example.com",
+                "password": "motus123", "region": "biobio", "comuna": "Talcahuano",
+                "direccion": "Av. Collao 1234", "especialidad": "lubricentro", "tipo": "taller"
+            },
+            {
+                "first_name": "Pedro", "last_name": "López", "email": "pedro.lopez@example.com",
+                "password": "motus123", "region": "biobio", "comuna": "Chiguayante",
+                "direccion": "O'Higgins 1122", "especialidad": "electrico", "tipo": "taller"
+            },
+            {
+                "first_name": "Luis", "last_name": "Torres", "email": "luis.torres@example.com",
+                "password": "motus123", "region": "biobio", "comuna": "Concepción",
+                "direccion": "Av. Paicaví 456", "especialidad": "vulcanizacion", "tipo": "taller"
+            },
+            {
+                "first_name": "Héctor", "last_name": "Vargas", "email": "hector.vargas@example.com",
+                "password": "motus123", "region": "biobio", "comuna": "Concepción",
+                "direccion": "Av. Chacabuco 789", "especialidad": "mecanica", "tipo": "taller"
+            },
+            {
+                "first_name": "Arturo", "last_name": "Miranda", "email": "arturo.miranda@example.com",
+                "password": "motus123", "region": "biobio", "comuna": "Concepción",
+                "direccion": "Av. Los Robles 667", "especialidad": "pintura", "tipo": "taller"
+            },
         ]
 
         mecanicos = []
+
         for data in mecanicos_data:
-            m, created = Mecanico.objects.get_or_create(email=data['email'], defaults=data)
-            if created:
-                self.stdout.write(self.style.SUCCESS(f"Mecánico creado: {m}"))
-            mecanicos.append(m)
+            email = data["email"]
+            password = data.pop("password")  # separamos la contraseña
+
+            if not Mecanico.objects.filter(email=email).exists():
+                mecanico = Mecanico(
+                    email=email,
+                    first_name=data["first_name"],
+                    last_name=data["last_name"],
+                    region=data["region"],
+                    comuna=data["comuna"],
+                    direccion=data["direccion"],
+                    especialidad=data["especialidad"],
+                    tipo=data["tipo"]
+                )
+                mecanico.set_password(password)
+                mecanico.save()
+                self.stdout.write(self.style.SUCCESS(f"Mecánico creado: {mecanico.email}"))
+                mecanicos.append(mecanico)
+            else:
+                self.stdout.write(self.style.WARNING(f"Ya existe: {email}"))
+                mecanicos.append(Mecanico.objects.get(email=email))
+
 
         # === 2. Crear Servicios y Asignar ===
         servicios_por_especialidad = {

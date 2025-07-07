@@ -11,7 +11,8 @@ __pycache__/
 **/__pycache__/
 */__pycache__/
 *.pyc
-
+*.pyo
+*.pyd
 # Entornos y configuración
 .env
 .env.local
@@ -33,6 +34,10 @@ __pycache__/
 # Django migrations (excepto el __init__.py)
 */migrations/*.py
 !*/migrations/__init__.py
+
+# Django
+migrations/
+!migrations/__init__.py
 
 # IDE y editores
 .vscode/

@@ -1,4 +1,5 @@
 # Modelos
+from core.forms import usuario_comun
 from core.models.mecanico import Mecanico
 from core.models.servicio import Servicio
 from core.models.agenda import Agenda
@@ -21,13 +22,14 @@ from datetime import date, datetime, timedelta, time
 from django.db.models import Q
 from django.core.exceptions import ValidationError
 
+from core.models.vehiculo import Vehiculo
+
 
 # homepage
 def home(request):
     return render(request, 'motus.html')
 
 # listar mecanicos con filtros
-@login_required
 def listar_mecanicos(request):
     # obtener todos los mecanicos
     mecanicos = Mecanico.objects.all()
@@ -122,11 +124,14 @@ def agendar_cita(request, mecanico_id, servicio_id):
     # obtener mecanico y servicio o devolver 404 si no existen
     mecanico = get_object_or_404(Mecanico, pk=mecanico_id)
     servicio = get_object_or_404(Servicio, pk=servicio_id)
+    usuario_comun = request.user.usuariocomun
+    vehiculos_usuario = Vehiculo.objects.filter(usuario=usuario_comun)
     
     if request.method == 'POST':
         # procesar formulario de agendar
         fecha_str = request.POST.get('fecha')
         hora_inicio_str = request.POST.get('hora_inicio')
+        vehiculo_id = request.POST.get('vehiculo')
         
         try:
             # convertir y validar formatos de fecha - hora
@@ -146,6 +151,14 @@ def agendar_cita(request, mecanico_id, servicio_id):
                 messages.error(request, 'Ya existe una cita agendada en ese horario')
                 return redirect('agendar_cita', mecanico_id=mecanico_id, servicio_id=servicio_id)
             
+            vehiculo = None
+            if vehiculo_id:
+                try:
+                    vehiculo = vehiculos_usuario.get(pk=vehiculo_id)
+                except Vehiculo.DoesNotExist:
+                    messages.error(request, 'El vehículo seleccionado no es válido')
+                    return redirect('agendar_cita', mecanico_id=mecanico_id, servicio_id=servicio_id)
+                
             # verificar solapamiento con otras citas
             citas_solapadas = Agenda.objects.filter(
                 mecanico=mecanico,
@@ -186,12 +199,13 @@ def agendar_cita(request, mecanico_id, servicio_id):
             Agenda.objects.create(
                 mecanico=mecanico,
                 servicio=servicio,
+                vehiculo=vehiculo,
                 fecha=fecha,
                 hora_inicio=hora_inicio,
                 hora_fin=hora_fin,
                 estado='pendiente',
                 descripcion=f'Cita agendada para {servicio.nombre}',
-                usuariocomun=request.user.usuariocomun  # asociada al UsuarioComun
+                usuariocomun=request.user.usuariocomun
             )
             messages.success(request, 'Cita agendada exitosamente')
             return redirect('listar_agenda')
@@ -211,9 +225,10 @@ def agendar_cita(request, mecanico_id, servicio_id):
         'active': 'agendar',
         'servicio': servicio,
         'disponibilidad': disponibilidad,
+        'vehiculos': vehiculos_usuario,
         'dias_semana': dict(DisponibilidadMecanico._meta.get_field('dia_semana').choices)
     })
-
+ 
 # vista para listar citas agendadas
 @login_required
 def listar_agenda(request):
