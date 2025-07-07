@@ -1,9 +1,36 @@
 {% extends 'motus/base.html' %}
 {% load static %}
 {% load humanize %}
+
+{% block extra_css %}
+    <!-- CSS específico para esta página -->
+    <link rel="stylesheet" href="{% static 'login/css/home.css' %}?v={% now 'U' %}">
+
+    <style>
+        body {
+            background-image: url("{% static 'login/imgs/background-login.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+    </style>
+{% endblock %}
+
+{% block body_class %}custom-body-style{% endblock %}
+
 {% block content %}
+    <!-- Animación de carga -->
+    <div class="loading-overlay">
+        <div class="gear-loader">
+            <i class="fa-solid fa-gear gear-background"></i>
+            <div class="gear-fill-container">
+                <i class="fa-solid fa-gear gear-fill"></i>
+            </div>
+        </div>
+    </div>
     <!-- Contenido principal -->
-    <link rel="stylesheet" href="{% static 'login/css/home.css' %}?v=1.1">
     <div class="dashboard-container">
         <main class="dashboard-main">
             <section class="welcome-section">

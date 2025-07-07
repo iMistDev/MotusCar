@@ -1,38 +1,84 @@
-{% extends 'vehiculo/base.html' %}
+{% extends 'agenda/base.html' %}
 {% load static %}
+{% load humanize %}
 {% block content %}
-<h2>Listado de Vehículos</h2>
-<a href="{% url 'crear_vehiculo' %}" class="btn btn-success mb-3">Crear Nuevo Vehículo</a>
-
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Patente</th>
-            <th>Tipo</th>
-            <th>Marca</th>
-            <th>Modelo</th>
-            <th>Año</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for vehiculo in vehiculos %}
-        <tr>
-            <td>{{ vehiculo.patente }}</td>
-            <td>{{ vehiculo.get_tipo_vehiculo_display }}</td>
-            <td>{{ vehiculo.marca }}</td>
-            <td>{{ vehiculo.modelo }}</td>
-            <td>{{ vehiculo.año }}</td>
-            <td>
-                <a href="{% url 'editar_vehiculo' vehiculo_id=vehiculo.id %}" class="btn btn-sm btn-primary">Editar</a>
-                <a href="{% url 'eliminar_vehiculo' vehiculo_id=vehiculo.id %}" class="btn btn-sm btn-danger">Eliminar</a>
-            </td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="6">No hay vehículos registrados</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    <div class="d-flex justify-content-between align-items-center mb-4 pt-3">
+        <h2 class="mb-0"><i class="fas fa-car me-2 text-orange"></i>Mis Vehículos</h2>
+        <a href="{% url 'crear_vehiculo' %}" class="btn btn-orange">
+            <i class="fas fa-plus me-1"></i> Agregar Vehículo
+    </a>
+</div>
+ 
+<div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Patente</th>
+                            <th>Tipo</th>
+                            <th>Marca y Modelo</th>
+                            <th>Año</th>
+                            <th class="text-end pe-4">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for vehiculo in vehiculos %}
+                        <tr class="position-relative">
+                            <td class="ps-4">
+                                <span class="badge bg-dark bg-opacity-10 text-dark fs-6 fw-normal py-2 px-3">
+                                    <i class="fas fa-car me-2 text-orange"></i>
+                                    {{ vehiculo.patente|upper }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-orange bg-opacity-10 text-orange">
+                                    {{ vehiculo.get_tipo_vehiculo_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0 me-3">
+                                        <i class="fas fa-car-side text-orange fs-4"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-0">{{ vehiculo.marca }}</h6>
+                                        <small class="text-muted">{{ vehiculo.modelo }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ vehiculo.año }}</td>
+                            <td class="text-end pe-4">
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="{% url 'editar_vehiculo' vehiculo_id=vehiculo.id %}" 
+                                       class="btn btn-outline-orange"
+                                       title="Editar">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </a>
+                                    <a href="{% url 'eliminar_vehiculo' vehiculo_id=vehiculo.id %}" 
+                                       class="btn btn-outline-danger"
+                                       title="Eliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center py-5">
+                                <div class="py-4">
+                                    <i class="fas fa-car-side fa-3x text-muted mb-3"></i>
+                                    <h5 class="text-muted">No tienes vehículos registrados</h5>
+                                    <p class="text-muted mb-4">Comienza agregando tu primer vehículo</p>
+                                    <a href="{% url 'crear_vehiculo' %}" class="btn btn-orange">
+                                        <i class="fas fa-plus me-1"></i> Agregar Vehículo
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
