@@ -18,8 +18,7 @@
                             {{ form|crispy }}
                         </div>
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                            <a href="{% url 'listar_usuario_comun' %}" class="btn btn-lg btn-secondary me-md-2 rounded-pill">
-                                <i class="bi bi-x-circle"></i> Cancelar
+                            <a href="#" onclick="window.history.back(); return false;" class="btn btn-secondary">Cancelar</a>
                             </a>
                             <button type="submit" class="btn btn-lg btn-primary rounded-pill">
                                 <i class="bi bi-save"></i> Guardar Usuario
