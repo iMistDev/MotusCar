@@ -15,7 +15,8 @@ class Command(BaseCommand):
                 "Categoria": "Motor",
                 "Precio_Unitario": 24990,
                 "Cantidad": 15,
-                "Descripcion": "Filtro de aceite de alta calidad para todo tipo de vehículos"
+                "Descripcion": "Filtro de aceite de alta calidad para todo tipo de vehículos",
+                "Imagen_URL": "https://picsum.photos/id/101/400/400"
             },
             {
                 "Nombre_Producto": "Pastillas de Freno",
@@ -24,7 +25,8 @@ class Command(BaseCommand):
                 "Categoria": "Frenos",
                 "Precio_Unitario": 45500,
                 "Cantidad": 8,
-                "Descripcion": "Pastillas de freno cerámicas, mayor durabilidad"
+                "Descripcion": "Pastillas de freno cerámicas, mayor durabilidad",
+                "Imagen_URL": "https://picsum.photos/id/102/400/400"
             },
             {
                 "Nombre_Producto": "Kit de Embrague",
@@ -33,7 +35,8 @@ class Command(BaseCommand):
                 "Categoria": "Transmisión",
                 "Precio_Unitario": 120000,
                 "Cantidad": 5,
-                "Descripcion": "Kit completo de embrague para transmisión manual"
+                "Descripcion": "Kit completo de embrague para transmisión manual",
+                "Imagen_URL": "https://picsum.photos/id/103/400/400"
             },
             {
                 "Nombre_Producto": "Amortiguadores Delanteros",
@@ -42,7 +45,8 @@ class Command(BaseCommand):
                 "Categoria": "Suspensión",
                 "Precio_Unitario": 85750,
                 "Cantidad": 3,
-                "Descripcion": "Amortiguadores delanteros de alta resistencia"
+                "Descripcion": "Amortiguadores delanteros de alta resistencia",
+                "Imagen_URL": "https://picsum.photos/id/104/400/400"
             },
             {
                 "Nombre_Producto": "Batería 12V 60Ah",
@@ -51,7 +55,8 @@ class Command(BaseCommand):
                 "Categoria": "Eléctrico",
                 "Precio_Unitario": 89990,
                 "Cantidad": 10,
-                "Descripcion": "Batería de 12 voltios y 60 amperios por hora"
+                "Descripcion": "Batería de 12 voltios y 60 amperios por hora",
+                "Imagen_URL": "https://picsum.photos/id/105/400/400"
             },
             {
                 "Nombre_Producto": "Correa de Distribución",
@@ -60,7 +65,8 @@ class Command(BaseCommand):
                 "Categoria": "Motor",
                 "Precio_Unitario": 65250,
                 "Cantidad": 7,
-                "Descripcion": "Correa de distribución de alta durabilidad"
+                "Descripcion": "Correa de distribución de alta durabilidad",
+                "Imagen_URL": "https://picsum.photos/id/106/400/400"
             },
             {
                 "Nombre_Producto": "Aceite Motor 5W-30",
@@ -69,7 +75,8 @@ class Command(BaseCommand):
                 "Categoria": "Motor",
                 "Precio_Unitario": 18990,
                 "Cantidad": 20,
-                "Descripcion": "Aceite sintético 5W-30 para motor, 5 litros"
+                "Descripcion": "Aceite sintético 5W-30 para motor, 5 litros",
+                "Imagen_URL": "https://picsum.photos/id/107/400/400"
             },
             {
                 "Nombre_Producto": "Bujías de Encendido",
@@ -78,7 +85,8 @@ class Command(BaseCommand):
                 "Categoria": "Motor",
                 "Precio_Unitario": 12990,
                 "Cantidad": 12,
-                "Descripcion": "Bujías de iridio para mejor rendimiento"
+                "Descripcion": "Bujías de iridio para mejor rendimiento",
+                "Imagen_URL": "https://picsum.photos/id/108/400/400"
             },
             {
                 "Nombre_Producto": "Radiador",
@@ -87,7 +95,8 @@ class Command(BaseCommand):
                 "Categoria": "Motor",
                 "Precio_Unitario": 115000,
                 "Cantidad": 4,
-                "Descripcion": "Radiador de aluminio para sistema de refrigeración"
+                "Descripcion": "Radiador de aluminio para sistema de refrigeración",
+                "Imagen_URL": "https://picsum.photos/id/109/400/400"
             },
             {
                 "Nombre_Producto": "Discos de Freno",
@@ -96,7 +105,8 @@ class Command(BaseCommand):
                 "Categoria": "Frenos",
                 "Precio_Unitario": 75900,
                 "Cantidad": 6,
-                "Descripcion": "Discos de freno ventilados delanteros"
+                "Descripcion": "Discos de freno ventilados delanteros",
+                "Imagen_URL": "https://picsum.photos/id/110/400/400"
             }
         ]
 
@@ -118,7 +128,7 @@ class Command(BaseCommand):
                 "Precio_Unitario": random.randint(10000, 150000),
                 "Cantidad": random.randint(1, 25),
                 "Descripcion": f"Descripción del producto {categoria} {i} de {proveedor}",
-                "Imagen_URL": f"https://picsum.photos/seed/{i}/400/400",
+                "Imagen_URL": f"https://picsum.photos/id/{100+i}/400/400",
             }
             productos_extra.append(producto)
         

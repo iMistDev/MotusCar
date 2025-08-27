@@ -13,6 +13,8 @@ class Products(models.Model):
     Descripcion = models.CharField(max_length=200)
     Fecha_Ingreso = models.DateTimeField(auto_now_add=True)
     
+    """Borrar Campo de Imagenes, ya que es de prueba"""
+    
     def __str__(self):
         texto = "{0} ({1})"
         return texto.format(self.Nombre_Producto, self.Código_SKU)
