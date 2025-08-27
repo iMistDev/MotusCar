@@ -118,6 +118,7 @@ class Command(BaseCommand):
                 "Precio_Unitario": random.randint(10000, 150000),
                 "Cantidad": random.randint(1, 25),
                 "Descripcion": f"Descripción del producto {categoria} {i} de {proveedor}"
+                "Imagen_URL": f"https://picsum.photos/seed/{i}/400/400"
             }
             productos_extra.append(producto)
         
@@ -131,6 +132,8 @@ class Command(BaseCommand):
         for producto_data in todos_los_productos:
             # Verificar si el producto ya existe por SKU
             sku = producto_data["Código_SKU"]
+            
+            imagen_url = producto_data.pop("Imagen_URL", none)
             try:
                 producto = Products.objects.get(Código_SKU=sku)
                 # Actualizar producto existente
@@ -139,14 +142,14 @@ class Command(BaseCommand):
                 producto.save()
                 actualizados += 1
                 self.stdout.write(
-                    self.style.WARNING(f'Producto actualizado: {producto.Nombre_Producto}')
+                    self.style.WARNING(f'Producto actualizado: {producto.Nombre_Producto} | Imagen: {imagen_url}')
                 )
             except Products.DoesNotExist:
                 # Crear nuevo producto
                 producto = Products.objects.create(**producto_data)
                 creados += 1
                 self.stdout.write(
-                    self.style.SUCCESS(f'Producto creado: {producto.Nombre_Producto}')
+                    self.style.SUCCESS(f'Producto creado: {producto.Nombre_Producto} | Imagen: {imagen_url}')
                 )
         
         # Mostrar resumen
