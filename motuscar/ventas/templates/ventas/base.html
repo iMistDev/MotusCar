@@ -205,14 +205,14 @@
             
             <!-- Logo a la izquierda -->
             <div class="logo">
-                <a href="{% url 'lista_productos' %}"><img src="{% static 'img/Motuscar-logo.webp' %}" alt="Motuscar Logo"></a>
+                <a href="{% url 'motus' %}"><img src="{% static 'img/Motuscar-logo.webp' %}" alt="Motuscar Logo"></a>
             </div>
             
             <div class="collapse navbar-collapse" id="navbarNav">
                 <!-- Menú a la izquierda (junto al logo) -->
                 <ul class="navbar-nav left-menu">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'lista_productos' %}">
+                        <a class="nav-link" href="{% url 'lista_productos_repuestos' %}">
                             <i class="fas fa-store"></i> Productos
                         </a>
                     </li>
@@ -285,7 +285,7 @@
                 <div class="col-md-4">
                     <h5>Enlaces Rápidos</h5>
                     <ul class="list-unstyled">
-                        <li><a href="{% url 'lista_productos' %}" class="text-white">Productos</a></li>
+                        <li><a href="{% url 'lista_productos_repuestos' %}" class="text-white">Productos</a></li>
                         <li><a href="#" class="text-white">Contacto</a></li>
                         <li><a href="#" class="text-white">Sobre Nosotros</a></li>
                     </ul>
