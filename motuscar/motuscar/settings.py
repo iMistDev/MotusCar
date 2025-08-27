@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #'login',
     'core',
+    'ventas',
     'crispy_forms',
     'crispy_bootstrap5',  
     'safedelete',

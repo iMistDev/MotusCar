@@ -1,0 +1,65 @@
+{% extends 'ventas/base.html' %}
+{% load static %}
+{% block title %}Checkout - MotusCar{% endblock %}
+{% block content %}
+<div class="container my-5">
+    <h1 class="text-center mb-4">Finalizar Compra</h1>
+    
+    {% if items %}
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Resumen de tu compra</h5>
+                </div>
+                <div class="card-body">
+                    {% for item in items %}
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h6>{{ item.producto.Nombre_Producto }}</h6>
+                            <small class="text-muted">Cantidad: {{ item.cantidad }}</small>
+                        </div>
+                        <div class="text-end">
+                            <p class="mb-0">${{ item.producto.Precio_Unitario }} c/u</p>
+                            <strong>${{ item.subtotal }}</strong>
+                        </div>
+                    </div>
+                    <hr>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Total a pagar</h5>
+                </div>
+                <div class="card-body">
+                    <h3 class="text-center text-primary">${{ total }}</h3>
+                    
+                    <form method="post" class="mt-4">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success btn-lg w-100">
+                            <i class="fas fa-check-circle"></i> Confirmar Pago
+                        </button>
+                    </form>
+                    
+                    <a href="{% url 'ver_carrito' %}" class="btn btn-outline-secondary btn-lg w-100 mt-2">
+                        ← Volver al Carrito
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="fas fa-shopping-cart fa-4x text-muted mb-3"></i>
+        <h3 class="text-muted">No hay productos en el carrito</h3>
+        <a href="{% url 'lista_productos' %}" class="btn btn-primary btn-lg mt-3">
+            Ir a Productos
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
