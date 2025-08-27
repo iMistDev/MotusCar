@@ -2,7 +2,7 @@
 from django.urls import path
 
 #URL Productos
-from core.views.inventario import listar_productos, crear_productos, editar_producto, eliminar_producto
+from core.views.inventario import listar_productos, crear_productos, editar_producto, eliminar_producto, listar_repuestos
 
 #URL Vehículos
 from core.views.vehiculo import (
@@ -49,6 +49,8 @@ urlpatterns = [
     path('productos/crear/', crear_productos, name='crear_producto'),
     path('productos/editar/<int:id>', editar_producto, name='editar_producto'),
     path('productos/eliminar/<int:id>', eliminar_producto, name='eliminar_producto'),
+    
+    path('repuestos/', listar_repuestos, name='listar_repuestos'),
     
     #URL Mecanico
     path('mecanico/', listar_mecanico, name='listar_mecanico'),

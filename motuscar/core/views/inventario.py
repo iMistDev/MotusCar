@@ -38,3 +38,13 @@ def eliminar_producto(request, id):
         return redirect('listar_productos')
     return render(request, 'inventario/eliminar.html', {'producto': producto})
  
+ 
+ 
+ 
+ 
+ #REPUESTOS ABAJO
+
+def listar_repuestos(request):
+    repuestos = Products.objects.all()
+    return render(request, 'repuestos/listar_repuestos.html', {'repuestos': repuestos})
+
