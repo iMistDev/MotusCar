@@ -41,7 +41,7 @@ def agregar_al_carrito(request, producto_id):
         ItemCarrito.objects.create(carrito=carrito, producto=producto, cantidad=1)
         messages.success(request, f'🎉 ¡"{producto.Nombre_Producto}" agregado al carrito con éxito!')
     
-    return redirect('lista_productos')
+    return redirect('lista_productos_repuestos')
 def ver_carrito(request):
     carrito = _get_or_create_carrito(request)
     items = ItemCarrito.objects.filter(carrito=carrito)
@@ -76,7 +76,7 @@ def checkout(request):
         Orden.objects.create(total=total)
         items.delete()
         messages.success(request, '¡Compra realizada con éxito! Gracias por tu compra.')
-        return redirect('lista_productos')
+        return redirect('lista_productos_repuestos')
     
     return render(request, 'ventas/checkout.html', {'items': items, 'total': total})
 
