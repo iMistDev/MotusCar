@@ -6,3 +6,4 @@ from .usuarios import Usuario, UsuarioManager, BaseUserManager
 from .inventario import Products
 from .usuario_comun import UsuarioComun
 from .vehiculo import Vehiculo
+from core.models import Products  

@@ -1,0 +1,109 @@
+{% extends 'ventas/base.html' %}
+{% load static %}
+{% block title %}{{ producto.Nombre_Producto }} - MotusCar{% endblock %}
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <!-- Imagen del producto -->
+        <div class="col-md-6">
+            <div class="text-center">
+                <img src="{% static 'ventas/images/default-product.png' %}" 
+                     class="img-fluid rounded shadow" 
+                     alt="{{ producto.Nombre_Producto }}"
+                     style="max-height: 400px; object-fit: cover;">
+            </div>
+        </div>
+        
+        <!-- Información del producto -->
+        <div class="col-md-6">
+            <h1 class="mb-3">{{ producto.Nombre_Producto }}</h1>
+            
+            <!-- Precio y disponibilidad -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="text-primary">${{ producto.Precio_Unitario }}</h2>
+                {% if producto.Cantidad > 0 %}
+                <span class="badge bg-success fs-6">En stock: {{ producto.Cantidad }} unidades</span>
+                {% else %}
+                <span class="badge bg-danger fs-6">Agotado</span>
+                {% endif %}
+            </div>
+            
+            <!-- Código SKU -->
+            <p class="text-muted">
+                <strong>Código SKU:</strong> {{ producto.Código_SKU }}
+            </p>
+            
+            <!-- Descripción -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Descripción</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ producto.Descripcion }}</p>
+                </div>
+            </div>
+            
+            <!-- Información adicional -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">Categoría</h6>
+                            <p class="card-text">{{ producto.Categoria }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">Proveedor</h6>
+                            <p class="card-text">{{ producto.Proveedor }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Fecha de ingreso -->
+            <p class="text-muted small">
+                <strong>Fecha de ingreso:</strong> {{ producto.Fecha_Ingreso|date:"d M Y" }}
+            </p>
+            
+            <!-- Botones de acción -->
+            <div class="d-grid gap-2 d-md-flex">
+                {% if producto.Cantidad > 0 %}
+                <a href="{% url 'agregar_al_carrito' producto.id_producto %}" class="btn btn-success btn-lg flex-fill">
+                    <i class="fas fa-cart-plus"></i> Agregar al Carrito
+                </a>
+                {% else %}
+                <button class="btn btn-secondary btn-lg flex-fill" disabled>
+                    <i class="fas fa-cart-plus"></i> Producto Agotado
+                </button>
+                {% endif %}
+                <a href="{% url 'lista_productos' %}" class="btn btn-outline-primary btn-lg">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sección de productos relacionados (opcional) -->
+<div class="container mt-5">
+    <h3 class="mb-4">Productos relacionados</h3>
+    <div class="row">
+        <!-- Aquí puedes agregar productos de la misma categoría -->
+        <div class="col-12 text-center">
+            <p class="text-muted">Próximamente más productos de la categoría {{ producto.Categoria }}</p>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    transition: transform 0.2s;
+}
+.card:hover {
+    transform: translateY(-2px);
+}
+</style>
+{% endblock %}

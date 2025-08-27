@@ -26,9 +26,14 @@ from core.views.agenda import (
 from core.views.usuario_comun import listar_usuario_comun, crear_usuario_comun, editar_usuario_comun, EliminarUsuarioComun
 
  
+#URLS ventas
+from django.urls import include
+
 
 urlpatterns = [
-    
+    #ventas
+    path('ventas/', include('ventas.urls')),
+
     #URL Vehículos
     path('vehiculos/', listar_vehiculos, name='listar_vehiculos'),
     path('vehiculos/crear/', crear_vehiculo, name='crear_vehiculo'),
@@ -77,4 +82,7 @@ urlpatterns = [
     path('usuario_comun/<int:pk>/editar/', editar_usuario_comun, name='editar_usuario_comun'),
     path('usuario_comun/<int:pk>/eliminar/', EliminarUsuarioComun.as_view(), name='eliminar_usuario_comun'),
     
+
+    #URL VENTAS
+    path('ventas/', include('ventas.urls')),
 ]

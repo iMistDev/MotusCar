@@ -34,6 +34,6 @@ urlpatterns = [
     path('login/', include('login.urls')),
     path('landing/', include('landing.urls')),
     path('', include('dashboard.urls', namespace='dashboard')),  # ← Aquí el namespace
-
+    
     
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
