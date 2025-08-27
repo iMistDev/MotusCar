@@ -117,8 +117,8 @@ class Command(BaseCommand):
                 "Categoria": categoria,
                 "Precio_Unitario": random.randint(10000, 150000),
                 "Cantidad": random.randint(1, 25),
-                "Descripcion": f"Descripción del producto {categoria} {i} de {proveedor}"
-                "Imagen_URL": f"https://picsum.photos/seed/{i}/400/400"
+                "Descripcion": f"Descripción del producto {categoria} {i} de {proveedor}",
+                "Imagen_URL": f"https://picsum.photos/seed/{i}/400/400",
             }
             productos_extra.append(producto)
         
@@ -133,7 +133,7 @@ class Command(BaseCommand):
             # Verificar si el producto ya existe por SKU
             sku = producto_data["Código_SKU"]
             
-            imagen_url = producto_data.pop("Imagen_URL", none)
+            imagen_url = producto_data.pop("Imagen_URL", None)
             try:
                 producto = Products.objects.get(Código_SKU=sku)
                 # Actualizar producto existente
