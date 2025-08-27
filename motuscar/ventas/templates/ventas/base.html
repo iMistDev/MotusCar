@@ -1,12 +1,18 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}MotusCar{% endblock %}</title>
-    
+        <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="{% static 'ventas/css/estilo.css' %}">
+
+
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
     
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -14,70 +20,83 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <style>
-        /* Estilos para los mensajes */
-        .alert {
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            margin-bottom: 1rem;
-        }
+ <style>
+    /* Estilos para los mensajes */
+    .alert {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        margin-bottom: 1rem;
+    }
 
-        .alert-success {
-            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-            color: #155724;
-            border-left: 4px solid #28a745;
-        }
+    .alert-success {
+        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        color: #155724;
+        border-left: 4px solid #28a745;
+    }
 
-        .alert-danger {
-            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
-            color: #721c24;
-            border-left: 4px solid #dc3545;
-        }
+    .alert-danger {
+        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+        color: #721c24;
+        border-left: 4px solid #dc3545;
+    }
 
-        .alert-warning {
-            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
-            color: #856404;
-            border-left: 4px solid #ffc107;
-        }
+    .alert-warning {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        color: #856404;
+        border-left: 4px solid #ffc107;
+    }
 
-        .alert-info {
-            background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
-            color: #0c5460;
-            border-left: 4px solid #17a2b8;
-        }
+    .alert-info {
+        background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+        color: #0c5460;
+        border-left: 4px solid #17a2b8;
+    }
 
-        .alert i {
-            margin-right: 10px;
-            font-size: 1.2em;
-        }
-        
-        /* Estilos generales */
-        body {
-            background-color: #f8f9fa;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        .navbar-brand {
-            font-weight: bold;
-            font-size: 1.5rem;
-        }
-        
-        .footer {
-            background-color: #343a40;
-            color: white;
-            padding: 2rem 0;
-            margin-top: auto;
-        }
-    </style>
+    .alert i {
+        margin-right: 10px;
+        font-size: 1.2em;
+    }
+    
+    /* Estilos generales */
+    body {
+        background-color: #f8f9fa;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .navbar-brand {
+        font-weight: bold;
+        font-size: 1.5rem;
+    }
+    
+    .footer {
+        background-color: #343a40;
+        color: white;
+        padding: 2rem 0;
+        margin-top: auto;
+    }
+    
+    /* Tus clases personalizadas para el logo */
+    .logo {
+        order: 2;
+        margin-right: auto;
+    }
+    .logo img {
+        width: 12rem;
+        height: 1.6rem;
+    }
+</style>
+    {% block extra_css %}
+    <!-- Estilos adicionales específicos de cada página -->
+     
+    {% endblock %}
 </head>
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="{% url 'lista_productos' %}">
-                <i class="fas fa-car"></i> MotusCar
-            </a>
+        <div class="logo">
+            <a href="{% url 'motus' %}"><img src="{% static 'img/Motuscar-logo.webp' %}" alt="Motuscar Logo"></a>
+        </div>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -88,6 +107,14 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'lista_productos' %}">
                             <i class="fas fa-store"></i> Productos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'ver_carrito' %}">
+                            <i class="fas fa-shopping-cart"></i> Carrito
+                            {% if request.session.carrito_items_count and request.session.carrito_items_count > 0 %}
+                            <span class="badge bg-danger">{{ request.session.carrito_items_count }}</span>
+                            {% endif %}
                         </a>
                     </li>
                 </ul>
@@ -159,14 +186,12 @@
                     <ul class="list-unstyled">
                         <li><a href="{% url 'lista_productos' %}" class="text-white">Productos</a></li>
                         <li><a href="#" class="text-white">Contacto</a></li>
-                        <li><a href="#" class="text-white">Sobre Nosotros</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">
                     <h5>Contacto</h5>
                     <p><i class="fas fa-phone"></i> +56 9 1234 5678</p>
                     <p><i class="fas fa-envelope"></i> info@motuscar.cl</p>
-                    <p><i class="fas fa-map-marker-alt"></i> Santiago, Chile</p>
                 </div>
             </div>
             <hr class="bg-light">
@@ -188,6 +213,16 @@
             }, 5000);
         });
     });
+
+    // Actualizar contador del carrito en la navbar
+    function updateCartCounter() {
+        fetch('{% url "ver_carrito" %}')
+            .then(response => response.text())
+            .then(data => {
+                // Aquí puedes agregar lógica para actualizar el contador
+                // si decides implementar AJAX para el carrito
+            });
+    }
     </script>
     
     {% block extra_js %}
