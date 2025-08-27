@@ -102,7 +102,7 @@ body {
     margin: 0;
     padding: 0;
     flex-direction: column;
-    background-color: black;
+    background-color: #161616;
     min-height: 100vh;
 }
 
@@ -129,7 +129,6 @@ main {
     justify-content: space-between;
     align-items: center;
     padding: 1rem 1rem;
-    border-bottom: 3px solid orangered;
 }
 
 .menu-hamburguesa {
@@ -509,7 +508,7 @@ main {
 .services {
     position: relative;
     padding: 3rem 2rem 5rem;
-    background-color: black;
+    background-color: #161616;
     margin-top: 4.5rem;
     z-index: 5;
 }
