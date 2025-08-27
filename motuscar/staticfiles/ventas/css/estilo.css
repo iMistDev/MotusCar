@@ -203,12 +203,3 @@ footer p {
         margin-top: auto;
     }
     
-    /* Tus clases personalizadas para el logo */
-    .logo {
-        order: 2;
-        margin-right: auto;
-    }
-    .logo img {
-        width: 12rem;
-        height: 1.6rem;
-    }
