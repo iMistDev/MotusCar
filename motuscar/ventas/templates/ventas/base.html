@@ -171,6 +171,27 @@
             background-color: #2980b9;
         }
         
+        /* Botón Volver a Motus */
+        .btn-volver-motus {
+            background-color: #17a2b8;
+            border-color: #17a2b8;
+            color: white;
+            margin-right: 15px;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-volver-motus:hover {
+            background-color: #138496;
+            border-color: #117a8b;
+            color: white;
+        }
+        
         @media (max-width: 768px) {
             .header {
                 flex-direction: column;
@@ -191,6 +212,11 @@
             .product-grid {
                 grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             }
+            
+            .btn-volver-motus {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
         }
     </style>
 </head>
@@ -208,9 +234,19 @@
                 <a href="{% url 'motus' %}"><img src="{% static 'img/Motuscar-logo.webp' %}" alt="Motuscar Logo"></a>
             </div>
             
+            <!-- Botón Volver a Motus - Visible en móviles -->
+            <a href="{% url 'motus' %}" class="btn-volver-motus d-lg-none">
+                <i class="fas fa-arrow-left"></i> Volver a Motus
+            </a>
+            
             <div class="collapse navbar-collapse" id="navbarNav">
+                <!-- Botón Volver a Motus - Visible en desktop -->
+                <a href="{% url 'motus' %}" class="btn-volver-motus d-none d-lg-inline-flex me-3">
+                    <i class="fas fa-arrow-left"></i> Volver a Motus
+                </a>
+                
                 <!-- Menú a la izquierda (junto al logo) -->
-                <ul class="navbar-nav left-menu">
+                <ul class="navbar-nav">
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'lista_productos_repuestos' %}">
                             <i class="fas fa-store"></i> Productos
@@ -275,7 +311,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="footer mt-5">
+    <footer class="footer mt-5 bg-dark text-light py-4">
         <div class="container">
             <div class="row">
                 <div class="col-md-4">
@@ -285,9 +321,9 @@
                 <div class="col-md-4">
                     <h5>Enlaces Rápidos</h5>
                     <ul class="list-unstyled">
-                        <li><a href="{% url 'lista_productos_repuestos' %}" class="text-white">Productos</a></li>
-                        <li><a href="#" class="text-white">Contacto</a></li>
-                        <li><a href="#" class="text-white">Sobre Nosotros</a></li>
+                        <li><a href="{% url 'lista_productos_repuestos' %}" class="text-light">Productos</a></li>
+                        <li><a href="#" class="text-light">Contacto</a></li>
+                        <li><a href="#" class="text-light">Sobre Nosotros</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">
