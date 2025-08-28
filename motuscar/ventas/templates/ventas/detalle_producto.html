@@ -7,10 +7,15 @@
         <!-- Imagen del producto -->
         <div class="col-md-6">
             <div class="text-center">
-                <img src="{% static 'ventas/images/default-product.png' %}" 
+                <img src="https://picsum.photos/seed/{{ producto.id_producto }}/400/250" 
+                         class="card-img-top img-fluid h-100" 
+                         alt="{{ producto.Nombre_Producto }}"
+                         style="object-fit: cover; width: 100%;">
+                
+                <!-- Produccion: <img src="{% static 'ventas/images/default-product.png' %}" 
                      class="img-fluid rounded shadow" 
                      alt="{{ producto.Nombre_Producto }}"
-                     style="max-height: 400px; object-fit: cover;">
+                     style="max-height: 400px; object-fit: cover;"> -->
             </div>
         </div>
         
