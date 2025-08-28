@@ -209,6 +209,9 @@
             <a href="{% url 'listar_mecanicos' %}" class="nav-link">
                 <i class="fas fa-user-cog"></i> Mecánicos
             </a>
+            <a href="{% url 'lista_productos_repuestos' %}" class="nav-link">
+                <i class="fa-solid fa-basket-shopping"></i> Repuestos
+            </a>
             
         </div>
 
@@ -240,6 +243,7 @@
                         <i class="fas fa-caret-down"></i>
                     </button>
                     <div class="dropdown-content" id="userDropdown">
+                        <a href="{% url 'motus' %}"><i class="fa-solid fa-house"></i> Inicio</a>
                         <a href="{% url 'profile' %}"><i class="fas fa-user"></i> Mi Perfil</a>
                         <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
                     </div>
