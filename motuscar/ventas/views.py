@@ -176,14 +176,30 @@ def checkout(request):
     carrito = _get_or_create_carrito(request)
     items = ItemCarrito.objects.filter(carrito=carrito)
     total = sum(item.subtotal() for item in items)
-    
+
     if request.method == 'POST':
-        Orden.objects.create(total=total)
+        if not items.exists():
+            messages.error(request, 'Tu carrito está vacío.')
+            return redirect('lista_productos_repuestos')
+
+        # Crear la orden
+        orden = Orden.objects.create(total=total, usuario=request.user)
+
+        # Tomamos el primer producto para la redirección (puedes cambiar la lógica si hay varios)
+        primer_item = items.first()
+        producto_id = primer_item.producto.id_producto
+
+        # Vaciar el carrito
         items.delete()
+
         messages.success(request, '¡Compra realizada con éxito! Gracias por tu compra.')
-        return redirect('lista_productos_repuestos')
-    
+
+        # Redirigir a la página de crear reseña
+        return redirect('crear_reseña', producto_id=producto_id, orden_id=orden.id)
+
+    # Si es GET, mostramos el checkout
     return render(request, 'ventas/checkout.html', {'items': items, 'total': total})
+
 
 
 def _get_or_create_carrito(request):

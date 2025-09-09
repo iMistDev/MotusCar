@@ -1,5 +1,6 @@
 from django.db import models
 from core.models.productos import Products
+from login.models import CustomUser
 
 # ELIMINA ESTA CLASE DUPLICADA - Ya tienes Products en core
 # class Producto(models.Model):
@@ -32,6 +33,7 @@ class ItemCarrito(models.Model):
 
 class Orden(models.Model):
     creado = models.DateTimeField(auto_now_add=True)
+    usuario = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     total = models.DecimalField(max_digits=10, decimal_places=2)
     estado = models.CharField(max_length=20, choices=[
         ('pendiente', 'Pendiente'),
