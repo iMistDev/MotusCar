@@ -1,31 +1,133 @@
+import math
 from django.core.paginator import Paginator
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
-from core.models.inventario import Products
+from django.db.models import Q, Max, Min
+from core.models.inventario import Inventario
+from core.models.productos import Products
 from .models import Carrito, ItemCarrito, Orden
+from core.constants.regiones import REGIONES_CHILE, COMUNAS_POR_REGION
+from core.constants.repuestos import CATEGORIAS
+import json
+from django.db.models import Sum
+from urllib.parse import urlencode
+from django.core.paginator import Paginator
+from django.db.models import Q
+from django.shortcuts import render
+import json
+from django.db import models
+from reseñas.models import Reseña
+
 
 def lista_productos(request):
-    productos_list = Products.objects.all()
-    paginator = Paginator(productos_list, 9)
+    productos = Products.objects.all()
+
+    # --- Filtros ---
+    categoria = request.GET.get("categoria")
+    region = request.GET.get("region")
+    comuna = request.GET.get("comuna")
+    orden = request.GET.get("orden")
+    search = request.GET.get("search")
+    # Calcular rango de precios real
+    precio_maximo = productos.aggregate(Max('Precio_Unitario'))['Precio_Unitario__max'] or 150000
+    precio_minimo = productos.aggregate(Min('Precio_Unitario'))['Precio_Unitario__min'] or 0
+
+    # Asegurar que el mínimo sea 0 si hay productos gratuitos
+    precio_minimo = max(0, precio_minimo)
     
-    page_number = request.GET.get('page')
+    # Redondear a múltiplos de 1000 para mejor visualización
+    precio_maximo = math.ceil(precio_maximo / 1000) * 1000
+    precio_minimo = math.floor(precio_minimo / 1000) * 1000
+    
+    if categoria:
+        productos = productos.filter(Categoria__icontains=categoria)
+
+    # Filtrar por region/comuna a través de inventario → sucursal
+    if region:
+        productos = productos.filter(inventario__sucursal__region__iexact=region)
+    if comuna:
+        productos = productos.filter(inventario__sucursal__comuna__iexact=comuna)
+
+    if search:
+        productos = productos.filter(
+            Q(Nombre_Producto__icontains=search) | Q(Descripcion__icontains=search)
+        )
+    
+
+    # --- Ordenar ---
+    if orden == "precio_asc":
+        productos = productos.order_by("Precio_Unitario")
+    elif orden == "precio_desc":
+        productos = productos.order_by("-Precio_Unitario")
+
+    productos = productos.distinct()
+
+    # --- Comunas dinámicas ---
+    TODAS_LAS_COMUNAS = sorted(
+        list(set([c for comunas in COMUNAS_POR_REGION.values() for c in comunas]))
+    )
+    comunas = COMUNAS_POR_REGION.get(region, TODAS_LAS_COMUNAS) if region else TODAS_LAS_COMUNAS
+
+    # --- Paginación ---
+    paginator = Paginator(productos, 9)
+    page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
-    
-    # Obtener información del carrito para el contador
-    carrito = _get_or_create_carrito(request)
-    items_carrito = ItemCarrito.objects.filter(carrito=carrito)
-    
-    return render(request, 'ventas/lista_productos.html', {
-        'productos': page_obj,
-        'page_obj': page_obj,
-        'is_paginated': paginator.num_pages > 1,
-        'items': items_carrito
-    })
+
+    # --- Construir querystring para paginación ---
+    qs = request.GET.copy()
+    if "page" in qs:
+        qs.pop("page")
+
+    context = {
+        "productos": page_obj,
+        "page_obj": page_obj,
+        "is_paginated": paginator.num_pages > 1,
+        "categorias": CATEGORIAS,
+        "regiones": REGIONES_CHILE,
+        "comunas": comunas,
+        "categoria_sel": categoria,
+        "region_sel": region,
+        "comuna_sel": comuna,
+        "orden": orden,
+        "search": search,
+        "comunas_por_region_json": json.dumps(COMUNAS_POR_REGION),
+        "querystring": urlencode(qs),
+        'precio_maximo': precio_maximo,
+        'precio_minimo': precio_minimo,
+    }
+    return render(request, "ventas/lista_productos.html", context)
+
+
 
 def detalle_producto(request, producto_id):
     producto = get_object_or_404(Products, id_producto=producto_id)
-    return render(request, 'ventas/detalle_producto.html', {'producto': producto})
+
+    # Stock por sucursal del proveedor del producto
+    stock_por_sucursal = Inventario.objects.filter(producto=producto).values('sucursal__nombre', 'sucursal__comuna').annotate(stock=Sum('cantidad'))
+    reseñas = Reseña.objects.filter(producto=producto).order_by('-creado')
+
+    # Total stock del producto del proveedor (para habilitar el botón)
+    total_stock = stock_por_sucursal.aggregate(total=Sum('stock'))['total'] or 0
+
+    # Otros proveedores que tienen el mismo producto
+    otros_proveedores = Products.objects.filter(Nombre_Producto=producto.Nombre_Producto).exclude(id_producto=producto.id_producto)
+
+    otros_stock = []
+    for prod in otros_proveedores:
+        stock = Inventario.objects.filter(producto=prod).values('sucursal__nombre', 'sucursal__comuna').annotate(stock=Sum('cantidad'))
+        otros_stock.append({
+            'proveedor': prod.Proveedor.nombre,
+            'precio': prod.Precio_Unitario,
+            'stock': stock
+        })
+
+    return render(request, 'ventas/detalle_producto.html', {
+        'producto': producto,
+        'stock_por_sucursal': stock_por_sucursal,
+        'otros_stock': otros_stock,
+        'total_stock': total_stock,
+        'reseñas': reseñas
+    })
 
 def agregar_al_carrito(request, producto_id):
     producto = get_object_or_404(Products, id_producto=producto_id)
@@ -42,6 +144,8 @@ def agregar_al_carrito(request, producto_id):
         messages.success(request, f'🎉 ¡"{producto.Nombre_Producto}" agregado al carrito con éxito!')
     
     return redirect('lista_productos_repuestos')
+
+
 def ver_carrito(request):
     carrito = _get_or_create_carrito(request)
     items = ItemCarrito.objects.filter(carrito=carrito)
@@ -67,6 +171,7 @@ def ver_carrito(request):
     
     return render(request, 'ventas/ver_carrito.html', {'items': items, 'total': total})
 
+
 def checkout(request):
     carrito = _get_or_create_carrito(request)
     items = ItemCarrito.objects.filter(carrito=carrito)
@@ -79,6 +184,7 @@ def checkout(request):
         return redirect('lista_productos_repuestos')
     
     return render(request, 'ventas/checkout.html', {'items': items, 'total': total})
+
 
 def _get_or_create_carrito(request):
     carrito_id = request.session.get('carrito_id')

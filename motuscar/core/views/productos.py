@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from core.models.inventario import Products
-from core.forms.inventario import ProductForm
+from core.models.productos import Products
+from core.forms.productos import ProductForm
 
 # Create your views here.
 
 def listar_productos(request):
     productos = Products.objects.all()
-    return render(request, "inventario/listar.html", {"productos": productos})
+    return render(request, "productos/listar.html", {"productos": productos})
 
 def crear_productos(request):
     if request.method == 'POST':
@@ -16,7 +16,7 @@ def crear_productos(request):
             return redirect('listar_productos')
     else:
         form = ProductForm()
-    return render(request, 'inventario/form.html', {'form': form})
+    return render(request, 'productos/form.html', {'form': form})
 
 def editar_producto(request, id):
     producto = get_object_or_404(Products, pk=id)
@@ -29,22 +29,11 @@ def editar_producto(request, id):
     else:
         form = ProductForm(instance=producto)
         
-    return render(request, 'inventario/form.html', {'form': form})
+    return render(request, 'productos/form.html', {'form': form})
 
 def eliminar_producto(request, id):
     producto = get_object_or_404(Products, pk=id)
     if request.method == 'POST':
         producto.delete()
         return redirect('listar_productos')
-    return render(request, 'inventario/eliminar.html', {'producto': producto})
- 
- 
- 
- 
- 
- #REPUESTOS ABAJO
-
-def listar_repuestos(request):
-    repuestos = Products.objects.all()
-    return render(request, 'repuestos/listar_repuestos.html', {'repuestos': repuestos})
-
+    return render(request, 'productos/eliminar.html', {'producto': producto})

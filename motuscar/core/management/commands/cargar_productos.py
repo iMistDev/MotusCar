@@ -1,170 +1,104 @@
 from django.core.management.base import BaseCommand
-from core.models import Products  # Ajusta la importación según tu estructura
-from django.utils import timezone
-import random
+from django.db import transaction
+from core.models.proveedor import Proveedor
+from core.models.sucursal import Sucursal
+from core.models.productos import Products
+from core.models.inventario import Inventario
+
 
 class Command(BaseCommand):
-    help = 'Carga datos de prueba para productos de repuestos'
+    help = 'Carga datos de prueba deterministas exclusivamente en la región Biobío'
 
     def handle(self, *args, **options):
-        productos_data = [
-            {
-                "Nombre_Producto": "Filtro de Aceite",
-                "Código_SKU": "FO-001",
-                "Proveedor": "Repuestos Premium",
-                "Categoria": "Motor",
-                "Precio_Unitario": 24990,
-                "Cantidad": 15,
-                "Descripcion": "Filtro de aceite de alta calidad para todo tipo de vehículos",
-                "Imagen_URL": "https://picsum.photos/id/101/400/400"
-            },
-            {
-                "Nombre_Producto": "Pastillas de Freno",
-                "Código_SKU": "PF-002",
-                "Proveedor": "Frenos y Más",
-                "Categoria": "Frenos",
-                "Precio_Unitario": 45500,
-                "Cantidad": 8,
-                "Descripcion": "Pastillas de freno cerámicas, mayor durabilidad",
-                "Imagen_URL": "https://picsum.photos/id/102/400/400"
-            },
-            {
-                "Nombre_Producto": "Kit de Embrague",
-                "Código_SKU": "KE-003",
-                "Proveedor": "Transmisiones XYZ",
-                "Categoria": "Transmisión",
-                "Precio_Unitario": 120000,
-                "Cantidad": 5,
-                "Descripcion": "Kit completo de embrague para transmisión manual",
-                "Imagen_URL": "https://picsum.photos/id/103/400/400"
-            },
-            {
-                "Nombre_Producto": "Amortiguadores Delanteros",
-                "Código_SKU": "AM-004",
-                "Proveedor": "Suspensiones Premium",
-                "Categoria": "Suspensión",
-                "Precio_Unitario": 85750,
-                "Cantidad": 3,
-                "Descripcion": "Amortiguadores delanteros de alta resistencia",
-                "Imagen_URL": "https://picsum.photos/id/104/400/400"
-            },
-            {
-                "Nombre_Producto": "Batería 12V 60Ah",
-                "Código_SKU": "BT-005",
-                "Proveedor": "Energía Total",
-                "Categoria": "Eléctrico",
-                "Precio_Unitario": 89990,
-                "Cantidad": 10,
-                "Descripcion": "Batería de 12 voltios y 60 amperios por hora",
-                "Imagen_URL": "https://picsum.photos/id/105/400/400"
-            },
-            {
-                "Nombre_Producto": "Correa de Distribución",
-                "Código_SKU": "CD-006",
-                "Proveedor": "Repuestos Premium",
-                "Categoria": "Motor",
-                "Precio_Unitario": 65250,
-                "Cantidad": 7,
-                "Descripcion": "Correa de distribución de alta durabilidad",
-                "Imagen_URL": "https://picsum.photos/id/106/400/400"
-            },
-            {
-                "Nombre_Producto": "Aceite Motor 5W-30",
-                "Código_SKU": "AM-007",
-                "Proveedor": "Lubricantes Premium",
-                "Categoria": "Motor",
-                "Precio_Unitario": 18990,
-                "Cantidad": 20,
-                "Descripcion": "Aceite sintético 5W-30 para motor, 5 litros",
-                "Imagen_URL": "https://picsum.photos/id/107/400/400"
-            },
-            {
-                "Nombre_Producto": "Bujías de Encendido",
-                "Código_SKU": "BE-008",
-                "Proveedor": "Sistema Eléctrico Total",
-                "Categoria": "Motor",
-                "Precio_Unitario": 12990,
-                "Cantidad": 12,
-                "Descripcion": "Bujías de iridio para mejor rendimiento",
-                "Imagen_URL": "https://picsum.photos/id/108/400/400"
-            },
-            {
-                "Nombre_Producto": "Radiador",
-                "Código_SKU": "RD-009",
-                "Proveedor": "Cooling Systems",
-                "Categoria": "Motor",
-                "Precio_Unitario": 115000,
-                "Cantidad": 4,
-                "Descripcion": "Radiador de aluminio para sistema de refrigeración",
-                "Imagen_URL": "https://picsum.photos/id/109/400/400"
-            },
-            {
-                "Nombre_Producto": "Discos de Freno",
-                "Código_SKU": "DF-010",
-                "Proveedor": "Frenos y Más",
-                "Categoria": "Frenos",
-                "Precio_Unitario": 75900,
-                "Cantidad": 6,
-                "Descripcion": "Discos de freno ventilados delanteros",
-                "Imagen_URL": "https://picsum.photos/id/110/400/400"
-            }
-        ]
+        self.stdout.write(self.style.WARNING("Iniciando carga de datos de prueba (Biobío)..."))
 
-        # Crear productos adicionales variados
-        categorias = ["Motor", "Frenos", "Transmisión", "Suspensión", "Eléctrico"]
-        proveedores = ["Repuestos Premium", "Frenos y Más", "Transmisiones XYZ", 
-                      "Suspensiones Premium", "Energía Total", "Lubricantes Premium"]
-        
-        productos_extra = []
-        for i in range(11, 31):  # 20 productos adicionales
-            categoria = random.choice(categorias)
-            proveedor = random.choice(proveedores)
-            
-            producto = {
-                "Nombre_Producto": f"Producto {categoria} {i}",
-                "Código_SKU": f"SKU-{i:03d}",
-                "Proveedor": proveedor,
-                "Categoria": categoria,
-                "Precio_Unitario": random.randint(10000, 150000),
-                "Cantidad": random.randint(1, 25),
-                "Descripcion": f"Descripción del producto {categoria} {i} de {proveedor}",
-                "Imagen_URL": f"https://picsum.photos/id/{100+i}/400/400",
+        with transaction.atomic():
+            # -------- Proveedores --------
+            proveedores_data = [
+                {"nombre": "Repuestos Premium", "contacto": "Juan Pérez", "telefono": "987654321", "email": "premium@proveedores.cl"},
+                {"nombre": "AutoPartes Express", "contacto": "María López", "telefono": "912345678", "email": "express@proveedores.cl"},
+                {"nombre": "FullCar Repuestos", "contacto": "Carlos Díaz", "telefono": "998877665", "email": "fullcar@proveedores.cl"},
+            ]
+
+            proveedores = []
+            for p in proveedores_data:
+                prov, created = Proveedor.objects.update_or_create(
+                    nombre=p["nombre"],
+                    defaults={"contacto": p["contacto"], "telefono": p["telefono"], "email": p["email"]}
+                )
+                proveedores.append(prov)
+                self.stdout.write(f"Proveedor: {prov.nombre} ({'creado' if created else 'actualizado'})")
+
+            # -------- Sucursales (todas en Biobío) --------
+            sucursales_base = [
+                ("Sucursal Chiguayante", "Chiguayante"),
+                ("Sucursal Concepción", "Concepción"),
+                ("Sucursal Hualpén", "Hualpén"),
+                ("Sucursal Talcahuano", "Talcahuano"),
+            ]
+
+            for prov in proveedores:
+                for suc_name, comuna in sucursales_base:
+                    nombre_sucursal = f"{suc_name} - {prov.nombre}"
+                    suc, created = Sucursal.objects.update_or_create(
+                        nombre=nombre_sucursal,
+                        proveedor=prov,
+                        defaults={
+                            "region": "biobio",         # Código de región según REGIONES_CHILE
+                            "comuna": comuna,
+                            "direccion": "Av. Principal 123",
+                            "telefono": prov.telefono,
+                        }
+                    )
+                    self.stdout.write(f"  Sucursal: {suc.nombre} (comuna: {suc.comuna}) -> {'creada' if created else 'actualizada'}")
+
+            # -------- Productos base --------
+            productos_base = [
+                {"nombre": "Filtro de Aceite", "sku": "MO-001", "categoria": "Motor", "precio": 24990, "descripcion": "Filtro de aceite estándar"},
+                {"nombre": "Pastillas de Freno", "sku": "FR-001", "categoria": "Frenos", "precio": 34990, "descripcion": "Juego de pastillas delanteras"},
+                {"nombre": "Kit de Embrague", "sku": "TR-001", "categoria": "Transmisión", "precio": 159990, "descripcion": "Kit de embrague completo"},
+                {"nombre": "Amortiguador", "sku": "SU-001", "categoria": "Suspensión", "precio": 55990, "descripcion": "Amortiguador hidráulico"},
+                {"nombre": "Batería 60Ah", "sku": "EL-001", "categoria": "Eléctrico", "precio": 79990, "descripcion": "Batería libre de mantención"},
+            ]
+
+            # Cantidades por comuna para comparar tiendas
+            cantidades_por_comuna = {
+                "Chiguayante": 12,
+                "Concepción": 20,
+                "Hualpén": 5,
+                "Talcahuano": 15,
             }
-            productos_extra.append(producto)
-        
-        # Combinar todos los productos
-        todos_los_productos = productos_data + productos_extra
-        
-        # Contadores para estadísticas
-        creados = 0
-        actualizados = 0
-        
-        for producto_data in todos_los_productos:
-            # Verificar si el producto ya existe por SKU
-            sku = producto_data["Código_SKU"]
-            
-            imagen_url = producto_data.pop("Imagen_URL", None)
-            try:
-                producto = Products.objects.get(Código_SKU=sku)
-                # Actualizar producto existente
-                for key, value in producto_data.items():
-                    setattr(producto, key, value)
-                producto.save()
-                actualizados += 1
-                self.stdout.write(
-                    self.style.WARNING(f'Producto actualizado: {producto.Nombre_Producto} | Imagen: {imagen_url}')
-                )
-            except Products.DoesNotExist:
-                # Crear nuevo producto
-                producto = Products.objects.create(**producto_data)
-                creados += 1
-                self.stdout.write(
-                    self.style.SUCCESS(f'Producto creado: {producto.Nombre_Producto} | Imagen: {imagen_url}')
-                )
-        
-        # Mostrar resumen
-        self.stdout.write(
-            self.style.SUCCESS(
-                f'\nProceso completado: {creados} productos creados, {actualizados} productos actualizados'
-            )
-        )
+
+            # Crear productos y asignar inventario a todas las sucursales del proveedor
+            for prod in productos_base:
+                for prov in proveedores:
+                    # SKU único por proveedor
+                    sku_full = f"{prod['sku']}-{prov.id_proveedor}"
+
+                    producto, prod_created = Products.objects.update_or_create(
+                        **{"Código_SKU": sku_full},
+                        defaults={
+                            "Nombre_Producto": prod["nombre"],
+                            "Proveedor": prov,
+                            "Categoria": prod["categoria"],
+                            "Precio_Unitario": prod["precio"],
+                            "Descripcion": prod["descripcion"],
+                        }
+                    )
+                    self.stdout.write(f"Producto: {producto.Nombre_Producto} ({sku_full}) -> {'creado' if prod_created else 'actualizado'}")
+
+                    # Asignar inventario en todas las sucursales del proveedor
+                    sucursales_prov = Sucursal.objects.filter(proveedor=prov, region="biobio")
+                    for suc in sucursales_prov:
+                        cantidad = cantidades_por_comuna.get(suc.comuna, 10)
+                        inv, inv_created = Inventario.objects.update_or_create(
+                            producto=producto,
+                            sucursal=suc,
+                            defaults={
+                                "cantidad": cantidad,
+                                "ubicacion": "Estante A-1"
+                            }
+                        )
+                        self.stdout.write(f"    Inventario en {suc.comuna}: {inv.cantidad} unidades -> {'creado' if inv_created else 'actualizado'}")
+
+        self.stdout.write(self.style.SUCCESS("✅ Carga completa — datos en Biobío creados/actualizados correctamente."))

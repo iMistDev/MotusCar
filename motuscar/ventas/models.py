@@ -1,5 +1,5 @@
 from django.db import models
-from core.models.inventario import Products
+from core.models.productos import Products
 
 # ELIMINA ESTA CLASE DUPLICADA - Ya tienes Products en core
 # class Producto(models.Model):

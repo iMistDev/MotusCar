@@ -278,6 +278,11 @@
                 <a href="{% url 'listar_mecanicos' %}" class="nav-link">
                     <i class="fas fa-user-cog"></i> Mecánicos
                 </a>
+
+                <a href="{% url 'lista_productos_repuestos' %}" class="nav-link">
+                    <i class="fa-solid fa-basket-shopping"></i> Repuestos
+                </a>
+
             </div>
 
             <div class="auth-buttons">
@@ -360,5 +365,18 @@
             });
         });
     </script>
+    <script>
+    // Desaparecer mensajes después de 5 segundos
+    document.addEventListener('DOMContentLoaded', function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+            setTimeout(function() {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            }, 5000);
+        });
+    });
+    </script>
+    
 </body>
 </html>

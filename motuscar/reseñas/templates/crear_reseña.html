@@ -1,0 +1,105 @@
+<!-- templates/reseñas/crear_reseña.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dejar Reseña</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 30px auto;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .producto-info {
+            margin-bottom: 20px;
+        }
+        .estrella {
+            font-size: 24px;
+            cursor: pointer;
+            color: gray;
+        }
+        .estrella.checked {
+            color: gold;
+        }
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            resize: vertical;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .messages {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f2f2f2;
+            border-left: 4px solid #007bff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dejar reseña para: {{ producto.Nombre_Producto }}</h1>
+    <div class="producto-info">
+        <p>Orden ID: {{ orden.id }}</p>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            <label>Calificación:</label><br>
+            {% for i in "12345" %}
+                <span class="estrella" data-value="{{ i }}">&#9733;</span>
+            {% endfor %}
+            <input type="hidden" name="calificacion" id="calificacion" value="5">
+        </div>
+
+        <div>
+            <label>Comentario:</label>
+            <textarea name="comentario" rows="4" placeholder="Escribe tu comentario aquí..."></textarea>
+        </div>
+
+        <button type="submit">Enviar reseña</button>
+    </form>
+
+    {% if messages %}
+        <div class="messages">
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <script>
+        const estrellas = document.querySelectorAll('.estrella');
+        const calificacionInput = document.getElementById('calificacion');
+
+        estrellas.forEach((estrella, index) => {
+            estrella.addEventListener('click', () => {
+                calificacionInput.value = estrella.dataset.value;
+                estrellas.forEach((s, i) => {
+                    s.classList.toggle('checked', i <= index);
+                });
+            });
+        });
+
+        // Inicialmente marcar 5 estrellas
+        estrellas.forEach((s, i) => s.classList.add('checked'));
+    </script>
+</body>
+</html>

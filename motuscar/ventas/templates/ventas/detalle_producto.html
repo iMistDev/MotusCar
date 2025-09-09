@@ -1,33 +1,95 @@
-{% extends 'ventas/base.html' %}
-{% load static %}
+{% extends 'agenda/base.html' %}
+{% load static humanize %}
 {% block title %}{{ producto.Nombre_Producto }} - MotusCar{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'ventas/css/detalle_producto.css' %}?v={% now 'U' %}">
+<style>
+.card {
+    transition: transform 0.2s;
+}
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.reseñas-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.reseña-card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 1rem;
+    background: #f9f9f9;
+}
+
+.reseña-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stock-scrollable {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    padding: 1rem;
+}
+
+.stock-item {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.stock-item:last-child {
+    border-bottom: none;
+}
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container my-5">
     <div class="row">
-        <!-- Imagen del producto -->
-        <div class="col-md-6">
-            <div class="text-center">
+        <!-- Columna izquierda: Imagen y disponibilidad -->
+        <div class="col-md-4">
+            <!-- Imagen del producto -->
+            <div class="text-center mb-4">
                 <img src="https://picsum.photos/seed/{{ producto.id_producto }}/400/250" 
-                         class="card-img-top img-fluid h-100" 
-                         alt="{{ producto.Nombre_Producto }}"
-                         style="object-fit: cover; width: 100%;">
-                
-                <!-- Produccion: <img src="{% static 'ventas/images/default-product.png' %}" 
-                     class="img-fluid rounded shadow" 
+                     class="card-img-top img-fluid rounded shadow" 
                      alt="{{ producto.Nombre_Producto }}"
-                     style="max-height: 400px; object-fit: cover;"> -->
+                     style="object-fit: cover; width: 100%;">
             </div>
+            
+            <!-- Disponibilidad en sucursales (con scroll) -->
+            {% if stock_por_sucursal %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Disponibilidad en sucursales</h5>
+                </div>
+                <div class="card-body">
+                    {% for stock in stock_por_sucursal %}
+                    <div class="stock-item d-flex justify-content-between align-items-center">
+                        <div class="text-muted small">{{ stock.sucursal__comuna }}</div>
+                        <span class="text-muted small">{{ stock.stock }} unidades</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
         </div>
         
-        <!-- Información del producto -->
-        <div class="col-md-6">
+        <!-- Columna derecha: Información del producto -->
+        <div class="col-md-8">
             <h1 class="mb-3">{{ producto.Nombre_Producto }}</h1>
             
-            <!-- Precio y disponibilidad -->
+            <!-- Precio y disponibilidad general -->
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h2 class="text-primary">${{ producto.Precio_Unitario }}</h2>
-                {% if producto.Cantidad > 0 %}
-                <span class="badge bg-success fs-6">En stock: {{ producto.Cantidad }} unidades</span>
+                <h2 class="text-primary">${{ producto.Precio_Unitario|intcomma }}</h2>
+                {% if total_stock > 0 %}
+                <span class="badge bg-success fs-6">En stock: {{ total_stock }} unidades</span>
                 {% else %}
                 <span class="badge bg-danger fs-6">Agotado</span>
                 {% endif %}
@@ -37,16 +99,6 @@
             <p class="text-muted">
                 <strong>Código SKU:</strong> {{ producto.Código_SKU }}
             </p>
-            
-            <!-- Descripción -->
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="mb-0">Descripción</h5>
-                </div>
-                <div class="card-body">
-                    <p class="card-text">{{ producto.Descripcion }}</p>
-                </div>
-            </div>
             
             <!-- Información adicional -->
             <div class="row mb-4">
@@ -62,9 +114,19 @@
                     <div class="card">
                         <div class="card-body">
                             <h6 class="card-title">Proveedor</h6>
-                            <p class="card-text">{{ producto.Proveedor }}</p>
+                            <p class="card-text">{{ producto.Proveedor.nombre }}</p>
                         </div>
                     </div>
+                </div>
+            </div>
+            
+            <!-- Descripción (ahora debajo de la imagen) -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Descripción</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ producto.Descripcion }}</p>
                 </div>
             </div>
             
@@ -75,7 +137,7 @@
             
             <!-- Botones de acción -->
             <div class="d-grid gap-2 d-md-flex">
-                {% if producto.Cantidad > 0 %}
+                {% if total_stock > 0 %}
                 <a href="{% url 'agregar_al_carrito' producto.id_producto %}" class="btn btn-success btn-lg flex-fill">
                     <i class="fas fa-cart-plus"></i> Agregar al Carrito
                 </a>
@@ -90,17 +152,75 @@
             </div>
         </div>
     </div>
-</div>
+    
 
-<!-- Sección de productos relacionados (opcional) -->
-<div class="container mt-5">
-    <h3 class="mb-4">Productos relacionados</h3>
-    <div class="row">
-        <!-- Aquí puedes agregar productos de la misma categoría -->
-        <div class="col-12 text-center">
-            <p class="text-muted">Próximamente más productos de la categoría {{ producto.Categoria }}</p>
+    
+    <!-- Reseñas -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h2>Reseñas</h2>
+            {% if reseñas %}
+                <div class="reseñas-container">
+                {% for reseña in reseñas %}
+                    <div class="reseña-card">
+                        <div class="reseña-header">
+                            <strong>{{ reseña.usuario.email }}</strong>
+                            <span>
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= reseña.calificacion %}
+                                        ★
+                                    {% else %}
+                                        ☆
+                                    {% endif %}
+                                {% endfor %}
+                            </span>
+                        </div>
+                        <p>{{ reseña.comentario }}</p>
+                        <small>{{ reseña.creado|date:"d/m/Y H:i" }}</small>
+                    </div>
+                {% endfor %}
+                </div>
+            {% else %}
+                <p>Aún no hay reseñas para este producto.</p>
+            {% endif %}
         </div>
     </div>
+
+    <!-- Otros proveedores -->
+    {% if otros_stock %}
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3>También disponible con otros proveedores</h3>
+            <div class="row">
+                {% for proveedor in otros_stock %}
+                <div class="col-md-6 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ proveedor.proveedor }}</h5>
+                            <p class="badge bg-primary rounded-pill">Precio: ${{ proveedor.precio|intcomma }}</p>
+                            <h6>Disponibilidad:</h6>
+                            <ul class="list-group list-group-flush">
+                                {% for stock in proveedor.stock %}
+                                <div class="stock-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <!-- Mostrar solo el nombre de la sucursal sin el nombre del proveedor -->
+                                        {% with nombre_sucursal=stock.sucursal__nombre|cut:proveedor.proveedor|cut:" - " %}
+                                        <strong>{{ nombre_sucursal }}</strong>
+                                        {% endwith %}
+                                        <div class="text-muted small">({{ stock.sucursal__comuna }})</div>
+                                    </div>
+                                    <span class="text-muted small">{{ stock.stock }} unidades</span>
+                                </div>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>
 
 <style>
@@ -109,6 +229,25 @@
 }
 .card:hover {
     transform: translateY(-2px);
+}
+
+.reseñas-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.reseña-card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 1rem;
+    background: #f9f9f9;
+}
+
+.reseña-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 </style>
 {% endblock %}

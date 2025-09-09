@@ -1,137 +1,670 @@
-{% extends 'ventas/base.html' %}
+{% extends 'agenda/base.html' %}
 {% load static %}
+{% load humanize %}
 {% block title %}Productos - MotusCar{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'ventas/base.css' %}?v={% now 'U' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.0/nouislider.min.css">
+    <style>
+        .custom-body-style {
+            background-color: #f8f9fa;
+        }
+        
+        .product-card {
+            transition: all 0.3s ease;
+            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .card-img-top {
+            transition: transform 0.5s ease;
+        }
+        
+        .product-card:hover .card-img-top {
+            transform: scale(1.05);
+        }
+        
+        .filter-card {
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: none;
+        }
+        
+        .badge-stock {
+            font-size: 0.75rem;
+            padding: 0.35em 0.65em;
+        }
+        
+        .price-tag {
+            font-weight: 700;
+            color: #2c3e50;
+        }
+        
+        .btn-cart {
+            background-color: #3498db;
+            border-color: #3498db;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+        
+        .btn-cart:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+        
+        .btn-details {
+            border-radius: 6px;
+            font-weight: 500;
+        }
+        
+        .sticky-filters {
+            position: sticky;
+            top: 90px;
+            z-index: 100;
+        }
+        
+        .search-box {
+            border-radius: 25px;
+            padding: 10px 20px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .search-box:focus {
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+            border-color: #3498db;
+        }
+        
+        .pagination .page-link {
+            border-radius: 8px;
+            margin: 0 3px;
+            border: none;
+            color: #5a6c7d;
+        }
+        
+        .pagination .page-item.active .page-link {
+            background-color: #3498db;
+            border-color: #3498db;
+        }
+        
+        .noUi-connect {
+            background: #3498db;
+        }
+        
+        .noUi-handle {
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            border: 2px solid #3498db;
+        }
+        
+        .noUi-handle:before, .noUi-handle:after {
+            display: none;
+        }
+        
+        .search-loading {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .sticky-filters {
+                position: relative;
+                top: 0;
+            }
+        }
+        /* Asegurar que el slider sea visible */
+        .noUi-target {
+            background: #f0f0f0;
+            border-radius: 4px;
+            border: 1px solid #d3d3d3;
+            box-shadow: inset 0 1px 1px #f0f0f0, 0 3px 6px -5px #bbb;
+            margin: 10px 0;
+        }
+        
+        .noUi-base {
+            height: 8px;
+        }
+        /* ESTILOS ESPECÍFICOS PARA EL SLIDER */
+        #precioSlider {
+            height: 20px; /* Altura suficiente para ser visible */
+            margin: 15px 0;
+        }
+        
+        .noUi-target {
+            background: #f0f0f0;
+            border-radius: 10px;
+            border: 1px solid #d3d3d3;
+            box-shadow: inset 0 1px 1px #f0f0f0, 0 3px 6px -5px #bbb;
+        }
+        
+        .noUi-connects {
+            border-radius: 10px;
+            height: 8px;
+            top: 6px;
+        }
+        
+        .noUi-connect {
+            background: #3498db;
+            border-radius: 10px;
+        }
+        
+        .noUi-handle {
+            height: 20px;
+            width: 20px;
+            top: -6px;
+            right: -10px;
+            border-radius: 50%;
+            background: #fff;
+            border: 2px solid #3498db;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            cursor: pointer;
+        }
+        
+        .noUi-handle:before, .noUi-handle:after {
+            display: none;
+        }
+        
+        .noUi-handle:focus {
+            outline: none;
+        }
+        
+        /* Asegurar que el contenedor tenga espacio suficiente */
+        .filter-card .mb-4 {
+            min-height: 120px;
+        }
+    #precioSlider {
+        margin: 20px 0;
+        height: 20px;
+        position: relative;
+    }
+
+    /* Contenedor principal del slider */
+    .noUi-target {
+        background: #f8f9fa;
+        border-radius: 10px;
+        border: 2px solid #e9ecef;
+        box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        height: 12px;
+    }
+
+    /* Línea de conexión (el área entre los handles) */
+    .noUi-connect {
+        background: #3498db;
+        border-radius: 10px;
+        height: 12px;
+        top: 0;
+    }
+
+    /* Handles (los círculos que se arrastran) */
+    .noUi-handle {
+        height: 24px;
+        width: 24px;
+        top: -7px;
+        right: -12px;
+        border-radius: 50%;
+        background: #ffffff;
+        border: 3px solid #3498db;
+        box-shadow: 0 2px 8px rgba(52, 152, 219, 0.4);
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .noUi-handle:hover {
+        box-shadow: 0 4px 12px rgba(52, 152, 219, 0.6);
+        transform: scale(1.1);
+    }
+
+    .noUi-handle:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
+    }
+
+    /* Quitar las líneas internas de los handles */
+    .noUi-handle:before,
+    .noUi-handle:after {
+        display: none;
+    }
+
+    /* Base del slider */
+    .noUi-base {
+        height: 12px;
+    }
+
+    /* Asegurar que todo el contenedor sea visible */
+    .filter-card .mb-4 {
+        min-height: 120px;
+        padding: 15px 0;
+    }
+
+    /* Display de precios */
+    #precioMinDisplay, #precioMaxDisplay {
+        font-weight: 600;
+        color: #2c3e50;
+        padding: 4px 8px;
+        background: #f8f9fa;
+        border-radius: 6px;
+        border: 1px solid #e9ecef;
+    }
+</style>
+{% endblock %}
+
+{% block body_class %}custom-body-style{% endblock %}
+
 {% block content %}
-<div class="container my-5">
-    <!-- Header con título y botón del carrito -->
+<div class="container my-4">
+    <!-- Header con breadcrumb y carrito -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="mb-0">Nuestros Productos</h1>
-        <a href="{% url 'ver_carrito' %}" class="btn btn-primary btn-lg">
-            <i class="fas fa-shopping-cart"></i> Ver Carrito
+        <a href="{% url 'ver_carrito' %}" class="btn btn-primary position-relative">
+            <i class="fas fa-shopping-cart me-1"></i> Carrito
             {% if items.count > 0 %}
-            <span class="badge bg-danger ms-2">{{ items.count }}</span>
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                {{ items.count }}
+            </span>
             {% endif %}
         </a>
     </div>
     
-    <!-- Filtros y búsqueda -->
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <input type="text" class="form-control" placeholder="Buscar productos..." id="searchInput">
-        </div>
-    </div>
-
     <div class="row">
-        {% for producto in productos %}
-        <div class="col-lg-4 col-md-6 mb-4">
-            <div class="card h-100 shadow-sm product-card">
-                <div class="image-container" style="height: 250px; overflow: hidden;">
-                    <!-- Testeo -->
-                    <img src="https://picsum.photos/seed/{{ producto.id_producto }}/400/250" 
-                         class="card-img-top img-fluid h-100" 
-                         alt="{{ producto.Nombre_Producto }}"
-                         style="object-fit: cover; width: 100%;">
-                    <!-- producción : <img src="{% static 'ventas/images/default-product.png' %}" 
-                         class="card-img-top img-fluid h-100" 
-                         alt="{{ producto.Nombre_Producto }}"
-                         style="object-fit: cover; width: 100%;"> -->
-                </div>
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">{{ producto.Nombre_Producto }}</h5>
-                    <p class="card-text text-muted flex-grow-1">
-                        {{ producto.Descripcion|truncatewords:15 }}
-                    </p>
-                    <p class="card-text fw-bold text-primary h4">${{ producto.Precio_Unitario }}</p>
-                    
-                    {% if producto.Cantidad > 0 %}
-                    <span class="badge bg-success mb-2">En stock: {{ producto.Cantidad }}</span>
-                    {% else %}
-                    <span class="badge bg-danger mb-2">Agotado</span>
-                    {% endif %}
-                    
-                    <div class="d-flex gap-2 mt-auto">
-                        <a href="{% url 'detalle_producto' producto.id_producto %}" class="btn btn-outline-primary flex-fill">
-                            <i class="fas fa-eye"></i> Detalles
-                        </a>
-                        {% if producto.Cantidad > 0 %}
-                        <a href="{% url 'agregar_al_carrito' producto.id_producto %}" class="btn btn-success flex-fill">
-                            <i class="fas fa-cart-plus"></i> Agregar
-                        </a>
-                        {% else %}
-                        <button class="btn btn-secondary flex-fill" disabled>
-                            <i class="fas fa-cart-plus"></i> Agregar
+        <!-- Filtros -->
+        <div class="col-lg-3 mb-4">
+            <div class="card filter-card p-3 sticky-filters">
+                <h5 class="mb-3 border-bottom pb-2"><i class="fas fa-filter me-2"></i>Filtros</h5>
+                
+                <form method="get" id="filterForm">
+                    <!-- Categoría -->
+                    <div class="mb-3">
+                        <label for="categoria" class="form-label fw-semibold">Categoría</label>
+                        <select name="categoria" id="categoria" class="form-select">
+                            <option value="">Todas las categorías</option>
+                            {% for cat in categorias %}
+                                <option value="{{ cat.0 }}" {% if cat.0 == categoria_sel %}selected{% endif %}>{{ cat.1 }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Región -->
+                    <div class="mb-3">
+                        <label for="region" class="form-label fw-semibold">Región</label>
+                        <select name="region" id="region" class="form-select">
+                            <option value="">Todas las regiones</option>
+                            {% for code, label in regiones %}
+                                <option value="{{ code }}" {% if code == region_sel %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Comuna -->
+                    <div class="mb-3">
+                        <label for="comuna" class="form-label fw-semibold">Comuna</label>
+                        <select name="comuna" id="comuna" class="form-select">
+                            <option value="">Todas las comunas</option>
+                            {% for comu in comunas %}
+                                <option value="{{ comu }}" {% if comu == comuna_sel %}selected{% endif %}>{{ comu }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Ordenar por precio -->
+                    <div class="mb-3">
+                        <label for="orden" class="form-label fw-semibold">Ordenar por</label>
+                        <select name="orden" id="orden" class="form-select">
+                            <option value="">Seleccionar orden</option>
+                            <option value="precio_asc" {% if orden == "precio_asc" %}selected{% endif %}>Precio: Menor a mayor</option>
+                            <option value="precio_desc" {% if orden == "precio_desc" %}selected{% endif %}>Precio: Mayor a menor</option>
+                        </select>
+                    </div>
+
+                    <!-- Rango de Precio -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold mb-3">Rango de Precio</label>
+                        
+                        <!-- Contenedor con borde para hacerlo más visible -->
+                        <div class="border rounded p-3 bg-white mb-3">
+                            <div id="precioSlider"></div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <span id="precioMinDisplay" class="badge bg-primary">${{ precio_minimo|default:0|intcomma }}</span>
+                            <span class="text-muted">→</span>
+                            <span id="precioMaxDisplay" class="badge bg-primary">${{ precio_maximo|default:150000|intcomma }}</span>
+                        </div>
+                        
+                        <input type="hidden" name="precio_min" id="precioMin" value="{{ request.GET.precio_min }}">
+                        <input type="hidden" name="precio_max" id="precioMax" value="{{ request.GET.precio_max }}">
+                    </div>
+
+                    <!-- Botones de acción -->
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-filter me-1"></i> Aplicar Filtros
                         </button>
-                        {% endif %}
+                        <a href="{% url 'lista_productos_repuestos' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-sync-alt me-1"></i> Limpiar Filtros
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Lista de Productos -->
+        <div class="col-lg-9">
+            <!-- Barra de búsqueda que ocupa todo el ancho -->
+            <div class="row mb-4">
+                <div class="col-12 position-relative">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="fas fa-search text-muted"></i>
+                        </span>
+                        <input type="text" id="searchInput" class="form-control search-box border-start-0" 
+                               placeholder="Buscar productos por nombre..." value="{{ request.GET.search }}">
+                    </div>
+                    <div class="search-loading" id="searchLoading">
+                        <div class="spinner-border spinner-border-sm text-primary" role="status">
+                            <span class="visually-hidden">Buscando...</span>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Resultados -->
+            <div class="row" id="productosContainer">
+                {% for producto in productos %}
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                    <div class="card h-100 shadow-sm product-card small-card">
+                        <div class="image-container" style="width: 100%; padding-top: 100%; position: relative; overflow: hidden;">
+                            <img src="https://picsum.photos/seed/{{ producto.id_producto }}/178/178"
+                                class="card-img-top img-fluid"
+                                alt="{{ producto.Nombre_Producto }}"
+                                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+                        <div class="card-body p-2 d-flex flex-column">
+                            <h6 class="card-title mb-1" style="font-size: 0.9rem;">{{ producto.Nombre_Producto|truncatewords:5 }}</h6>
+                            <p class="card-text fw-bold text-primary mb-1" style="font-size: 0.95rem;">${{ producto.Precio_Unitario|intcomma }}</p>
+                            {% if producto.stock_total > 0 %}
+                            <span class="badge bg-success mb-1" style="font-size: 0.75rem;">En stock: {{ producto.stock_total }}</span>
+                            {% else %}
+                            <span class="badge bg-danger mb-1" style="font-size: 0.75rem;">Agotado</span>
+                            {% endif %}
+                            <div class="d-flex gap-1 mt-auto">
+                                <a href="{% url 'detalle_producto' producto.id_producto %}" class="btn btn-outline-primary btn-sm flex-fill">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                {% if producto.stock_total > 0 %}
+                                <a href="{% url 'agregar_al_carrito' producto.id_producto %}" class="btn btn-success btn-sm flex-fill">
+                                    <i class="fas fa-cart-plus"></i>
+                                </a>
+                                {% else %}
+                                <button class="btn btn-secondary btn-sm flex-fill" disabled>
+                                    <i class="fas fa-cart-plus"></i>
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center py-5">
+                    <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                    <h3 class="text-muted">No hay productos disponibles</h3>
+                    <p class="text-muted">Pronto tendremos nuevos productos en stock</p>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Paginación -->
+            {% if is_paginated %}
+            <nav aria-label="Page navigation" class="mt-5">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if querystring %}&{{ querystring }}{% endif %}">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                            <li class="page-item"><a class="page-link" href="?page={{ num }}{% if querystring %}&{{ querystring }}{% endif %}">{{ num }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if querystring %}&{{ querystring }}{% endif %}">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
         </div>
-        {% empty %}
-        <div class="col-12 text-center py-5">
-            <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
-            <h3 class="text-muted">No hay productos disponibles</h3>
-            <p class="text-muted">Pronto tendremos nuevos productos en stock</p>
-        </div>
-        {% endfor %}
     </div>
-
-    <!-- Paginación -->
-    {% if is_paginated %}
-    <nav aria-label="Page navigation" class="mt-4">
-        <ul class="pagination justify-content-center">
-            {% if page_obj.has_previous %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a>
-            </li>
-            {% endif %}
-            
-            {% for num in page_obj.paginator.page_range %}
-            <li class="page-item {% if page_obj.number == num %}active{% endif %}">
-                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-            </li>
-            {% endfor %}
-            
-            {% if page_obj.has_next %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a>
-            </li>
-            {% endif %}
-        </ul>
-    </nav>
-    {% endif %}
 </div>
+{% endblock %}
 
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.0/nouislider.min.js"></script>
 <script>
-document.getElementById('searchInput').addEventListener('keyup', function() {
-    const searchText = this.value.toLowerCase();
-    const cards = document.querySelectorAll('.product-card');
-    
-    cards.forEach(card => {
-        const title = card.querySelector('.card-title').textContent.toLowerCase();
-        const description = card.querySelector('.card-text').textContent.toLowerCase();
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Iniciando configuración del slider...');
         
-        if (title.includes(searchText) || description.includes(searchText)) {
-            card.parentElement.style.display = 'block';
-        } else {
-            card.parentElement.style.display = 'none';
+        const precioMaximo = {{ precio_maximo|default:150000 }};
+        const precioMinimo = {{ precio_minimo|default:0 }};
+        
+        console.log('Rango de precios:', precioMinimo, '-', precioMaximo);
+        
+        var precioSlider = document.getElementById('precioSlider');
+        var precioMinInput = document.getElementById('precioMin');
+        var precioMaxInput = document.getElementById('precioMax');
+        var minDisplay = document.getElementById('precioMinDisplay');
+        var maxDisplay = document.getElementById('precioMaxDisplay');
+        
+        if (!precioSlider) {
+            console.error('❌ No se encontró el elemento precioSlider');
+            return;
+        }
+        
+        if (typeof noUiSlider === 'undefined') {
+            console.error('❌ noUiSlider no está cargado');
+            return;
+        }
+        
+        // Valores iniciales
+        var minValue = precioMinInput.value ? parseInt(precioMinInput.value) : precioMinimo;
+        var maxValue = precioMaxInput.value ? parseInt(precioMaxInput.value) : precioMaximo;
+        
+        minValue = Math.max(precioMinimo, minValue);
+        maxValue = Math.min(precioMaximo, maxValue);
+        
+        console.log('Valores iniciales del slider:', minValue, maxValue);
+        
+        try {
+            // Crear el slider
+            noUiSlider.create(precioSlider, {
+                start: [minValue, maxValue],
+                connect: true,
+                range: {
+                    'min': precioMinimo,
+                    'max': precioMaximo
+                },
+                step: 1000,
+                behaviour: 'drag-tap',
+                format: {
+                    to: function(value) {
+                        return Math.round(value);
+                    },
+                    from: function(value) {
+                        return Number(value);
+                    }
+                }
+            });
+            
+            console.log('✅ Slider creado exitosamente');
+            
+            // Eventos
+            precioSlider.noUiSlider.on('update', function(values, handle) {
+                var value = Math.round(values[handle]);
+                if (handle === 1) {
+                    maxDisplay.textContent = '$' + value.toLocaleString('es-CL');
+                } else {
+                    minDisplay.textContent = '$' + value.toLocaleString('es-CL');
+                }
+            });
+            
+            precioSlider.noUiSlider.on('change', function(values) {
+                precioMinInput.value = Math.round(values[0]);
+                precioMaxInput.value = Math.round(values[1]);
+                console.log('Valores cambiados:', precioMinInput.value, precioMaxInput.value);
+            });
+            
+            // Hacer el slider visible después de crearlo
+            precioSlider.style.opacity = '1';
+            precioSlider.style.visibility = 'visible';
+            
+        } catch (error) {
+            console.error('❌ Error al crear el slider:', error);
+            
+            // Fallback: mostrar inputs numéricos
+            document.getElementById('precioSlider').innerHTML = `
+                <div class="alert alert-warning">
+                    <small>Slider no disponible. Use los filtros numéricos.</small>
+                </div>
+            `;
         }
     });
-});
-</script>
+        
 
-<style>
-.product-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-}
-.card-img-top {
-    transition: transform 0.3s ease;
-}
-.product-card:hover .card-img-top {
-    transform: scale(1.05);
-}
-</style>
+
+
+        // Actualizar comunas según región seleccionada
+        const regionSelect = document.getElementById('region');
+        const comunaSelect = document.getElementById('comuna');
+        const comunasPorRegion = JSON.parse('{{ comunas_por_region_json|escapejs }}');
+        
+        function actualizarComunas() {
+            const regionCode = regionSelect.value;
+            const comunaActual = comunaSelect.value;
+            comunaSelect.innerHTML = '<option value="">Todas las comunas</option>';
+            
+            let comunasDisponibles = [];
+            
+            if (regionCode && comunasPorRegion[regionCode]) {
+                comunasDisponibles = comunasPorRegion[regionCode];
+            } else {
+                comunasDisponibles = Array.from(new Set(
+                    Object.values(comunasPorRegion).flat()
+                )).sort();
+            }
+            
+            comunasDisponibles.forEach(comuna => {
+                const option = new Option(comuna, comuna);
+                option.selected = (comuna === comunaActual);
+                comunaSelect.add(option);
+            });
+        }
+        
+        regionSelect.addEventListener('change', actualizarComunas);
+        actualizarComunas();
+        
+        // Búsqueda dinámica con AJAX (busca en todas las páginas)
+        let searchTimeout;
+        const searchInput = document.getElementById('searchInput');
+        const searchLoading = document.getElementById('searchLoading');
+        const productosContainer = document.getElementById('productosContainer');
+        const paginationContainer = document.querySelector('nav[aria-label="Page navigation"]');
+        
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            const searchText = this.value.trim();
+            
+            if (searchText.length === 0) {
+                // Si está vacío, recargar la página sin parámetros de búsqueda
+                const url = new URL(window.location.href);
+                url.searchParams.delete('search');
+                window.location.href = url.toString();
+                return;
+            }
+            
+            if (searchText.length < 2) return; // Esperar al menos 2 caracteres
+            
+            searchLoading.style.display = 'block';
+            
+            searchTimeout = setTimeout(() => {
+                // Obtener todos los filtros actuales
+                const categoria = document.getElementById('categoria').value;
+                const region = document.getElementById('region').value;
+                const comuna = document.getElementById('comuna').value;
+                const orden = document.getElementById('orden').value;
+                const precioMin = Math.round(precioSlider.noUiSlider.get()[0]);
+                const precioMax = Math.round(precioSlider.noUiSlider.get()[1]);
+                
+                // Construir URL con todos los parámetros
+                const params = new URLSearchParams();
+                if (categoria) params.append('categoria', categoria);
+                if (region) params.append('region', region);
+                if (comuna) params.append('comuna', comuna);
+                if (orden) params.append('orden', orden);
+                params.append('precio_min', precioMin);
+                params.append('precio_max', precioMax);
+                params.append('search', searchText);
+                
+                // Hacer petición AJAX
+                fetch(`?${params.toString()}`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    
+                    // Actualizar productos
+                    const newProducts = doc.getElementById('productosContainer');
+                    if (newProducts) {
+                        productosContainer.innerHTML = newProducts.innerHTML;
+                    }
+                    
+                    // Actualizar paginación
+                    const newPagination = doc.querySelector('nav[aria-label="Page navigation"]');
+                    if (paginationContainer && newPagination) {
+                        paginationContainer.innerHTML = newPagination.innerHTML;
+                    } else if (paginationContainer && !newPagination) {
+                        paginationContainer.style.display = 'none';
+                    } else if (!paginationContainer && newPagination) {
+                        productosContainer.insertAdjacentElement('afterend', newPagination);
+                    }
+                    
+                    searchLoading.style.display = 'none';
+                })
+                .catch(error => {
+                    console.error('Error en la búsqueda:', error);
+                    searchLoading.style.display = 'none';
+                });
+            }, 500); // Debounce de 500ms
+        });
+        
+        // También buscar al presionar Enter (por si acaso)
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                this.dispatchEvent(new Event('input'));
+            }
+        });
+    });
+</script>
 {% endblock %}

@@ -168,3 +168,170 @@ footer p {
     width: 12rem;
     height: 1.6rem;
 }
+
+
+
+
+
+#precioSlider {
+    height: 10px;
+    margin: 15px 0;
+    background: #e8e8e8;
+    border-radius: 5px;
+}
+
+.noUi-target {
+    border: none;
+    box-shadow: none;
+}
+
+.noUi-horizontal {
+    height: 10px;
+}
+
+.noUi-connects {
+    border-radius: 5px;
+}
+
+.noUi-connect {
+    background: #3498db;
+}
+
+.noUi-handle {
+    height: 20px;
+    width: 20px;
+    top: -5px;
+    right: -10px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    border: 2px solid #3498db;
+    cursor: pointer;
+}
+
+.noUi-handle:focus {
+    outline: none;
+}
+
+.noUi-handle:after, .noUi-handle:before {
+    display: none;
+}
+
+
+
+/* Recuadros con scroll */
+.info-box, .product-card {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    max-height: 400px;
+    overflow-y: auto; /* Scroll vertical */
+}
+
+/* Título dentro del recuadro */
+.info-box h5, .product-card h5 {
+    border-bottom: 1px solid #eeeeee;
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+}
+
+/* Stock alineado a la derecha */
+.stock-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.stock-list li {
+    display: flex;
+    justify-content: space-between; /* texto a la izquierda, stock a la derecha */
+    margin-bottom: 0.4rem;
+}
+
+/* Ajuste de columnas para usar todo el ancho de la página */
+.container-fluid {
+    max-width: 100%;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.row-full {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+
+
+.proveedor-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 8px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.precio {
+    font-weight: bold;
+    color: #28a745;
+    font-size: 1.1em;
+}
+
+.stock-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+}
+
+.stock-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+}
+.proveedor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    border-left: 4px solid #007bff;
+}
+
+.precio {
+    font-weight: bold;
+    color: #28a745;
+    font-size: 1.1em;
+    background-color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid #dee2e6;
+}
+
+.stock-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 15px;
+}
+
+.stock-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 0.9em;
+}
+
+.stock-list li:last-child {
+    border-bottom: none;
+}
+
+
+
+
+

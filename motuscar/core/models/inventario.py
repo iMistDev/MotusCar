@@ -1,20 +1,17 @@
 from django.db import models
 
-# Create your models here.
+from core.models.productos import Products
+from core.models.sucursal import Sucursal
 
-class Products(models.Model):
-    id_producto = models.AutoField(primary_key=True)
-    Nombre_Producto = models.CharField(max_length=50)
-    Código_SKU = models.CharField(max_length=50, verbose_name='Código SKU', unique=True)
-    Proveedor = models.CharField(max_length=100)
-    Categoria = models.CharField(max_length=100)
-    Precio_Unitario = models.PositiveIntegerField(default=0)
-    Cantidad = models.PositiveIntegerField(default=0)
-    Descripcion = models.CharField(max_length=200)
-    Fecha_Ingreso = models.DateTimeField(auto_now_add=True)
+class Inventario(models.Model):
+    producto = models.ForeignKey(Products, on_delete=models.CASCADE, related_name='inventario')
+    sucursal = models.ForeignKey(Sucursal, on_delete=models.CASCADE)
+    cantidad = models.PositiveIntegerField(default=0)
+    ubicacion = models.CharField(max_length=50, blank=True)  # Ej: "Estante A-12"
+    fecha_actualizacion = models.DateTimeField(auto_now=True)
     
-    """Borrar Campo de Imagenes, ya que es de prueba"""
+    class Meta:
+        unique_together = ['producto', 'sucursal']  # Evita duplicados
     
     def __str__(self):
-        texto = "{0} ({1})"
-        return texto.format(self.Nombre_Producto, self.Código_SKU)
+        return f"{self.producto} - {self.sucursal}: {self.cantidad} unidades"

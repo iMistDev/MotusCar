@@ -8,7 +8,7 @@ from django.contrib import admin
 from core.models.vehiculo import Vehiculo
 admin.site.register(Vehiculo)
 
-from core.models.inventario import Products
+from core.models.productos import Products
 admin.site.register(Products)
 
 from core.models.usuarios import Usuario

@@ -1,6 +1,12 @@
-{% extends 'ventas/base.html' %}
+{% extends 'agenda/base.html' %}
 {% load static %}
 {% block title %}Checkout - MotusCar{% endblock %}
+
+{% block extra_css %}
+    <!-- CSS específico para esta página -->
+    <link rel="stylesheet" href="{% static 'ventas/base.html' %}?v={% now 'U' %}">
+{% endblock %}
+
 {% block content %}
 <div class="container my-5">
     <h1 class="text-center mb-4">Finalizar Compra</h1>

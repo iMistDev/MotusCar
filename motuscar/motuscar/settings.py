@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'dashboard',
     'motus',
     'landing',
+    'reseñas',
     'login.apps.LoginConfig',
 
 
